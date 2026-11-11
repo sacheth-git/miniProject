@@ -1,0 +1,129 @@
+# Hand-labelled skills for the synthetic sample resumes (scripts/make_sample_resumes.py).
+# Written from the resume text, independent of extractor output.
+# A skill is listed if the resume states it as a skill, tool or technique the person used.
+# Names are taxonomy canonical names.
+
+uday_ml.pdf:
+  - Python
+  - SQL
+  - C++
+  - Machine Learning
+  - Deep Learning
+  - TensorFlow
+  - PyTorch
+  - scikit-learn
+  - OpenCV
+  - Natural Language Processing
+  - Git
+  - Docker
+  - Jupyter
+  - Pandas
+  - NumPy
+  - Flask
+  - Text Classification
+  - BERT
+  - Hugging Face
+  - PostgreSQL
+  - REST APIs
+  - Object Detection
+  - YOLO
+  - Embeddings
+  - Computer Vision
+  - Reporting
+  - Sentence Transformers
+
+priya_fullstack.pdf:
+  - JavaScript
+  - TypeScript
+  - React
+  - Node.js
+  - Express.js
+  - MongoDB
+  - PostgreSQL
+  - HTML
+  - CSS
+  - Tailwind CSS
+  - Redux
+  - Git
+  - AWS
+  - Jest
+  - REST APIs
+  - CI/CD
+  - GitHub Actions
+  - Unit Testing
+  - Figma
+  - Full Stack Development
+  - JWT
+  - WebSockets
+  - Redis
+  - Web Development
+  - Responsive Web Design
+  - Data Visualization  # "dashboards" (canonical name fixed: Dashboards is an alias)
+
+arjun_ece.pdf:
+  - Embedded C
+  - C
+  - Python
+  - MATLAB
+  - Verilog
+  - Microcontrollers
+  - Arduino
+  - STM32
+  - ESP32
+  - Raspberry Pi
+  - I2C
+  - SPI
+  - UART
+  - CAN Bus
+  - Proteus
+  - Xilinx Vivado
+  - KiCad
+  - Keil
+  - Firmware Development
+  - Sensors
+  - RTOS
+  - Oscilloscope
+  - IoT
+  - Firebase
+  - FPGA
+  - Signal Processing
+  - ModelSim
+  - Embedded Systems
+  - Debugging
+
+meera_data.pdf:
+  - Python
+  - SQL
+  - R
+  - Power BI
+  - Tableau
+  - Microsoft Excel
+  - Pandas
+  - Statistics
+  - Business Intelligence
+  - Data Visualization
+  - A/B Testing
+  - KPI Reporting
+  - Data Cleaning
+  - Exploratory Data Analysis
+  - Time Series Analysis
+  - Logistic Regression
+  - Data Analysis
+  - Reporting
+
+rahul_mech.pdf:
+  - SolidWorks
+  - AutoCAD
+  - CATIA
+  - ANSYS
+  - MATLAB
+  - GD&T
+  - Finite Element Analysis
+  - CNC Programming
+  - Six Sigma
+  - CAD
+  - Structural Analysis
+  - Lean Manufacturing
+  - Computational Fluid Dynamics
+  - Product Design
+  - Heat Transfer

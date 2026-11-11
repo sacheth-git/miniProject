@@ -7,6 +7,7 @@ from collections.abc import Iterator
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.core.config import get_settings
 
@@ -17,9 +18,12 @@ class Base(DeclarativeBase):
 
 def _make_engine(url: str) -> Engine:
     connect_args: dict[str, object] = {}
+    kwargs: dict[str, object] = {"pool_pre_ping": True}
     if url.startswith("sqlite"):
         connect_args["check_same_thread"] = False
-    engine = create_engine(url, connect_args=connect_args, pool_pre_ping=True)
+        if ":memory:" in url:
+            kwargs["poolclass"] = StaticPool  # one shared in-memory DB across threads
+    engine = create_engine(url, connect_args=connect_args, **kwargs)
     if url.startswith("sqlite"):
 
         @event.listens_for(engine, "connect")

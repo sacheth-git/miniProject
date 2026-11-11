@@ -12,7 +12,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | Phase | Scope | State |
 |---|---|---|
 | 1 | Scaffold: FastAPI health check, Vite app, config, tests | done |
-| 2 | Resume pipeline | pending |
+| 2 | Resume pipeline: PDF parsing, sections, skills (1,444-entry taxonomy), PII masking | done |
 | 3 | Job ingestion | pending |
 | 4 | Matching, baselines, explain, gap | pending |
 | 5 | Frontend | pending |
@@ -38,7 +38,12 @@ Copy-Item .env.example .env        # then fill in any API keys you have
 cd backend
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
+# NLP/ML stack: CPU-only torch first (avoids the multi-GB CUDA build)
+.\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r requirements-ml.txt
+.\.venv\Scripts\python.exe -m spacy download en_core_web_sm
+.\.venv\Scripts\alembic.exe upgrade head
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --reload-dir app --port 8000
 ```
 
 In a second terminal:
@@ -59,6 +64,21 @@ If PowerShell blocks `Activate.ps1`, you do not need it: the commands above call
 ```powershell
 cd backend;  .\.venv\Scripts\python.exe -m pytest --cov=app
 cd frontend; npm test
+```
+
+The first start downloads the embedding model `BAAI/bge-small-en-v1.5` (~130 MB) and warms it up in the background.
+
+## Skill taxonomy
+
+`backend/data/taxonomy/skills.json` merges a curated tech list (`curated_skills.yaml`, ~750 entries with aliases)
+with technical skills from the ESCO open taxonomy (European Commission), pulled from the public ESCO API.
+The raw ESCO pull is cached in `esco_raw.json`, so rebuilding works offline:
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe scripts\build_taxonomy.py            # rebuild from cache
+.\.venv\Scripts\python.exe scripts\build_taxonomy.py --refresh  # re-download ESCO
+.\.venv\Scripts\python.exe scripts\make_sample_resumes.py       # regenerate synthetic sample PDFs
 ```
 
 ## Database migrations

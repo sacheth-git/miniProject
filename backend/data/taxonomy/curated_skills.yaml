@@ -1,0 +1,790 @@
+# Curated technical skill list.
+# Format per entry: "Canonical Name | alias1, alias2, ..."
+# Matching is case-insensitive, except short or ambiguous surface forms
+# (see AMBIGUOUS_FORMS in app/skills/extractor.py), which need exact case
+# plus a skills-list context.
+
+programming_languages:
+  - Python | python3, python 3, py
+  - Java | core java, java se, java ee, j2ee, jee
+  - JavaScript | js, javascript es6, es6, ecmascript, vanilla js
+  - TypeScript | ts
+  - C | c language, c programming, ansi c
+  - C++ | cpp, c plus plus, cplusplus
+  - C# | c sharp, csharp
+  - Go | golang, go lang
+  - Rust | rust lang, rustlang
+  - Kotlin
+  - Swift | swift ui language
+  - Objective-C | objective c, objc
+  - Ruby
+  - PHP
+  - Perl
+  - R | r programming, r language, rstudio, r studio
+  - Scala
+  - Julia
+  - Dart
+  - Lua
+  - Haskell
+  - Elixir
+  - Erlang
+  - Clojure
+  - F# | f sharp
+  - MATLAB | matlab programming
+  - Octave | gnu octave
+  - Fortran
+  - COBOL
+  - Assembly Language | assembly, x86 assembly, arm assembly, asm
+  - Verilog | verilog hdl
+  - VHDL
+  - SystemVerilog | system verilog
+  - Bash | bash scripting, shell scripting, shell script, unix shell
+  - PowerShell
+  - SQL | structured query language, sql queries
+  - PL/SQL | plsql, pl sql
+  - T-SQL | tsql, transact-sql
+  - Solidity
+  - Groovy
+  - VBA | excel vba, visual basic for applications
+  - Visual Basic | vb.net, vb
+  - Apex
+  - ABAP
+  - Prolog
+  - Scheme
+  - OCaml
+  - Zig
+  - Embedded C
+  - CUDA | cuda programming
+  - OpenCL
+  - GraphQL
+  - HTML | html5
+  - CSS | css3
+  - Sass | scss
+  - Less
+  - XML
+  - JSON
+  - YAML
+  - LaTeX
+
+web_frontend:
+  - React | react.js, reactjs, react js
+  - Angular | angularjs, angular.js, angular 2+
+  - Vue.js | vue, vuejs, vue 3
+  - Svelte | sveltekit
+  - Next.js | nextjs, next js
+  - Nuxt.js | nuxt, nuxtjs
+  - Redux | redux toolkit
+  - jQuery
+  - Bootstrap
+  - Tailwind CSS | tailwind, tailwindcss
+  - Material UI | mui, material-ui
+  - Webpack
+  - Vite
+  - Babel
+  - Three.js | threejs
+  - D3.js | d3, d3js
+  - Chart.js | chartjs
+  - Ember.js | emberjs
+  - Backbone.js | backbonejs
+  - Gatsby
+  - Remix
+  - Web Components
+  - Progressive Web Apps | pwa
+  - Responsive Web Design | responsive design
+  - Accessibility | web accessibility, wcag, a11y
+  - Storybook
+  - React Query | tanstack query
+  - Zustand
+  - RxJS
+  - WebSockets | websocket, socket.io
+  - WebRTC
+  - WebAssembly | wasm
+  - Figma
+  - Adobe XD
+  - Sketch
+  - UI Design | user interface design
+  - UX Design | user experience design, ux research
+  - Wireframing | wireframes
+  - Prototyping
+
+web_backend:
+  - Node.js | node, nodejs, node js
+  - Express.js | expressjs, express js
+  - NestJS | nest.js, nestjs
+  - Django | django rest framework, drf
+  - Flask
+  - FastAPI | fast api
+  - Spring | spring framework
+  - Spring Boot | springboot
+  - Spring MVC
+  - Hibernate
+  - JPA | java persistence api
+  - ASP.NET | asp.net core, asp net
+  - .NET | dotnet, .net core, .net framework
+  - Ruby on Rails | rails, ror
+  - Laravel
+  - Symfony
+  - CodeIgniter
+  - Gin | gin gonic
+  - Echo Framework
+  - Fiber
+  - Actix
+  - Phoenix Framework
+  - Koa
+  - Hapi
+  - Deno
+  - Bun
+  - REST APIs | restful, rest api, restful apis, restful services
+  - gRPC
+  - SOAP
+  - Microservices | microservice architecture, micro services
+  - Serverless | serverless architecture
+  - OAuth | oauth2, oauth 2.0
+  - JWT | json web tokens
+  - OpenAPI | swagger
+  - API Design
+  - Postman
+  - Nginx
+  - Apache HTTP Server | apache httpd, apache server
+  - Tomcat | apache tomcat
+  - Celery
+  - RabbitMQ
+  - Apache Kafka | kafka
+  - ActiveMQ
+  - Redis
+  - Memcached
+  - Elasticsearch | elastic search
+  - Solr | apache solr
+  - Strapi
+  - WordPress
+  - Drupal
+  - Shopify
+  - Magento
+
+mobile:
+  - Android Development | android, android sdk, android studio
+  - iOS Development | ios, ios sdk
+  - Flutter
+  - React Native
+  - SwiftUI
+  - UIKit
+  - Jetpack Compose
+  - Xamarin
+  - Ionic
+  - Cordova | apache cordova
+  - Kotlin Multiplatform | kmp
+  - Firebase
+  - Expo
+
+databases:
+  - MySQL
+  - PostgreSQL | postgres, psql
+  - SQLite
+  - Oracle Database | oracle db, oracle
+  - Microsoft SQL Server | sql server, mssql, ms sql
+  - MongoDB | mongo
+  - Cassandra | apache cassandra
+  - DynamoDB | amazon dynamodb
+  - CouchDB
+  - Couchbase
+  - Neo4j
+  - MariaDB
+  - Firestore | cloud firestore
+  - Snowflake
+  - Amazon Redshift | redshift
+  - Google BigQuery | bigquery
+  - ClickHouse
+  - InfluxDB
+  - TimescaleDB
+  - HBase | apache hbase
+  - Pinecone
+  - Weaviate
+  - Milvus
+  - Chroma | chromadb
+  - pgvector
+  - Vector Databases | vector database, vector db
+  - Database Design | database modelling, data modeling, data modelling
+  - DBMS | database management systems, rdbms
+  - Query Optimization
+  - Indexing
+  - Normalization
+  - Stored Procedures
+  - NoSQL
+  - Prisma
+  - SQLAlchemy
+  - Sequelize
+  - Mongoose
+  - TypeORM
+
+cloud:
+  - AWS | amazon web services
+  - Microsoft Azure | azure
+  - Google Cloud Platform | gcp, google cloud
+  - Amazon EC2 | ec2
+  - Amazon S3 | s3
+  - AWS Lambda | lambda functions
+  - Amazon RDS | rds
+  - Amazon ECS | ecs
+  - Amazon EKS | eks
+  - Amazon SageMaker | sagemaker
+  - AWS CloudFormation | cloudformation
+  - Amazon CloudWatch | cloudwatch
+  - AWS IAM | iam
+  - Amazon SQS | sqs
+  - Amazon SNS | sns
+  - AWS Glue | glue
+  - Amazon Athena | athena
+  - Amazon Kinesis | kinesis
+  - Azure Functions
+  - Azure DevOps
+  - Azure Data Factory | adf
+  - Azure Machine Learning | azure ml
+  - Azure Synapse | synapse analytics
+  - Google Kubernetes Engine | gke
+  - Google Cloud Functions | cloud functions
+  - Google Cloud Run | cloud run
+  - Vertex AI
+  - Dataflow | google dataflow
+  - Pub/Sub | google pub/sub, pubsub
+  - Heroku
+  - Vercel
+  - Netlify
+  - DigitalOcean
+  - Cloudflare
+  - Oracle Cloud | oci
+  - IBM Cloud
+  - Cloud Computing | cloud
+  - Cloud Architecture
+  - Multi-cloud
+
+devops:
+  - Docker | dockerfile, docker compose, docker-compose, containerization
+  - Kubernetes | k8s, kubectl
+  - Helm | helm charts
+  - Terraform
+  - Ansible
+  - Puppet
+  - Chef
+  - Jenkins
+  - GitHub Actions
+  - GitLab CI | gitlab ci/cd, gitlab
+  - CircleCI
+  - Travis CI
+  - Argo CD | argocd
+  - CI/CD | ci cd, continuous integration, continuous delivery, continuous deployment
+  - Git | git version control
+  - GitHub
+  - Bitbucket
+  - SVN | subversion
+  - Linux | linux administration, ubuntu, centos, rhel, red hat linux, debian
+  - Unix
+  - Windows Server
+  - Prometheus
+  - Grafana
+  - ELK Stack | elk, logstash, kibana
+  - Datadog
+  - New Relic
+  - Splunk
+  - Nagios
+  - OpenTelemetry
+  - Istio
+  - Service Mesh
+  - Vagrant
+  - Packer
+  - Infrastructure as Code | iac
+  - Site Reliability Engineering | sre
+  - DevOps
+  - DevSecOps
+  - MLOps
+  - Monitoring
+  - Load Balancing | load balancer
+  - Maven
+  - Gradle
+  - npm
+  - Yarn
+  - SonarQube
+  - Nexus | nexus repository
+  - JFrog Artifactory | artifactory
+  - Podman
+  - OpenShift
+  - Rancher
+  - Jira
+  - Confluence
+
+data_engineering:
+  - Apache Spark | spark, pyspark, spark sql
+  - Hadoop | apache hadoop, hdfs, mapreduce
+  - Hive | apache hive
+  - Apache Airflow | airflow
+  - Apache Flink | flink
+  - Apache Beam | beam
+  - dbt | data build tool
+  - Databricks
+  - Delta Lake
+  - Apache Iceberg | iceberg
+  - Apache NiFi | nifi
+  - Talend
+  - Informatica
+  - SSIS
+  - ETL | etl pipelines, elt, extract transform load
+  - Data Pipelines | data pipeline
+  - Data Warehousing | data warehouse, dwh
+  - Data Lakes | data lake
+  - Data Engineering
+  - Data Governance
+  - Data Quality
+  - Data Cleaning | data cleansing, data wrangling, data preprocessing
+  - Big Data
+  - Stream Processing | streaming data, real-time data processing
+  - Batch Processing
+  - Apache Parquet | parquet
+  - Avro
+  - Presto | trino
+  - Kafka Streams
+  - Fivetran
+  - Airbyte
+  - Great Expectations
+
+ml_ai:
+  - Machine Learning | ml, machine-learning, ml algorithms, ml models, machine learning model development, machine learning algorithms
+  - Deep Learning | dl, deep neural networks
+  - Artificial Intelligence | ai
+  - Natural Language Processing | nlp, natural-language processing, text mining, text analytics
+  - Computer Vision | image processing, image recognition
+  - Neural Networks | ann, artificial neural networks, neural network
+  - Convolutional Neural Networks | cnn, cnns, convnets
+  - Recurrent Neural Networks | rnn, rnns
+  - LSTM | long short-term memory
+  - Transformers | transformer models, transformer architecture
+  - Large Language Models | llm, llms, large language model
+  - Generative AI | genai, gen ai, generative models
+  - Prompt Engineering
+  - Retrieval-Augmented Generation | rag
+  - Fine-tuning | fine tuning, model fine-tuning, lora, peft
+  - LangChain
+  - LlamaIndex | llama index
+  - Hugging Face | huggingface, hugging face transformers
+  - OpenAI API | openai, gpt api
+  - Embeddings | sentence embeddings, word embeddings, text embeddings
+  - Word2Vec
+  - BERT
+  - GPT
+  - Reinforcement Learning | rl
+  - Supervised Learning
+  - Unsupervised Learning
+  - Semi-supervised Learning
+  - Self-supervised Learning
+  - Transfer Learning
+  - Classification
+  - Regression | regression analysis
+  - Linear Regression
+  - Logistic Regression
+  - Decision Trees | decision tree
+  - Random Forest | random forests
+  - Gradient Boosting | gbm
+  - XGBoost
+  - LightGBM
+  - CatBoost
+  - Support Vector Machines | svm, svms
+  - K-Means | k-means clustering, kmeans
+  - Clustering
+  - Dimensionality Reduction | pca, principal component analysis
+  - Feature Engineering
+  - Feature Selection
+  - Model Evaluation
+  - Hyperparameter Tuning | hyperparameter optimization
+  - Cross-validation
+  - Time Series Analysis | time series, time-series forecasting, forecasting
+  - Anomaly Detection
+  - Recommender Systems | recommendation systems, recommendation engine
+  - Object Detection
+  - Image Segmentation | semantic segmentation
+  - YOLO
+  - Optical Character Recognition | ocr
+  - Speech Recognition | asr, automatic speech recognition
+  - Sentiment Analysis
+  - Named Entity Recognition | ner
+  - Text Classification
+  - Information Retrieval
+  - Semantic Search
+  - Knowledge Graphs | knowledge graph
+  - Generative Adversarial Networks | gan, gans
+  - Diffusion Models | stable diffusion
+  - Graph Neural Networks | gnn, gnns
+  - Explainable AI | xai, shap, lime
+  - Model Deployment | ml deployment, model serving
+  - AI Agents | agentic ai, llm agents
+  - Vector Search | similarity search
+  - Bayesian Statistics | bayesian inference
+  - Statistical Modeling | statistical modelling
+  - A/B Testing | ab testing, split testing, experimentation
+  - Hypothesis Testing
+  - Probability
+  - Statistics | statistical analysis
+  - Linear Algebra
+  - Calculus
+  - Optimization | mathematical optimization
+  - Operations Research
+
+ml_libraries:
+  - TensorFlow | tf, tensorflow 2
+  - Keras
+  - PyTorch | torch
+  - PyTorch Lightning | lightning
+  - JAX
+  - scikit-learn | sklearn, scikit learn
+  - Pandas
+  - NumPy
+  - SciPy
+  - Matplotlib
+  - Seaborn
+  - Plotly
+  - Bokeh
+  - OpenCV | cv2, open cv
+  - Pillow | pil
+  - NLTK
+  - spaCy | spacy
+  - Gensim
+  - Sentence Transformers | sentence-transformers, sbert
+  - FAISS
+  - ONNX
+  - TensorRT
+  - TensorFlow Lite | tflite
+  - MLflow
+  - Weights & Biases | wandb
+  - Kubeflow
+  - DVC
+  - Ray
+  - Dask
+  - Polars
+  - Statsmodels
+  - Jupyter | jupyter notebook, jupyterlab, ipython
+  - Google Colab | colab
+  - Anaconda | conda
+  - Streamlit
+  - Gradio
+  - CUDA Toolkit
+  - Detectron2
+  - MediaPipe
+  - Albumentations
+  - Optuna
+
+analytics_bi:
+  - Data Analysis | data analytics, analyse data, analyze data
+  - Data Science
+  - Data Visualization | data visualisation, dashboards, dashboarding
+  - Exploratory Data Analysis | eda
+  - Business Intelligence | bi
+  - Power BI | powerbi, microsoft power bi
+  - Tableau
+  - Looker
+  - Looker Studio | google data studio, data studio
+  - Qlik | qlikview, qlik sense
+  - Metabase
+  - Apache Superset | superset
+  - Microsoft Excel | excel, ms excel, advanced excel, spreadsheets
+  - Pivot Tables | pivot table
+  - VLOOKUP | xlookup
+  - Google Sheets
+  - SAS
+  - SPSS | ibm spss
+  - Stata
+  - Alteryx
+  - KNIME
+  - RapidMiner
+  - Google Analytics | ga4
+  - Mixpanel
+  - Amplitude
+  - Product Analytics
+  - KPI Reporting | kpis, kpi
+  - Reporting
+  - Predictive Analytics | predictive modeling, predictive modelling
+  - Web Scraping | web scraping (authorized), beautifulsoup, scrapy
+  - Market Research
+
+testing_qa:
+  - Software Testing | testing, qa testing
+  - Manual Testing
+  - Automation Testing | test automation, automated testing
+  - Unit Testing | unit tests
+  - Integration Testing
+  - End-to-End Testing | e2e testing
+  - Performance Testing | load testing
+  - Regression Testing
+  - API Testing
+  - Test-Driven Development | tdd
+  - Behavior-Driven Development | bdd, cucumber
+  - Selenium | selenium webdriver
+  - Cypress
+  - Playwright
+  - Puppeteer
+  - Appium
+  - JUnit
+  - TestNG
+  - Mockito
+  - pytest
+  - Jest
+  - Mocha
+  - Vitest
+  - JMeter | apache jmeter
+  - Gatling
+  - LoadRunner
+  - Postman Testing | newman
+  - Quality Assurance | qa
+  - Test Planning | test cases, test case design
+
+security:
+  - Cybersecurity | cyber security, information security, infosec
+  - Network Security
+  - Application Security | appsec
+  - Penetration Testing | pentesting, pen testing, ethical hacking
+  - Vulnerability Assessment | vapt
+  - OWASP | owasp top 10
+  - Cryptography | encryption
+  - Identity and Access Management | iam security
+  - SIEM
+  - SOC | security operations center
+  - Incident Response
+  - Threat Modeling | threat modelling
+  - Malware Analysis
+  - Digital Forensics | forensics
+  - Burp Suite
+  - Metasploit
+  - Wireshark
+  - Nmap
+  - Kali Linux
+  - Firewalls | firewall
+  - IDS/IPS | intrusion detection
+  - Zero Trust
+  - ISO 27001
+  - GDPR
+  - SOC 2
+  - Cloud Security
+  - Security Auditing
+  - Reverse Engineering
+
+networking_systems:
+  - Computer Networks | networking, computer networking, network fundamentals
+  - TCP/IP | tcp ip, tcp, udp
+  - HTTP | https, http protocol
+  - DNS
+  - DHCP
+  - Routing and Switching | routing, switching
+  - Cisco | cisco ios, ccna
+  - CCNP
+  - VPN
+  - LAN/WAN | lan, wan
+  - SDN | software defined networking
+  - Network Administration
+  - Operating Systems | os
+  - System Administration | sysadmin
+  - Virtualization | vmware, hyper-v, virtualbox, kvm
+  - Distributed Systems
+  - System Design | high level design, low level design, hld, lld
+  - Software Architecture
+  - Design Patterns
+  - Object-Oriented Programming | oop, oops, object oriented programming, object oriented design, ood
+  - Functional Programming
+  - Data Structures | data structure, dsa, data structures and algorithms
+  - Algorithms | algorithm design, competitive programming
+  - Dynamic Programming
+  - Multithreading | concurrency, concurrent programming, parallel programming
+  - Memory Management
+  - Compiler Design | compilers
+  - Computer Architecture
+  - Cloud Native
+  - High Availability
+  - Scalability
+  - Caching
+  - Message Queues | message queue, message broker
+  - Event-Driven Architecture | event driven architecture
+  - Domain-Driven Design | ddd
+  - Clean Code
+  - Code Review
+  - Debugging
+  - Performance Optimization | performance tuning
+  - Agile | agile methodology, agile development
+  - Scrum
+  - Kanban
+  - SDLC | software development life cycle
+  - Waterfall
+  - Software Engineering
+  - Full Stack Development | full stack, full-stack, fullstack, mern, mean stack, mern stack
+  - Frontend Development | front end, front-end, frontend
+  - Backend Development | back end, back-end, backend
+  - Web Development
+  - Mobile App Development | app development
+  - Game Development | unity, unreal engine, unity3d
+  - Blockchain | web3, smart contracts, ethereum
+  - AR/VR | augmented reality, virtual reality, xr
+  - IoT | internet of things
+  - Edge Computing
+  - Quantum Computing
+
+embedded_electronics:
+  - Embedded Systems | embedded, embedded software
+  - Microcontrollers | microcontroller, mcu
+  - Arduino
+  - Raspberry Pi
+  - ARM Cortex | arm, cortex-m
+  - STM32
+  - 8051 Microcontroller | 8051
+  - PIC Microcontroller | pic
+  - ESP32 | esp8266
+  - RTOS | freertos, real-time operating systems
+  - Embedded Linux
+  - Device Drivers | linux device drivers
+  - Firmware Development | firmware
+  - FPGA | fpga design
+  - ASIC Design | asic
+  - VLSI | vlsi design
+  - Digital Design | digital electronics, digital logic design
+  - Analog Electronics | analog circuits, analog design
+  - Circuit Design
+  - PCB Design | pcb, pcb layout
+  - Altium Designer | altium
+  - KiCad
+  - Eagle | autodesk eagle
+  - Cadence | cadence virtuoso
+  - Synopsys
+  - Xilinx Vivado | vivado, xilinx
+  - Intel Quartus | quartus
+  - ModelSim
+  - Proteus
+  - Multisim | ni multisim
+  - LTspice | spice
+  - Signal Processing | digital signal processing, dsp
+  - Image Signal Processing
+  - Communication Systems | wireless communication, digital communication
+  - RF Design | rf engineering, rf
+  - Antenna Design
+  - 5G | lte, 4g
+  - Control Systems | control engineering, pid control
+  - Power Electronics
+  - Power Systems
+  - Electrical Machines
+  - Renewable Energy | solar energy, wind energy
+  - Electric Vehicles | ev, battery management systems, bms
+  - PLC | plc programming, programmable logic controllers
+  - SCADA
+  - HMI
+  - Instrumentation
+  - Sensors | sensor integration
+  - I2C | i2c protocol
+  - SPI | spi protocol
+  - UART | usart
+  - CAN Bus | can protocol
+  - Modbus
+  - Simulink | matlab simulink
+  - LabVIEW
+  - Robotics | robot programming
+  - ROS | robot operating system, ros2
+  - Mechatronics
+  - Automation | industrial automation
+  - Oscilloscope
+  - Soldering
+  - Microprocessors | microprocessor, 8085, 8086
+
+mechanical_civil:
+  - AutoCAD
+  - SolidWorks
+  - CATIA
+  - Creo | ptc creo, pro/e, pro engineer
+  - Siemens NX | nx, unigraphics
+  - Fusion 360 | autodesk fusion 360
+  - Inventor | autodesk inventor
+  - ANSYS | ansys workbench, ansys fluent
+  - Abaqus
+  - COMSOL | comsol multiphysics
+  - HyperMesh | altair hypermesh
+  - Finite Element Analysis | fea, fem, finite element method
+  - Computational Fluid Dynamics | cfd
+  - CAD | computer aided design, 3d modeling, 3d modelling
+  - CAM | computer aided manufacturing
+  - CAE
+  - GD&T | geometric dimensioning and tolerancing
+  - CNC Programming | cnc, g-code
+  - 3D Printing | additive manufacturing
+  - Thermodynamics
+  - Heat Transfer
+  - Fluid Mechanics
+  - Strength of Materials | mechanics of materials
+  - Machine Design
+  - Manufacturing Processes | manufacturing
+  - Lean Manufacturing | lean
+  - Six Sigma | lean six sigma, dmaic
+  - Quality Control | qc
+  - Supply Chain Management | supply chain, scm
+  - Production Planning
+  - HVAC
+  - Automotive Engineering | automotive
+  - Product Design
+  - Revit | autodesk revit
+  - STAAD Pro | staad.pro, staad
+  - ETABS
+  - Primavera | primavera p6
+  - BIM | building information modeling
+  - Surveying
+  - Structural Analysis
+  - Estimation and Costing | quantity surveying
+
+business_tools:
+  - SAP | sap erp
+  - SAP FICO | sap fi, sap co
+  - SAP MM
+  - SAP SD
+  - Salesforce | sfdc, salesforce crm
+  - CRM | customer relationship management
+  - ERP | enterprise resource planning
+  - Tally | tally erp, tally prime
+  - QuickBooks
+  - Zoho
+  - HubSpot
+  - ServiceNow
+  - Microsoft Office | ms office, ms-office
+  - Microsoft Word | ms word
+  - Microsoft PowerPoint | powerpoint, ms powerpoint
+  - Microsoft Teams
+  - Slack
+  - Notion
+  - Trello
+  - Asana
+  - Microsoft Project | ms project
+  - Power Automate | microsoft power automate
+  - Power Apps | microsoft power apps
+  - UiPath
+  - Automation Anywhere
+  - Robotic Process Automation | rpa
+  - Zapier
+  - Financial Modeling | financial modelling
+  - Financial Analysis
+  - Accounting
+  - Digital Marketing
+  - SEO | search engine optimization
+  - SEM | search engine marketing, google ads
+  - Social Media Marketing | smm
+  - Content Writing | content creation, copywriting
+  - Technical Writing | documentation
+  - Business Analysis | business analyst, requirements gathering, brd
+  - Product Management | product manager
+  - Project Management | pmp
+  - Stakeholder Management
+  - Adobe Photoshop | photoshop
+  - Adobe Illustrator | illustrator
+  - Adobe Premiere Pro | premiere pro
+  - Canva
+  - Video Editing
+
+soft_skills:
+  - Communication | communication skills, verbal communication, written communication
+  - Teamwork | team player, collaboration
+  - Leadership | team leadership, led a team
+  - Problem Solving | problem-solving, analytical thinking
+  - Critical Thinking
+  - Time Management
+  - Presentation Skills | public speaking
+  - Mentoring
+  - Adaptability
+  - Attention to Detail
+  - Negotiation
+  - Customer Service
