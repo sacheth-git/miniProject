@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import health, resume
+from app.api import admin, deeplinks, health, imports, jobs, resume
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -45,12 +45,26 @@ def create_app() -> FastAPI:
     )
     app.include_router(health.router)
     app.include_router(resume.router)
+    app.include_router(jobs.router)
+    app.include_router(imports.router)
+    app.include_router(deeplinks.router)
+    app.include_router(admin.router)
 
     @app.on_event("startup")
     def _warm_up() -> None:
         if settings.environment == "test":
             return
         threading.Thread(target=_load_models, name="model-warmup", daemon=True).start()
+        if settings.enable_scheduler:
+            from app.ingestion.scheduler import start_scheduler
+
+            start_scheduler(settings.ingest_interval_hours)
+
+    @app.on_event("shutdown")
+    def _shutdown() -> None:
+        from app.ingestion.scheduler import stop_scheduler
+
+        stop_scheduler()
 
     missing = [k for k, ok in settings.source_keys_status().items() if not ok]
     if missing:

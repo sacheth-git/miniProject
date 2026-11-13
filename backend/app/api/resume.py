@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
 from app.core.logging import get_logger
 from app.models.candidate import Candidate
+from app.models.job import Job
 from app.parsing.pdf_parser import PDFParseError
 from app.schemas.resume import CandidateOut, PreferencesIn, ProcessingStep, SkillEdit, UploadResponse
 from app.services.resume_pipeline import process_pdf
@@ -106,6 +108,7 @@ def set_preferences(candidate_id: str, body: PreferencesIn, db: Session = Depend
 def delete_resume(candidate_id: str, db: Session = Depends(get_db)) -> Response:
     """Permanently delete the candidate and every derived record."""
     cand = _get(db, candidate_id)
+    db.execute(delete(Job).where(Job.owner_id == candidate_id))  # their imported jobs
     db.delete(cand)
     db.commit()
     log.info("Deleted candidate %s and all derived data", candidate_id)

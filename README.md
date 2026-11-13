@@ -13,7 +13,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 |---|---|---|
 | 1 | Scaffold: FastAPI health check, Vite app, config, tests | done |
 | 2 | Resume pipeline: PDF parsing, sections, skills (1,444-entry taxonomy), PII masking | done |
-| 3 | Job ingestion | pending |
+| 3 | Job ingestion: 8 sources, dedup, link checker, scheduler, import, deep links | done |
 | 4 | Matching, baselines, explain, gap | pending |
 | 5 | Frontend | pending |
 | 5A–5D | Auth, TPO mode, drives, analytics | pending |
@@ -80,6 +80,32 @@ cd backend
 .\.venv\Scripts\python.exe scripts\build_taxonomy.py --refresh  # re-download ESCO
 .\.venv\Scripts\python.exe scripts\make_sample_resumes.py       # regenerate synthetic sample PDFs
 ```
+
+## Job ingestion
+
+Sources (official APIs only, nothing is scraped):
+
+| Source | Key | Notes |
+|---|---|---|
+| Greenhouse, Lever, Ashby | none | Public job-board APIs for the ~150 boards in `backend/data/seeds/companies.yaml` |
+| Remotive | none | One call per run (Remotive asks for at most 4 per day) |
+| Adzuna, Jooble | yes | Search APIs, India by default |
+| JSearch (RapidAPI) | yes | LinkedIn / Indeed / Naukri listings via Google for Jobs, with every `apply_option` kept |
+| SerpApi Google Jobs | yes | Optional alternative to JSearch |
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe scripts\ingest.py                 # all sources (keyless ones always run)
+.\.venv\Scripts\python.exe scripts\ingest.py greenhouse      # one source
+.\.venv\Scripts\python.exe scripts\ingest.py --check-links   # mark 404/410 apply URLs inactive
+.\.venv\Scripts\python.exe scripts\verify_companies.py       # re-verify / extend the board list
+```
+
+While the API runs, the scheduler ingests every 12 h and checks links nightly at 02:30 IST
+(`ENABLE_SCHEDULER=false` turns it off). `POST /admin/ingest` starts a run;
+`GET /admin/sources/status` shows per-source counts, last run and errors.
+Responses are cached for 6 h in `backend/data/cache/http/`. The link checker never requests
+LinkedIn, Indeed, Naukri or Glassdoor pages; those listings expire through the source API.
 
 ## Database migrations
 

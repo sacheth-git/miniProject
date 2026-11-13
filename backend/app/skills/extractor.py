@@ -167,12 +167,20 @@ class SkillExtractor:
             and nxt.text.islower()
             and nxt.lower_ not in {"and", "or"}
         )
-        if followed_by_word:
+        at_start = span.start == line_start or (prv is not None and prv.text in {".", "!", "?", ":", "-"})
+        short = len(span.text) <= 2
+        # "Go to ...", "C grade": a following lowercase word kills short or line-initial forms.
+        if followed_by_word and (short or at_start):
             return False
         adjacent_sep = (prv is not None and prv.text in LIST_SEPS) or (nxt is not None and nxt.text in LIST_SEPS)
         if section == "skills":
             return n_seps >= 1 or len(line) <= 4 or adjacent_sep
-        return adjacent_sep and n_seps >= 2
+        if adjacent_sep and n_seps >= 2:
+            return True
+        # Prose: a capitalised name mid-sentence ("experience with Airflow is a plus") is a
+        # strong signal; at a line/sentence start ("Spring is...") capitals mean nothing.
+        # 1-2 letter forms (R, C) always need list context.
+        return not short and not at_start
 
     def _phrase_spans(self, doc: Doc, section: str) -> list[tuple[Span, bool]]:
         found: list[tuple[Span, bool]] = []
@@ -269,7 +277,9 @@ class SkillExtractor:
         for section, text in sections.items():
             if not text.strip() or section in ("interests", "languages_spoken"):
                 continue
-            doc = self.nlp(prep_text(text))
+            # Tokenizer-only when no embeddings: noun chunks are the only parser consumer.
+            embed_here = use_embeddings and self.encoder is not None and section in EMBED_SECTIONS
+            doc = self.nlp(prep_text(text)) if embed_here else self.nlp.make_doc(prep_text(text))
             base = SECTION_CONFIDENCE.get(section, 0.8)
             covered: set[int] = set()
             for span, amb in self._phrase_spans(doc, section):

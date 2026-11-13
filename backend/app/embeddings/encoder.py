@@ -22,6 +22,7 @@ log = get_logger(__name__)
 CACHE_PATH = BACKEND_DIR / "data" / "cache" / "embeddings.sqlite"
 FINETUNED_DIR = REPO_ROOT / "models" / "finetuned"
 _CHUNK = 500
+_PERSIST_EVERY = 256
 
 
 def _key(model: str, text: str) -> str:
@@ -119,16 +120,22 @@ class Encoder:
             uniq: dict[str, str] = {}
             for i in missing:
                 uniq.setdefault(keys[i], texts[i])
-            vecs = model.encode(
-                list(uniq.values()),
-                batch_size=batch_size,
-                normalize_embeddings=True,
-                convert_to_numpy=True,
-                show_progress_bar=False,
-            ).astype(np.float32)
-            new = list(zip(uniq.keys(), vecs))
-            self._cache_put(new)
-            cached.update(new)
+            items = list(uniq.items())
+            # Persist every chunk so an interrupted bulk run resumes where it stopped.
+            for start in range(0, len(items), _PERSIST_EVERY):
+                chunk = items[start : start + _PERSIST_EVERY]
+                vecs = model.encode(
+                    [t for _, t in chunk],
+                    batch_size=batch_size,
+                    normalize_embeddings=True,
+                    convert_to_numpy=True,
+                    show_progress_bar=False,
+                ).astype(np.float32)
+                new = [(k, v) for (k, _), v in zip(chunk, vecs)]
+                self._cache_put(new)
+                cached.update(new)
+                if len(items) > _PERSIST_EVERY:
+                    log.info("Encoded %d/%d new texts", min(start + _PERSIST_EVERY, len(items)), len(items))
         return np.stack([cached[k] for k in keys]).astype(np.float32)
 
     def encode_one(self, text: str) -> np.ndarray:

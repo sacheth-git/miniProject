@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     jwt_access_minutes: int = 30
     jwt_refresh_days: int = 14
 
+    # Ingestion
+    enable_scheduler: bool = True
+    ingest_interval_hours: int = 12
+
     # Embeddings
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     embedding_fallback_model: str = "all-MiniLM-L6-v2"
