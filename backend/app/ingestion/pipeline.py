@@ -171,6 +171,7 @@ def run_ingestion(
     http: HttpClient | None = None,
     extractor: SkillExtractor | None = None,
     encoder: Any = None,
+    rebuild_index: bool = True,
 ) -> IngestReport:
     if not _run_lock.acquire(blocking=False):
         raise RuntimeError("An ingestion run is already in progress")
@@ -195,6 +196,13 @@ def run_ingestion(
         expired = expire_search_jobs(db)
         report.dedup = run_dedup(db, encoder)
         report.dedup["expired_search_jobs"] = expired
+        if rebuild_index:
+            from app.embeddings.faiss_index import build_index, set_index
+
+            index = build_index(db, encoder)
+            index.save()
+            set_index(index)
+            report.dedup["indexed_jobs"] = len(index)
         log.info("Ingestion finished: dedup=%s", report.dedup)
         return report
     finally:

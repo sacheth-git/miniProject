@@ -16,6 +16,10 @@ class FakeEncoder:
     """Hashed bag-of-words vectors: identical texts -> cosine 1, different -> lower."""
 
     dim = 256
+    model_name = "fake"
+
+    def encode_one(self, text: str) -> np.ndarray:
+        return self.encode([text])[0]
 
     def encode(self, texts: list[str], batch_size: int = 64) -> np.ndarray:
         out = np.zeros((len(texts), self.dim), dtype=np.float32)

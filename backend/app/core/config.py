@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     ingest_interval_hours: int = 12
 
     # Embeddings
+    index_dir: str = str(BACKEND_DIR / "data" / "faiss")
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     embedding_fallback_model: str = "all-MiniLM-L6-v2"
     bias_aware_default: bool = True

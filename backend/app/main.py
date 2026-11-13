@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import admin, deeplinks, health, imports, jobs, resume
+from app.api import admin, deeplinks, health, imports, jobs, match, resume
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -21,6 +21,12 @@ def _load_models() -> None:
 
         ext = get_extractor()
         ext.extract({"experience": "Built machine learning models in Python."})
+        from app.embeddings.faiss_index import get_index
+        from app.matching.service import get_skill_space
+
+        get_skill_space().vectors([{"skill_id": "python", "name": "Python"}])
+        idx = get_index()
+        log.info("Job index: %s", f"{len(idx)} jobs" if idx else "not built (run scripts/build_index.py)")
         log.info("Model warm-up complete")
     except Exception:
         log.exception("Model warm-up failed; models will load on first request")
@@ -48,6 +54,7 @@ def create_app() -> FastAPI:
     app.include_router(jobs.router)
     app.include_router(imports.router)
     app.include_router(deeplinks.router)
+    app.include_router(match.router)
     app.include_router(admin.router)
 
     @app.on_event("startup")

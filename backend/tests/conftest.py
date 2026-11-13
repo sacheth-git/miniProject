@@ -1,4 +1,5 @@
 import os
+import tempfile
 import sys
 from pathlib import Path
 
@@ -7,6 +8,8 @@ import pytest
 # Use an in-memory DB and no on-disk embedding cache side effects before app import.
 os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 os.environ.setdefault("ENVIRONMENT", "test")
+# Never touch the real FAISS index from tests.
+os.environ["INDEX_DIR"] = tempfile.mkdtemp(prefix="skillmatch-index-")
 
 BACKEND = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND / "scripts"))

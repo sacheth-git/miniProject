@@ -14,7 +14,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 1 | Scaffold: FastAPI health check, Vite app, config, tests | done |
 | 2 | Resume pipeline: PDF parsing, sections, skills (1,444-entry taxonomy), PII masking | done |
 | 3 | Job ingestion: 8 sources, dedup, link checker, scheduler, import, deep links | done |
-| 4 | Matching, baselines, explain, gap | pending |
+| 4 | Matching: skill-weighted scorer, FAISS retrieval, 5 baselines, explain, skill gap | done |
 | 5 | Frontend | pending |
 | 5A–5D | Auth, TPO mode, drives, analytics | pending |
 | 6 | Evaluation | pending |
@@ -106,6 +106,27 @@ While the API runs, the scheduler ingests every 12 h and checks links nightly at
 `GET /admin/sources/status` shows per-source counts, last run and errors.
 Responses are cached for 6 h in `backend/data/cache/http/`. The link checker never requests
 LinkedIn, Indeed, Naukri or Glassdoor pages; those listings expire through the source API.
+
+## Matching
+
+```
+S = a*Sem + b*Skill + g*Context - d*Penalty          (defaults 0.4 / 0.4 / 0.2 / 0.15)
+Sem     = 0.7 * max over resume sections cos(section, JD responsibilities) + 0.3 * cos(resume, JD)
+Skill   = sum_j w_j * best_j / sum_j w_j,  w_j = type_j (1.0 required, 0.5 preferred) * idf_j
+Penalty = share of required skills with no match >= 0.5
+```
+
+Cosines are calibrated per embedding model (`app/matching/calibration.py`): bge-small scores unrelated
+skill names at 0.56-0.65, so the raw 0.5 cut-off would credit everything.
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe scriptsuild_index.py    # embed jobs + build FAISS index (first run ~1 h on CPU, resumable)
+.\.venv\Scripts\python.exe scriptsench_match.py    # latency benchmark on the real index
+```
+
+Endpoints: `GET /match/{candidate_id}?method=ours|tfidf|bm25|keyword_jaccard|sbert_whole|sbert_section`,
+`GET /match/{candidate_id}/{job_id}/explain`, `GET /gap/{candidate_id}`. Ingestion rebuilds the index automatically.
 
 ## Database migrations
 
