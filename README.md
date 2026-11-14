@@ -15,7 +15,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 2 | Resume pipeline: PDF parsing, sections, skills (1,444-entry taxonomy), PII masking | done |
 | 3 | Job ingestion: 8 sources, dedup, link checker, scheduler, import, deep links | done |
 | 4 | Matching: skill-weighted scorer, FAISS retrieval, 5 baselines, explain, skill gap | done |
-| 5 | Frontend | pending |
+| 5 | Frontend: upload, ranked results with filters, apply menu, job details, skill gap, import, tracker, settings | done |
 | 5A–5D | Auth, TPO mode, drives, analytics | pending |
 | 6 | Evaluation | pending |
 | 7 | Polish and docs | pending |
@@ -59,11 +59,21 @@ npm run dev
 
 If PowerShell blocks `Activate.ps1`, you do not need it: the commands above call the venv's `python.exe` directly.
 
+## Using the app
+
+1. **Home**: drag in a PDF resume. Watch the processing steps, then fix the skill chips and set your target role, locations and job types.
+2. **Jobs**: ranked matches with a match ring, matched skills (green) and missing required skills (red). Filter by role, location, remote, job type, experience, source and date. The right panel explains each score.
+3. **Apply** opens the job's own application page in a new tab (LinkedIn, Naukri, company site...). When you come back, SkillMatch asks whether you applied and updates your tracker.
+4. **Applications**: Kanban tracker (Saved, Ready, Applied, Interview, Offer, Rejected) with drag and drop and notes.
+5. **Skill gap**, **Import** (paste a JD or upload alert emails), **Search elsewhere** (LinkedIn / Naukri / Indeed searches), **Settings** (bias-aware toggle, delete my data).
+
 ## Tests
 
 ```powershell
 cd backend;  .\.venv\Scripts\python.exe -m pytest --cov=app
 cd frontend; npm test
+# End to end against a running API on :8000 (real upload, ranking, apply, tracker):
+cd frontend; $env:E2E="1"; npx vitest run src/test/e2e.test.tsx
 ```
 
 The first start downloads the embedding model `BAAI/bge-small-en-v1.5` (~130 MB) and warms it up in the background.

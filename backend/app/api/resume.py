@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy import delete
@@ -13,7 +14,7 @@ from app.models.candidate import Candidate
 from app.models.job import Job
 from app.parsing.pdf_parser import PDFParseError
 from app.schemas.resume import CandidateOut, PreferencesIn, ProcessingStep, SkillEdit, UploadResponse
-from app.services.resume_pipeline import process_pdf
+from app.services.resume_pipeline import process_pdf, process_text
 from app.skills.taxonomy import get_taxonomy
 
 router = APIRouter(prefix="/resume", tags=["resume"])
@@ -99,6 +100,30 @@ def edit_skills(candidate_id: str, body: SkillEdit, db: Session = Depends(get_db
 def set_preferences(candidate_id: str, body: PreferencesIn, db: Session = Depends(get_db)) -> Candidate:
     cand = _get(db, candidate_id)
     cand.preferences = body.model_dump()
+    db.commit()
+    db.refresh(cand)
+    return cand
+
+
+class ResumeSettings(BaseModel):
+    bias_aware: bool
+
+
+@router.put("/{candidate_id}/settings", response_model=CandidateOut)
+def update_settings(candidate_id: str, body: ResumeSettings, db: Session = Depends(get_db)) -> Candidate:
+    """Toggle bias-aware mode: re-process the stored resume text, keeping skills the user added."""
+    cand = _get(db, candidate_id)
+    if body.bias_aware == cand.bias_aware:
+        return cand
+    if not cand.raw_text:
+        raise HTTPException(status.HTTP_409_CONFLICT, "Original resume text was deleted; upload the resume again")
+    result = process_text(cand.raw_text, bias_aware=body.bias_aware, pages=cand.pages)
+    user_added = [s for s in cand.skills if s.get("method") == "user"]
+    have = {s["skill_id"] for s in result.skills}
+    cand.skills = result.skills + [s for s in user_added if s["skill_id"] not in have]
+    cand.masked_text = result.masked_text
+    cand.sections = result.sections
+    cand.bias_aware = body.bias_aware
     db.commit()
     db.refresh(cand)
     return cand
