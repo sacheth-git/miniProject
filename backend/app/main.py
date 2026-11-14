@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import admin, applications, deeplinks, health, imports, jobs, match, resume
+from app.api import admin, applications, auth, deeplinks, health, imports, jobs, match, resume, tpo
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -50,6 +50,9 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(health.router)
+    app.include_router(auth.router)
+    app.include_router(auth.student_router)
+    app.include_router(tpo.router)
     app.include_router(resume.router)
     app.include_router(jobs.router)
     app.include_router(imports.router)
@@ -73,6 +76,11 @@ def create_app() -> FastAPI:
         from app.ingestion.scheduler import stop_scheduler
 
         stop_scheduler()
+
+    if settings.jwt_secret in ("change-me", "change-me-in-.env") or len(settings.jwt_secret) < 32:
+        if settings.environment == "production":
+            raise RuntimeError("Set a strong JWT_SECRET (32+ characters) in .env before running in production")
+        log.warning("JWT_SECRET is weak or default; fine for local dev, never for production")
 
     missing = [k for k, ok in settings.source_keys_status().items() if not ok]
     if missing:

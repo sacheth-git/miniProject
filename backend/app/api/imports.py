@@ -7,6 +7,7 @@ from fastapi.concurrency import run_in_threadpool
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.auth.deps import SEEKER_ROLES, require_roles
 from app.core.db import get_db
 from app.core.logging import get_logger
 from app.ingestion.base import RawJob
@@ -15,6 +16,7 @@ from app.ingestion.pipeline import apply_fields
 from app.ingestion.user_import import parse_alert_email, raw_from_email_job, raw_from_text
 from app.models.candidate import Candidate
 from app.models.job import Job
+from app.models.user import User
 from app.schemas.job import ImportResult, ImportTextIn
 from app.skills.extractor import get_extractor
 
@@ -23,9 +25,17 @@ log = get_logger(__name__)
 MAX_FILES = 20
 
 
-def _check_owner(db: Session, candidate_id: str | None) -> None:
-    if candidate_id and db.get(Candidate, candidate_id) is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Candidate not found")
+def _owner_id(db: Session, user: User, candidate_id: str | None) -> str | None:
+    """Imports belong to one of the user's resumes (the latest when none is named)."""
+    if candidate_id:
+        cand = db.get(Candidate, candidate_id)
+        if cand is None or cand.user_id != user.id:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Resume not found")
+        return cand.id
+    return db.scalars(select(Candidate.id).where(Candidate.user_id == user.id).order_by(Candidate.created_at.desc())).first()
+
+
+NO_RESUME = "Upload your resume first; imported jobs are scored against it"
 
 
 def _save(db: Session, raws: list[RawJob], owner_id: str | None) -> tuple[int, int, list[Job]]:
@@ -52,10 +62,12 @@ def _save(db: Session, raws: list[RawJob], owner_id: str | None) -> tuple[int, i
 
 
 @router.post("/text", response_model=ImportResult, status_code=status.HTTP_201_CREATED)
-def import_text(body: ImportTextIn, db: Session = Depends(get_db)) -> ImportResult:
-    _check_owner(db, body.candidate_id)
+def import_text(body: ImportTextIn, user: User = Depends(require_roles(*SEEKER_ROLES)), db: Session = Depends(get_db)) -> ImportResult:
+    owner = _owner_id(db, user, body.candidate_id)
+    if owner is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, NO_RESUME)
     raw = raw_from_text(body.title, body.company, body.text, str(body.url) if body.url else None, body.location)
-    created, updated, jobs = _save(db, [raw], body.candidate_id)
+    created, updated, jobs = _save(db, [raw], owner)
     return ImportResult(created=created, updated=updated, jobs=jobs)  # type: ignore[arg-type]
 
 
@@ -63,9 +75,12 @@ def import_text(body: ImportTextIn, db: Session = Depends(get_db)) -> ImportResu
 async def import_email(
     files: list[UploadFile] = File(..., description="Your own job-alert emails saved as .eml"),
     candidate_id: str | None = Form(None),
+    user: User = Depends(require_roles(*SEEKER_ROLES)),
     db: Session = Depends(get_db),
 ) -> ImportResult:
-    _check_owner(db, candidate_id)
+    owner = _owner_id(db, user, candidate_id)
+    if owner is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, NO_RESUME)
     if len(files) > MAX_FILES:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"At most {MAX_FILES} files per upload")
     raws: list[RawJob] = []
@@ -81,6 +96,6 @@ async def import_email(
         if not found:
             skipped.append(f"{name}: no job links found")
         raws.extend(raw_from_email_job(j) for j in found)
-    created, updated, jobs = await run_in_threadpool(_save, db, raws, candidate_id)
+    created, updated, jobs = await run_in_threadpool(_save, db, raws, owner)
     log.info("Email import: %d created, %d updated, %d files skipped", created, updated, len(skipped))
     return ImportResult(created=created, updated=updated, jobs=jobs, skipped_files=skipped)  # type: ignore[arg-type]

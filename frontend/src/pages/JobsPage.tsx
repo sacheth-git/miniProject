@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../lib/api";
+import { useAuth } from "../lib/auth";
 import { useCandidate } from "../lib/candidate";
 import type { JobFilters, JobSummary, MatchItem } from "../lib/types";
 import { FilterBar } from "../components/FilterBar";
@@ -27,6 +28,7 @@ function useIsDesktop(): boolean {
 
 export function JobsPage() {
   const { candidateId, candidate } = useCandidate();
+  const { user } = useAuth();
   const [params, setParams] = useSearchParams();
   const [sort, setSort] = useState<"match" | "recent">("match");
   const [shown, setShown] = useState(PAGE);
@@ -117,10 +119,18 @@ export function JobsPage() {
 
       {!candidateId && (
         <div className="mt-3 rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-900">
-          <Link to="/" className="font-medium text-brand-700 hover:underline dark:text-brand-200">
-            Upload your resume
-          </Link>{" "}
-          to rank these jobs by how well they match your skills.
+          {user ? (
+            <>
+              <Link to="/" className="font-medium text-brand-700 hover:underline dark:text-brand-200">Upload your resume</Link> to rank
+              these jobs by how well they match your skills.
+            </>
+          ) : (
+            <>
+              <Link to="/register" className="font-medium text-brand-700 hover:underline dark:text-brand-200">Join</Link> or{" "}
+              <Link to="/login" className="font-medium text-brand-700 hover:underline dark:text-brand-200">sign in</Link> and upload your
+              resume to rank these jobs by how well they match your skills.
+            </>
+          )}
         </div>
       )}
       {candidate && candidate.skills.length === 0 && (

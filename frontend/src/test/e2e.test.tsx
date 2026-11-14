@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { afterAll, beforeAll, expect, test, vi } from "vitest";
 import App from "../App";
+import { getTokens } from "../lib/session";
 
 const API = process.env.E2E_API ?? "http://127.0.0.1:8000";
 const run = process.env.E2E === "1" ? test : test.skip;
@@ -52,7 +53,9 @@ beforeAll(() => {
     const target = url.startsWith("/api") ? API + url.slice(4) : url;
     if (init?.body instanceof FormData) {
       const { body, type } = await encodeMultipart(init.body);
-      return realFetch(target, { ...init, body, headers: { "Content-Type": type } });
+      const headers = new Headers(init.headers); // keep Authorization
+      headers.set("Content-Type", type);
+      return realFetch(target, { ...init, body, headers });
     }
     return realFetch(target, init);
   });
@@ -62,7 +65,8 @@ beforeAll(() => {
 });
 
 afterAll(async () => {
-  if (candidateId) await realFetch(`${API}/resume/${candidateId}`, { method: "DELETE" });
+  const t = getTokens();
+  if (t) await realFetch(`${API}/auth/me`, { method: "DELETE", headers: { Authorization: `Bearer ${t.access_token}` } });
   vi.restoreAllMocks();
 });
 
@@ -73,18 +77,26 @@ run(
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     render(
       <QueryClientProvider client={qc}>
-        <MemoryRouter initialEntries={["/"]}>
+        <MemoryRouter initialEntries={["/register"]}>
           <App />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
+    // 0. Sign up through the real onboarding: "Are you a campus student?" -> No.
+    fireEvent.click(await screen.findByRole("button", { name: /No, I'm looking for jobs on my own/ }));
+    fireEvent.change(screen.getByLabelText("Full name"), { target: { value: "E2E Tester" } });
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: `e2e-${Date.now()}@test.example` } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "e2e-passw0rd" } });
+    fireEvent.click(screen.getByRole("button", { name: "Create account" }));
+
     // 1. Upload the sample resume.
     const pdf = readFileSync(resolve(__dirname, "../../../backend/data/samples/uday_ml.pdf"));
     const file = new File([pdf], "uday_ml.pdf", { type: "application/pdf" });
-    fireEvent.change(screen.getByLabelText("Resume PDF"), { target: { files: [file] } });
+    fireEvent.change(await screen.findByLabelText("Resume PDF", {}, { timeout: 10_000 }), { target: { files: [file] } });
     fireEvent.click(await screen.findByRole("button", { name: "Review my profile" }, { timeout: 60_000 }));
-    candidateId = localStorage.getItem("skillmatch.candidateId");
+    const authed = { headers: { Authorization: `Bearer ${getTokens()!.access_token}` } };
+    candidateId = (await (await realFetch(`${API}/resume/me`, authed)).json()).id;
     expect(candidateId).toBeTruthy();
 
     // 2. Profile shows extracted skills; go to results.
@@ -98,7 +110,7 @@ run(
     console.log("top result:", within(first).getAllByRole("button")[0].textContent, "|", pctLabel);
 
     // 3. Apply: must open exactly one of that job's apply URLs, in a new tab.
-    const job = await (await realFetch(`${API}/match/${candidateId}?limit=1`)).json();
+    const job = await (await realFetch(`${API}/match/${candidateId}?limit=1`, authed)).json();
     const urls: string[] = job.items[0].job.apply_options.map((o: { url: string }) => o.url);
     const open = vi.spyOn(window, "open").mockReturnValue(null);
     const applyBtn = within(first).getByRole("button", { name: /^apply/i });
@@ -119,7 +131,7 @@ run(
 
     // 5. Tracker shows it under Applied.
     await waitFor(async () => {
-      const apps = await (await realFetch(`${API}/applications?candidate_id=${candidateId}`)).json();
+      const apps = await (await realFetch(`${API}/applications?candidate_id=${candidateId}`, authed)).json();
       expect(apps).toHaveLength(1);
       expect(apps[0].status).toBe("Applied");
       expect(urls).toContain(apps[0].apply_url);

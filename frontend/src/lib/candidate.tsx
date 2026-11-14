@@ -1,26 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "./api";
+import { isSeeker, useAuth } from "./auth";
 import type { Candidate } from "./types";
-
-const KEY = "skillmatch.candidateId";
-
-function readId(): string | null {
-  try {
-    return localStorage.getItem(KEY);
-  } catch {
-    return null;
-  }
-}
-
-function writeId(id: string | null): void {
-  try {
-    if (id) localStorage.setItem(KEY, id);
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* storage unavailable: the session still works in memory */
-  }
-}
 
 interface CandidateCtx {
   candidateId: string | null;
@@ -32,46 +14,46 @@ interface CandidateCtx {
 
 const Ctx = createContext<CandidateCtx | null>(null);
 
+/** The signed-in student's / job seeker's latest resume (from the server, not the browser). */
 export function CandidateProvider({ children }: { children: ReactNode }) {
-  const [candidateId, setId] = useState<string | null>(readId);
+  const { user } = useAuth();
   const qc = useQueryClient();
+  const enabled = isSeeker(user);
 
   const query = useQuery({
-    queryKey: ["candidate", candidateId],
-    queryFn: () => api.getResume(candidateId!),
-    enabled: !!candidateId,
-    retry: (n, err) => !(err instanceof ApiError && err.status === 404) && n < 1,
+    queryKey: ["candidate", "me", user?.id],
+    queryFn: async () => {
+      try {
+        return await api.myResume();
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 404) return null; // no resume yet
+        throw e;
+      }
+    },
+    enabled,
   });
-
-  // A stored id whose resume was deleted elsewhere: forget it.
-  const gone = query.error instanceof ApiError && query.error.status === 404;
-  useEffect(() => {
-    if (gone) {
-      writeId(null);
-      setId(null);
-    }
-  }, [gone]);
 
   const setCandidate = useCallback(
     (c: Candidate) => {
-      writeId(c.id);
-      setId(c.id);
-      qc.setQueryData(["candidate", c.id], c);
+      qc.setQueryData(["candidate", "me", user?.id], c);
       qc.invalidateQueries({ queryKey: ["match"] });
       qc.invalidateQueries({ queryKey: ["gap"] });
+      qc.invalidateQueries({ queryKey: ["explain"] });
+      qc.invalidateQueries({ queryKey: ["deeplinks"] });
     },
-    [qc],
+    [qc, user?.id],
   );
 
   const clear = useCallback(() => {
-    writeId(null);
-    setId(null);
-    qc.clear();
-  }, [qc]);
+    qc.setQueryData(["candidate", "me", user?.id], null);
+    qc.removeQueries({ queryKey: ["match"] });
+    qc.removeQueries({ queryKey: ["applications"] });
+  }, [qc, user?.id]);
 
+  const candidate = enabled ? (query.data ?? undefined) : undefined;
   const value = useMemo(
-    () => ({ candidateId, candidate: query.data, loading: query.isLoading, setCandidate, clear }),
-    [candidateId, query.data, query.isLoading, setCandidate, clear],
+    () => ({ candidateId: candidate?.id ?? null, candidate, loading: enabled && query.isLoading, setCandidate, clear }),
+    [candidate, enabled, query.isLoading, setCandidate, clear],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

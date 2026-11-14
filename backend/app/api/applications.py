@@ -10,11 +10,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.auth.deps import SEEKER_ROLES, require_roles
 from app.core.db import get_db
 from app.models.application import STATUSES, Application
 from app.models.candidate import Candidate
 from app.models.job import Job
 from app.models.match import Match
+from app.models.user import User
 
 router = APIRouter(prefix="/applications", tags=["tracker"])
 Status = Literal["Saved", "Ready", "Applied", "Interview", "Offer", "Rejected"]
@@ -66,6 +68,24 @@ def _set_status(app: Application, new: str) -> None:
         app.applied_at = now
 
 
+Seeker = Depends(require_roles(*SEEKER_ROLES))
+
+
+def _own_candidate(db: Session, user: User, candidate_id: str) -> Candidate:
+    cand = db.get(Candidate, candidate_id)
+    if cand is None or cand.user_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Resume not found")
+    return cand
+
+
+def _own_app(db: Session, user: User, app_id: int) -> Application:
+    app = db.get(Application, app_id)
+    cand = db.get(Candidate, app.candidate_id) if app else None
+    if app is None or cand is None or cand.user_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Application not found")
+    return app
+
+
 def _out(db: Session, a: Application) -> ApplicationOut:
     out = ApplicationOut.model_validate(a)
     job = db.get(Job, a.job_id) if a.job_id else None
@@ -74,7 +94,8 @@ def _out(db: Session, a: Application) -> ApplicationOut:
 
 
 @router.get("", response_model=list[ApplicationOut])
-def list_applications(candidate_id: str = Query(...), db: Session = Depends(get_db)) -> list[ApplicationOut]:
+def list_applications(candidate_id: str = Query(...), user: User = Seeker, db: Session = Depends(get_db)) -> list[ApplicationOut]:
+    _own_candidate(db, user, candidate_id)
     rows = db.scalars(
         select(Application).where(Application.candidate_id == candidate_id).order_by(Application.updated_at.desc())
     ).all()
@@ -82,10 +103,9 @@ def list_applications(candidate_id: str = Query(...), db: Session = Depends(get_
 
 
 @router.post("", response_model=ApplicationOut, status_code=status.HTTP_201_CREATED)
-def upsert_application(body: ApplicationIn, response: Response, db: Session = Depends(get_db)) -> ApplicationOut:
+def upsert_application(body: ApplicationIn, response: Response, user: User = Seeker, db: Session = Depends(get_db)) -> ApplicationOut:
     """Create, or move an existing entry for the same job to the new status."""
-    if db.get(Candidate, body.candidate_id) is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Resume not found")
+    _own_candidate(db, user, body.candidate_id)
     job = db.get(Job, body.job_id)
     if job is None or (job.owner_id is not None and job.owner_id != body.candidate_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Job not found")
@@ -115,10 +135,8 @@ def upsert_application(body: ApplicationIn, response: Response, db: Session = De
 
 
 @router.patch("/{app_id}", response_model=ApplicationOut)
-def update_application(app_id: int, body: ApplicationPatch, db: Session = Depends(get_db)) -> ApplicationOut:
-    app = db.get(Application, app_id)
-    if app is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Application not found")
+def update_application(app_id: int, body: ApplicationPatch, user: User = Seeker, db: Session = Depends(get_db)) -> ApplicationOut:
+    app = _own_app(db, user, app_id)
     if body.status is not None:
         _set_status(app, body.status)
     if body.notes is not None:
@@ -129,10 +147,8 @@ def update_application(app_id: int, body: ApplicationPatch, db: Session = Depend
 
 
 @router.delete("/{app_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_application(app_id: int, db: Session = Depends(get_db)) -> Response:
-    app = db.get(Application, app_id)
-    if app is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Application not found")
+def delete_application(app_id: int, user: User = Seeker, db: Session = Depends(get_db)) -> Response:
+    app = _own_app(db, user, app_id)
     db.delete(app)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)

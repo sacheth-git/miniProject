@@ -1,10 +1,6 @@
-from fastapi.testclient import TestClient
-
 from app.core.db import SessionLocal
-from app.main import app
 from app.models.job import Job
 
-client = TestClient(app)
 
 
 def _job(jid: str) -> None:
@@ -15,7 +11,8 @@ def _job(jid: str) -> None:
         db.commit()
 
 
-def test_tracker_lifecycle(sample_pdfs) -> None:  # type: ignore[no-untyped-def]
+def test_tracker_lifecycle(sample_pdfs, seeker) -> None:  # type: ignore[no-untyped-def]
+    client = seeker
     cid = client.post("/resume/upload", files={"file": ("m.pdf", sample_pdfs["meera_data.pdf"].read_bytes(), "application/pdf")}).json()["id"]
     _job("trk-1")
     r = client.post("/applications", json={"candidate_id": cid, "job_id": "trk-1"})
@@ -36,7 +33,8 @@ def test_tracker_lifecycle(sample_pdfs) -> None:  # type: ignore[no-untyped-def]
     assert client.get("/applications/statuses").json()[0] == "Saved"
 
 
-def test_bias_toggle_reprocesses(sample_pdfs) -> None:  # type: ignore[no-untyped-def]
+def test_bias_toggle_reprocesses(sample_pdfs, seeker) -> None:  # type: ignore[no-untyped-def]
+    client = seeker
     cid = client.post("/resume/upload", files={"file": ("u.pdf", sample_pdfs["uday_ml.pdf"].read_bytes(), "application/pdf")}).json()["id"]
     client.put(f"/resume/{cid}/skills", json={"add": ["Kubernetes"]})
     off = client.put(f"/resume/{cid}/settings", json={"bias_aware": False}).json()

@@ -7,6 +7,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from app.auth.deps import owned_candidate
 from app.core.db import get_db
 from app.matching.baselines import METHODS
 from app.matching.explain import explain
@@ -17,13 +18,6 @@ from app.models.job import Job
 from app.schemas.match import ExplainResponse, GapResponse, MatchItem, MatchResponse
 
 router = APIRouter(tags=["match"])
-
-
-def _cand(db: Session, candidate_id: str) -> Candidate:
-    cand = db.get(Candidate, candidate_id)
-    if cand is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Resume not found")
-    return cand
 
 
 def filters_dep(
@@ -49,9 +43,9 @@ def get_matches(
     filters: MatchFilters = Depends(filters_dep),
     limit: int = Query(20, ge=1, le=100),
     method: str = Query("ours", description=f"Ranking method: {', '.join(METHODS)}"),
+    cand: Candidate = Depends(owned_candidate),
     db: Session = Depends(get_db),
 ) -> MatchResponse:
-    cand = _cand(db, candidate_id)
     if method not in METHODS:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"method must be one of {METHODS}")
     try:
@@ -83,8 +77,9 @@ def get_matches(
 
 
 @router.get("/match/{candidate_id}/{job_id}/explain", response_model=ExplainResponse)
-def explain_match(candidate_id: str, job_id: str, db: Session = Depends(get_db)) -> dict[str, Any]:
-    cand = _cand(db, candidate_id)
+def explain_match(
+    candidate_id: str, job_id: str, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)
+) -> dict[str, Any]:
     job = db.get(Job, job_id)
     if job is None or (job.owner_id is not None and job.owner_id != candidate_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Job not found")
@@ -96,9 +91,9 @@ def get_gap(
     candidate_id: str,
     filters: MatchFilters = Depends(filters_dep),
     top_n: int = Query(50, ge=5, le=200),
+    cand: Candidate = Depends(owned_candidate),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    cand = _cand(db, candidate_id)
     try:
         return skill_gap(db, cand, filters, top_n=top_n)
     except IndexNotReady as exc:

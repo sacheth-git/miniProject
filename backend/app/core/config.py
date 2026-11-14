@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "change-me-in-.env"
     jwt_access_minutes: int = 30
     jwt_refresh_days: int = 14
+    admin_emails: list[str] = Field(default_factory=list)  # accounts registered with these get is_admin
 
     # Ingestion
     enable_scheduler: bool = True

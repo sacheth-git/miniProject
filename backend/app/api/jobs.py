@@ -9,7 +9,10 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Select
 
+from app.auth.deps import optional_user
 from app.core.db import get_db
+from app.models.candidate import Candidate
+from app.models.user import User
 from app.models.job import Job
 from app.schemas.job import JobDetail, JobPage
 
@@ -74,8 +77,14 @@ def list_jobs(
     candidate_id: str | None = Query(None, description="Include this candidate's imported jobs"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
+    user: User | None = Depends(optional_user),
     db: Session = Depends(get_db),
 ) -> JobPage:
+    """Public listing (guests can browse). Imported jobs appear only to their owner."""
+    if candidate_id:
+        cand = db.get(Candidate, candidate_id)
+        if user is None or cand is None or cand.user_id != user.id:
+            candidate_id = None
     stmt = apply_job_filters(
         select(Job), role=role, location=location, remote=remote, job_type=type, source=source,
         min_exp=min_exp, max_exp=max_exp, posted_within=posted_within, owner_id=candidate_id,
@@ -86,8 +95,12 @@ def list_jobs(
 
 
 @router.get("/{job_id}", response_model=JobDetail)
-def get_job(job_id: str, db: Session = Depends(get_db)) -> Job:
+def get_job(job_id: str, user: User | None = Depends(optional_user), db: Session = Depends(get_db)) -> Job:
     job = db.get(Job, job_id)
     if job is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Job not found")
+    if job.owner_id is not None:  # a private import
+        owner = db.get(Candidate, job.owner_id)
+        if user is None or owner is None or owner.user_id != user.id:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Job not found")
     return job

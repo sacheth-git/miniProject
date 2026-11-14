@@ -40,11 +40,12 @@ def ingested(monkeypatch: pytest.MonkeyPatch, phrase_extractor):  # type: ignore
     return report
 
 
-def test_pipeline_and_status(ingested) -> None:  # type: ignore[no-untyped-def]
+def test_pipeline_and_status(ingested, admin_client) -> None:  # type: ignore[no-untyped-def]
+    assert client.get("/admin/sources/status").status_code == 401  # admin only
     runs = {r.source: r for r in ingested.runs}
     assert runs["greenhouse"].created == 2 and runs["lever"].created == 1 and runs["ashby"].created == 1
     assert runs["jsearch"].status == "skipped"
-    st = client.get("/admin/sources/status").json()
+    st = admin_client.get("/admin/sources/status").json()
     by = {s["source"]: s for s in st["sources"]}
     assert by["greenhouse"]["active_jobs"] == 2 and by["greenhouse"]["last_status"] == "ok"
     assert by["jsearch"]["configured"] is False and by["jsearch"]["last_status"] == "skipped"
@@ -79,28 +80,32 @@ def test_reingest_deactivates_closed_jobs(ingested, monkeypatch: pytest.MonkeyPa
     assert rep.runs[0].deactivated == 1  # job 13 vanished from the feed
 
 
-def test_import_text_is_private_and_deleted_with_candidate(sample_pdfs) -> None:  # type: ignore[no-untyped-def]
-    cid = client.post("/resume/upload", files={"file": ("u.pdf", sample_pdfs["uday_ml.pdf"].read_bytes(), "application/pdf")}).json()["id"]
+def test_import_text_is_private_and_deleted_with_candidate(sample_pdfs, seeker) -> None:  # type: ignore[no-untyped-def]
+    owner, guest = seeker, client
+    cid = owner.post("/resume/upload", files={"file": ("u.pdf", sample_pdfs["uday_ml.pdf"].read_bytes(), "application/pdf")}).json()["id"]
     body = {"text": "We need a Python developer with Django and PostgreSQL skills.\nMust know Docker.",
             "url": "https://careers.example.com/jobs/42?utm_source=x", "title": "Python Developer",
             "company": "Example Co", "candidate_id": cid}
-    r = client.post("/import/text", json=body)
+    r = owner.post("/import/text", json=body)
     assert r.status_code == 201, r.text
     job = r.json()["jobs"][0]
     assert {"Python", "Django", "PostgreSQL", "Docker"} <= {s["name"] for s in job["required_skills"]}
-    ids_public = {j["id"] for j in client.get("/jobs", params={"limit": 100}).json()["items"]}
-    ids_owner = {j["id"] for j in client.get("/jobs", params={"limit": 100, "candidate_id": cid}).json()["items"]}
+    ids_public = {j["id"] for j in guest.get("/jobs", params={"limit": 100}).json()["items"]}
+    ids_owner = {j["id"] for j in owner.get("/jobs", params={"limit": 100, "candidate_id": cid}).json()["items"]}
+    ids_spoof = {j["id"] for j in guest.get("/jobs", params={"limit": 100, "candidate_id": cid}).json()["items"]}
+    assert job["id"] not in ids_spoof  # knowing the id is not enough
+    assert guest.get(f"/jobs/{job['id']}").status_code == 404
     assert job["id"] not in ids_public and job["id"] in ids_owner
 
-    links = client.get(f"/deeplinks/{cid}").json()
+    links = owner.get(f"/deeplinks/{cid}").json()
     assert links["role"] == "Machine Learning Engineer"
     platforms = {link["platform"] for link in links["links"]}
     assert platforms == {"LinkedIn", "Naukri", "Indeed"}
     assert all(link["url"].startswith("https://") for link in links["links"])
 
-    assert client.delete(f"/resume/{cid}").status_code == 204
-    assert client.get(f"/jobs/{job['id']}").status_code == 404
-    assert client.get(f"/deeplinks/{cid}").status_code == 404
+    assert owner.delete(f"/resume/{cid}").status_code == 204
+    assert owner.get(f"/jobs/{job['id']}").status_code == 404
+    assert owner.get(f"/deeplinks/{cid}").status_code == 404
 
 
 def _alert_email() -> bytes:
@@ -132,9 +137,11 @@ def test_parse_alert_email() -> None:
     assert clean_job_url("mailto:x@y.z") is None
 
 
-def test_import_email_endpoint() -> None:
+def test_import_email_endpoint(sample_pdfs, seeker) -> None:  # type: ignore[no-untyped-def]
+    assert seeker.post("/import/email", files=[("files", ("a.eml", _alert_email(), "message/rfc822"))]).status_code == 409
+    seeker.post("/resume/upload", files={"file": ("u.pdf", sample_pdfs["uday_ml.pdf"].read_bytes(), "application/pdf")})
     files = [("files", ("alert.eml", _alert_email(), "message/rfc822")), ("files", ("junk.eml", b"not an email", "message/rfc822"))]
-    r = client.post("/import/email", files=files)
+    r = seeker.post("/import/email", files=files)
     assert r.status_code == 201, r.text
     body = r.json()
     assert body["created"] == 2
@@ -142,5 +149,6 @@ def test_import_email_endpoint() -> None:
     assert any("junk.eml" in s for s in body["skipped_files"])
 
 
-def test_admin_ingest_validates() -> None:
-    assert client.post("/admin/ingest", json={"sources": ["linkedin_scraper"]}).status_code == 422
+def test_admin_ingest_validates(admin_client, seeker) -> None:  # type: ignore[no-untyped-def]
+    assert seeker.post("/admin/ingest", json={"sources": ["greenhouse"]}).status_code == 403
+    assert admin_client.post("/admin/ingest", json={"sources": ["linkedin_scraper"]}).status_code == 422

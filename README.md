@@ -16,7 +16,8 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 3 | Job ingestion: 8 sources, dedup, link checker, scheduler, import, deep links | done |
 | 4 | Matching: skill-weighted scorer, FAISS retrieval, 5 baselines, explain, skill gap | done |
 | 5 | Frontend: upload, ranked results with filters, apply menu, job details, skill gap, import, tracker, settings | done |
-| 5A–5D | Auth, TPO mode, drives, analytics | pending |
+| 5A | Auth: login/register, roles, JWT, multi-tenant isolation, student consent | done |
+| 5B–5D | TPO mode: drives, eligibility, shortlists, rounds, analytics | pending |
 | 6 | Evaluation | pending |
 | 7 | Polish and docs | pending |
 
@@ -58,6 +59,21 @@ npm run dev
 - API docs (OpenAPI): http://127.0.0.1:8000/docs
 
 If PowerShell blocks `Activate.ps1`, you do not need it: the commands above call the venv's `python.exe` directly.
+
+## Accounts and roles
+
+| Role | Gets |
+|---|---|
+| `job_seeker` | Resume upload, ranked open-market jobs, skill gap, import, tracker |
+| `student` | Everything above, plus campus drives (Phase 5B+). Joins a college with the TPO's invite code and explicit consent, which can be withdrawn in Settings |
+| `tpo` | Placement office of one institution; sees only that institution's students |
+| `recruiter_view` | Read-only shortlist via an expiring share link (Phase 5D) |
+
+Sign-up asks "Are you a campus student?": yes goes to the invite-code step, no makes a job-seeker account.
+Placement officers register their institution from the same page. Guests can browse job listings;
+everything personal requires signing in. Passwords are hashed with argon2; access tokens last 30 minutes
+and refresh automatically; signing out (or changing the password) revokes every session.
+Accounts registered with an email in `ADMIN_EMAILS` can run ingestion (`/admin/*`).
 
 ## Using the app
 

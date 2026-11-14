@@ -1,4 +1,4 @@
-"""Admin: trigger ingestion, per-source status. (Role guard added in Phase 5A.)"""
+"""Admin (is_admin users only): trigger ingestion, per-source status."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.auth.deps import require_admin
 from app.core.db import SessionLocal, get_db
 from app.core.logging import get_logger
 from app.ingestion import pipeline
@@ -17,7 +18,7 @@ from app.ingestion.sources import SOURCE_CLASSES, build_sources
 from app.models.job import Job, SourceRun
 from app.schemas.job import IngestRequest, SourcesStatusOut, SourceStatus
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_admin)])
 log = get_logger(__name__)
 
 

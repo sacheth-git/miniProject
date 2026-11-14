@@ -5,13 +5,15 @@ from __future__ import annotations
 from pydantic import BaseModel
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
+from app.auth.deps import SEEKER_ROLES, owned_candidate, require_roles
 from app.core.db import get_db
 from app.core.logging import get_logger
 from app.models.candidate import Candidate
 from app.models.job import Job
+from app.models.user import User
 from app.parsing.pdf_parser import PDFParseError
 from app.schemas.resume import CandidateOut, PreferencesIn, ProcessingStep, SkillEdit, UploadResponse
 from app.services.resume_pipeline import process_pdf, process_text
@@ -23,17 +25,11 @@ log = get_logger(__name__)
 MAX_BYTES = 5 * 1024 * 1024
 
 
-def _get(db: Session, candidate_id: str) -> Candidate:
-    cand = db.get(Candidate, candidate_id)
-    if cand is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Resume not found")
-    return cand
-
-
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED)
 async def upload_resume(
     file: UploadFile = File(..., description="PDF resume, max 5 MB"),
     bias_aware: bool = Form(True),
+    user: User = Depends(require_roles(*SEEKER_ROLES)),
     db: Session = Depends(get_db),
 ) -> UploadResponse:
     data = await file.read(MAX_BYTES + 1)
@@ -45,6 +41,7 @@ async def upload_resume(
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
     cand = Candidate(
+        user_id=user.id,
         filename=(file.filename or "resume.pdf")[:255],
         raw_text=result.raw_text,
         masked_text=result.masked_text,
@@ -64,15 +61,23 @@ async def upload_resume(
     return out.model_copy(update={"steps": [ProcessingStep(**s) for s in result.steps]})
 
 
+@router.get("/me", response_model=CandidateOut)
+def my_resume(user: User = Depends(require_roles(*SEEKER_ROLES)), db: Session = Depends(get_db)) -> Candidate:
+    """The signed-in user's latest resume."""
+    cand = db.scalars(select(Candidate).where(Candidate.user_id == user.id).order_by(Candidate.created_at.desc())).first()
+    if cand is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No resume uploaded yet")
+    return cand
+
+
 @router.get("/{candidate_id}", response_model=CandidateOut)
-def get_resume(candidate_id: str, db: Session = Depends(get_db)) -> Candidate:
-    return _get(db, candidate_id)
+def get_resume(cand: Candidate = Depends(owned_candidate)) -> Candidate:
+    return cand
 
 
 @router.put("/{candidate_id}/skills", response_model=CandidateOut)
-def edit_skills(candidate_id: str, body: SkillEdit, db: Session = Depends(get_db)) -> Candidate:
+def edit_skills(body: SkillEdit, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)) -> Candidate:
     """Add or remove skill chips. Added skills get confidence 1.0 and method 'user'."""
-    cand = _get(db, candidate_id)
     remove = set(body.remove)
     skills = [s for s in cand.skills if s["skill_id"] not in remove]
     have = {s["skill_id"] for s in skills}
@@ -97,8 +102,7 @@ def edit_skills(candidate_id: str, body: SkillEdit, db: Session = Depends(get_db
 
 
 @router.put("/{candidate_id}/preferences", response_model=CandidateOut)
-def set_preferences(candidate_id: str, body: PreferencesIn, db: Session = Depends(get_db)) -> Candidate:
-    cand = _get(db, candidate_id)
+def set_preferences(body: PreferencesIn, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)) -> Candidate:
     cand.preferences = body.model_dump()
     db.commit()
     db.refresh(cand)
@@ -110,9 +114,8 @@ class ResumeSettings(BaseModel):
 
 
 @router.put("/{candidate_id}/settings", response_model=CandidateOut)
-def update_settings(candidate_id: str, body: ResumeSettings, db: Session = Depends(get_db)) -> Candidate:
+def update_settings(body: ResumeSettings, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)) -> Candidate:
     """Toggle bias-aware mode: re-process the stored resume text, keeping skills the user added."""
-    cand = _get(db, candidate_id)
     if body.bias_aware == cand.bias_aware:
         return cand
     if not cand.raw_text:
@@ -130,9 +133,8 @@ def update_settings(candidate_id: str, body: ResumeSettings, db: Session = Depen
 
 
 @router.delete("/{candidate_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_resume(candidate_id: str, db: Session = Depends(get_db)) -> Response:
+def delete_resume(candidate_id: str, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)) -> Response:
     """Permanently delete the candidate and every derived record."""
-    cand = _get(db, candidate_id)
     db.execute(delete(Job).where(Job.owner_id == candidate_id))  # their imported jobs
     db.delete(cand)
     db.commit()

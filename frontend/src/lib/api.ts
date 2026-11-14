@@ -12,6 +12,7 @@ import type {
   MatchResponse,
   Preferences,
 } from "./types";
+import { getTokens, refreshTokens, type Tokens } from "./session";
 
 export const API_BASE = import.meta.env.VITE_API_BASE ?? "/api";
 
@@ -24,8 +25,20 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, init);
+function withAuth(init?: RequestInit): RequestInit {
+  const t = getTokens();
+  if (!t) return init ?? {};
+  const headers = new Headers(init?.headers);
+  headers.set("Authorization", `Bearer ${t.access_token}`);
+  return { ...init, headers };
+}
+
+async function request<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, withAuth(init));
+  // Expired access token: refresh once and retry.
+  if (res.status === 401 && !retried && getTokens() && !path.startsWith("/auth/")) {
+    if (await refreshTokens(API_BASE)) return request<T>(path, init, true);
+  }
   if (!res.ok) {
     let msg = res.statusText;
     try {
@@ -59,6 +72,23 @@ export const apiGet = <T>(path: string) => request<T>(path);
 
 export const api = {
   health: () => request<Health>("/health"),
+
+  register: (body: RegisterBody) => request<TokenResponse>("/auth/register", json("POST", body)),
+  login: (email: string, password: string) => request<TokenResponse>("/auth/login", json("POST", { email, password })),
+  me: () => request<User>("/auth/me"),
+  logout: () => request<void>("/auth/logout", { method: "POST" }),
+  changePassword: (current_password: string, new_password: string) =>
+    request<TokenResponse>("/auth/change-password", json("POST", { current_password, new_password })),
+  joinInstitution: (invite_code: string, consent: boolean, roll_no?: string) =>
+    request<User>("/auth/join-institution", json("POST", { invite_code, consent, roll_no })),
+  deleteAccount: () => request<void>("/auth/me", { method: "DELETE" }),
+  consent: () => request<Consent>("/student/consent"),
+  giveConsent: () => request<Consent>("/student/consent", { method: "POST" }),
+  withdrawConsent: () => request<Consent>("/student/consent", { method: "DELETE" }),
+
+  tpoInstitution: () => request<InstitutionInfo>("/tpo/institution"),
+  tpoStudents: () => request<StudentRow[]>("/tpo/students"),
+  myResume: () => request<Candidate>("/resume/me"),
 
   uploadResume: (file: File, biasAware: boolean) => {
     const fd = new FormData();
@@ -100,6 +130,63 @@ export const api = {
     request<Application>(`/applications/${id}`, json("PATCH", patch)),
   deleteApplication: (id: number) => request<void>(`/applications/${id}`, { method: "DELETE" }),
 };
+
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: "student" | "job_seeker" | "tpo" | "recruiter_view";
+  is_admin: boolean;
+  must_reset_password: boolean;
+  institution_id: string | null;
+  institution_name: string | null;
+  consent: boolean | null;
+  candidate_id: string | null;
+}
+
+export interface TokenResponse extends Tokens {
+  token_type: string;
+  user: User;
+}
+
+export interface RegisterBody {
+  email: string;
+  password: string;
+  full_name: string;
+  role: "student" | "job_seeker" | "tpo";
+  institution_name?: string;
+  invite_code?: string;
+  consent?: boolean;
+}
+
+export interface Consent {
+  institution_name: string | null;
+  consent: boolean;
+  consent_given_at: string | null;
+  consent_withdrawn_at: string | null;
+  tpo_can_see: string[];
+}
+
+export interface InstitutionInfo {
+  id: string;
+  name: string;
+  code: string;
+  invite_code: string;
+  settings: Record<string, unknown>;
+}
+
+export interface StudentRow {
+  user_id: string;
+  full_name: string;
+  email: string;
+  roll_no: string | null;
+  branch: string | null;
+  batch_year: number | null;
+  cgpa: number | null;
+  placed_status: string;
+  consent: boolean;
+  has_resume: boolean;
+}
 
 export interface Health {
   status: string;

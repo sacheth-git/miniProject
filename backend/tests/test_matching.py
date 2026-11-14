@@ -173,7 +173,9 @@ def e2e(phrase_extractor, sample_pdfs):  # type: ignore[no-untyped-def]
                          required_skills=[s.to_dict() for s in req], preferred_skills=[s.to_dict() for s in pref]))
         db.commit()
         set_index(build_index(db, ENC))
-    client = TestClient(app)
+    from tests.conftest import make_client
+
+    client, _ = make_client("job_seeker")
     cid = client.post("/resume/upload", files={"file": ("u.pdf", sample_pdfs["uday_ml.pdf"].read_bytes(), "application/pdf")}).json()["id"]
     yield client, cid
     set_index(None)
@@ -202,6 +204,12 @@ def test_match_filters_and_methods(e2e) -> None:  # type: ignore[no-untyped-def]
         assert r.status_code == 200 and r.json()["method"] == m, m
     assert client.get(f"/match/{cid}", params={"method": "magic"}).status_code == 422
     assert client.get("/match/nope").status_code == 404
+    from app.main import app
+    from tests.conftest import make_client
+
+    other, _ = make_client("job_seeker")
+    assert other.get(f"/match/{cid}").status_code == 404  # not their resume
+    assert TestClient(app).get(f"/match/{cid}").status_code == 401
 
 
 def test_explain_and_gap(e2e) -> None:  # type: ignore[no-untyped-def]

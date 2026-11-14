@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
+import { AuthProvider } from "../lib/auth";
 import { CandidateProvider } from "../lib/candidate";
 import { TrackingProvider } from "../lib/tracking";
 import type { JobSummary, MatchItem } from "../lib/types";
@@ -11,9 +12,11 @@ export function renderApp(ui: ReactElement, route = "/") {
   return render(
     <QueryClientProvider client={qc}>
       <MemoryRouter initialEntries={[route]}>
-        <CandidateProvider>
-          <TrackingProvider>{ui}</TrackingProvider>
-        </CandidateProvider>
+        <AuthProvider>
+          <CandidateProvider>
+            <TrackingProvider>{ui}</TrackingProvider>
+          </CandidateProvider>
+        </AuthProvider>
       </MemoryRouter>
     </QueryClientProvider>,
   );
