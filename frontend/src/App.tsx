@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import { AppHeader } from "./components/AppHeader";
 import { RequireAuth } from "./components/RequireAuth";
@@ -19,6 +19,10 @@ import { DriveDetailPage } from "./pages/tpo/DriveDetailPage";
 import { DriveEditorPage } from "./pages/tpo/DriveEditorPage";
 import { DrivesPage } from "./pages/tpo/DrivesPage";
 import { StudentsPage } from "./pages/tpo/StudentsPage";
+// Charts (Recharts) load only when a TPO opens them.
+const DashboardPage = lazy(() => import("./pages/tpo/DashboardPage").then((m) => ({ default: m.DashboardPage })));
+const AnalyticsPage = lazy(() => import("./pages/tpo/AnalyticsPage").then((m) => ({ default: m.AnalyticsPage })));
+import { SharePage } from "./pages/SharePage";
 import { ConsentPage } from "./pages/ConsentPage";
 import { CampusDrivePage, CampusDrivesPage, ReadinessPage } from "./pages/CampusPages";
 import { TrackerPage } from "./pages/TrackerPage";
@@ -59,7 +63,11 @@ function Shell() {
   }, [dark]);
 
   const seeker = (el: JSX.Element) => <RequireAuth roles={[...SEEKERS]}>{el}</RequireAuth>;
-  const tpoOnly = (el: JSX.Element) => <RequireAuth roles={["tpo"]}>{el}</RequireAuth>;
+  const tpoOnly = (el: JSX.Element) => (
+    <RequireAuth roles={["tpo"]}>
+      <Suspense fallback={<div className="p-8"><Spinner /></div>}>{el}</Suspense>
+    </RequireAuth>
+  );
   return (
     <div className="flex min-h-full flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">
@@ -82,7 +90,10 @@ function Shell() {
           <Route path="/campus" element={<RequireAuth roles={["student"]}><CampusDrivesPage /></RequireAuth>} />
           <Route path="/campus/:id" element={<RequireAuth roles={["student"]}><CampusDrivePage /></RequireAuth>} />
           <Route path="/readiness" element={<RequireAuth roles={["student"]}><ReadinessPage /></RequireAuth>} />
-          <Route path="/tpo" element={tpoOnly(<StudentsPage />)} />
+          <Route path="/tpo" element={tpoOnly(<DashboardPage />)} />
+          <Route path="/tpo/students" element={tpoOnly(<StudentsPage />)} />
+          <Route path="/tpo/analytics" element={tpoOnly(<AnalyticsPage />)} />
+          <Route path="/share/:token" element={<SharePage />} />
           <Route path="/tpo/drives" element={tpoOnly(<DrivesPage />)} />
           <Route path="/tpo/drives/new" element={tpoOnly(<DriveEditorPage />)} />
           <Route path="/tpo/drives/:id" element={tpoOnly(<DriveDetailPage />)} />

@@ -7,6 +7,7 @@ import { DataTable, type Column } from "../../components/DataTable";
 import { Chip, ErrorNote, ScoreBar, Spinner } from "../../components/ui";
 import { pay, STATUS_TONE, TYPE_LABEL } from "./DrivesPage";
 import { OffersTab, RoundsTab } from "./RoundsOffers";
+import { ShareLinks } from "./ShareLinks";
 
 const TABS = ["Shortlist", "Rounds", "Offers", "Eligibility", "Export"] as const;
 type Tab = (typeof TABS)[number];
@@ -46,7 +47,12 @@ export function DriveDetailPage() {
       {tab === "Rounds" && <RoundsTab id={d.id} />}
       {tab === "Offers" && <OffersTab id={d.id} defaultCtc={d.ctc_lpa} />}
       {tab === "Eligibility" && <EligibilityTab id={d.id} />}
-      {tab === "Export" && <ExportTab id={d.id} />}
+      {tab === "Export" && (
+        <div className="space-y-5">
+          <ExportTab id={d.id} />
+          <ShareLinks driveId={d.id} />
+        </div>
+      )}
     </div>
   );
 }
@@ -276,7 +282,7 @@ function ExportTab({ id }: { id: string }) {
           </button>
         ))}
       </div>
-      <p className="text-xs muted">Every export is recorded in the audit log. Recruiter share links arrive with analytics.</p>
+      <p className="text-xs muted">Every export is recorded in the audit log.</p>
       {err !== null && <ErrorNote error={err} />}
     </div>
   );

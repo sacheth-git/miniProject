@@ -21,8 +21,10 @@ const STUDENT_LINKS = [
   { to: "/import", label: "Import" },
 ];
 const TPO_LINKS = [
-  { to: "/tpo", label: "Students" },
+  { to: "/tpo", label: "Dashboard" },
+  { to: "/tpo/students", label: "Students" },
   { to: "/tpo/drives", label: "Drives" },
+  { to: "/tpo/analytics", label: "Analytics" },
   { to: "/tpo/audit", label: "Audit log" },
   { to: "/tpo/policy", label: "Policy" },
 ];

@@ -8,7 +8,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import admin, applications, auth, deeplinks, health, imports, jobs, match, resume, student_campus, tpo, tpo_drives, tpo_rounds
+from app.api import (
+    admin, applications, auth, deeplinks, health, imports, jobs, match, resume, student_campus, tpo, tpo_analytics,
+    tpo_drives, tpo_rounds,
+)
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -55,6 +58,8 @@ def create_app() -> FastAPI:
     app.include_router(tpo.router)
     app.include_router(tpo_drives.router)
     app.include_router(tpo_rounds.router)
+    app.include_router(tpo_analytics.router)
+    app.include_router(tpo_analytics.public)
     app.include_router(student_campus.router)
     app.include_router(resume.router)
     app.include_router(jobs.router)

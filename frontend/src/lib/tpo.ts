@@ -372,3 +372,52 @@ export const campus = {
   markRead: (ids?: number[]) => call<{ marked: number }>("/student/notifications/read", json("POST", ids ?? [])),
   tracker: () => call<TrackerItem[]>("/student/tracker"),
 };
+
+// ---------------- analytics & share links (TPO) ----------------
+export interface GroupRow { students: number; placed: number; offered: number; placed_pct: number; branch?: string; batch_year?: number | string }
+export interface FunnelRow { drive_id: string; company: string; role: string; status: string; eligible: number; applied: number; shortlisted: number; offered: number; accepted: number }
+export interface Summary {
+  students: number; placed: number; offered: number; placed_pct: number; consent_given: number;
+  drives: { total: number; open: number };
+  ctc: { count: number; highest: number | null; median: number | null; average: number | null };
+  by_branch: GroupRow[]; by_batch: GroupRow[];
+  companies: { company: string; offers: number; accepted: number; avg_ctc: number }[];
+  funnel: { total: Record<"eligible" | "applied" | "shortlisted" | "offered" | "accepted", number>; drives: FunnelRow[] };
+}
+export interface SkillGap {
+  skills: { skill_id: string; name: string; drives: number }[];
+  branches: string[];
+  cells: { branch: string; skill_id: string; skill: string; missing_pct: number; students: number; drives_demanding: number }[];
+  recommendations: { branch: string; skill: string; missing_pct: number; drives: number; students: number; text: string }[];
+}
+export interface UnplacedStudent {
+  user_id: string; roll_no: string | null; name: string; branch: string | null; cgpa: number | null; has_resume: boolean;
+  best_drives: { drive_id: string; company: string; role: string; match_percent: number }[];
+}
+export interface FairnessRow { group: string; eligible: number | null; suppressed: boolean; system_rate: number | null; actual_rate: number | null }
+export interface Fairness {
+  drives_used: number; min_group: number; note: string;
+  gender: { rows: FairnessRow[]; system_parity: number | null; actual_parity: number | null };
+  branch: { rows: FairnessRow[]; system_parity: number | null; actual_parity: number | null };
+}
+export interface ShareLinkInfo {
+  id: number; token_hint: string; label: string; blind: boolean; columns: string[]; expires_at: string;
+  revoked_at: string | null; views: number; last_viewed_at: string | null; created_at: string; token?: string; path?: string;
+}
+export interface SharedShortlist {
+  institution: string; company: string; role: string; location: string | null; ctc_lpa: number | null; rounds: string[];
+  blind: boolean; expires_at: string; columns: { key: string; label: string }[]; rows: Record<string, unknown>[];
+}
+
+export const analytics = {
+  summary: () => call<Summary>("/tpo/analytics/summary"),
+  skillGap: () => call<SkillGap>("/tpo/analytics/skill-gap"),
+  unplaced: () => call<UnplacedStudent[]>("/tpo/analytics/unplaced"),
+  unplacedJobs: (uid: string) => call<{ job_id: string; title: string; company: string; location: string | null; match_percent: number; apply_url: string }[]>(`/tpo/analytics/unplaced/${uid}/jobs`),
+  fairness: () => call<Fairness>("/tpo/analytics/fairness"),
+  shareLinks: (driveId: string) => call<ShareLinkInfo[]>(`/tpo/drives/${driveId}/share-links`),
+  createShare: (driveId: string, body: { expires_in_days: number; blind: boolean; label: string; columns?: string[] }) =>
+    call<ShareLinkInfo>(`/tpo/drives/${driveId}/share-link`, json("POST", body)),
+  revokeShare: (id: number) => call<void>(`/tpo/share-links/${id}`, { method: "DELETE" }),
+  shared: (token: string) => call<SharedShortlist>(`/share/${token}`),
+};

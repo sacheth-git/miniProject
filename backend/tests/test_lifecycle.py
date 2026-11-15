@@ -90,6 +90,11 @@ def test_rounds_results_csv_and_offer_accept(world) -> None:  # type: ignore[no-
 
     r = tpo.post(f"/tpo/drives/{did}/stages", json={"student_ids": [ua["id"], uc["id"]], "stage": "Online test"}).json()
     assert r["moved"] == 2
+    # Regression: custom round names still count as shortlisted, and "top N" must not reset them.
+    sl = {x["roll_no"]: x for x in tpo.get(f"/tpo/drives/{did}/shortlist").json()["rows"]}
+    assert sl["ASHA"]["shortlisted"] and sl["ASHA"]["stage"] == "Online test"
+    tpo.post(f"/tpo/drives/{did}/shortlist", json={"mode": "top", "n": 2})
+    assert {c["roll_no"] for c in tpo.get(f"/tpo/drives/{did}/stages").json()["columns"]["Online test"]} == {"ASHA", "CHITRA"}
     assert tpo.post(f"/tpo/drives/{did}/stages", json={"student_ids": [ua["id"]], "stage": "Offer"}).status_code == 422
     assert tpo.post(f"/tpo/drives/{did}/stages", json={"student_ids": [ua["id"]], "stage": "Lunch"}).status_code == 422
 

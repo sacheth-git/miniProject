@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.deps import ensure_same_institution, tpo_user
 from app.campus import export as exp
-from app.campus.drives import StudentRecord, evaluate_drive, extract_drive_skills, rank_drive
+from app.campus.drives import NOT_SHORTLISTED, StudentRecord, evaluate_drive, extract_drive_skills, in_drive, is_shortlisted, rank_drive
 from app.campus.lifecycle import notify_new_drive
 from app.core.db import get_db
 from app.eligibility.engine import reason_group, validate_custom_rule
@@ -34,7 +34,6 @@ ETHICS_NOTE = (
     "SkillMatch recommends; the placement officer makes every shortlist decision. Scores never use name, "
     "gender, photo or college, and every manual change is recorded in the audit log."
 )
-SHORTLIST_STAGES = {"Shortlisted", "Test", "Interview", "Offer", "Accepted"}
 
 
 # ---------------- schemas ----------------
@@ -155,7 +154,7 @@ def _rules_dict(r: EligibilityRule | None) -> dict[str, Any]:
 def _out(db: Session, d: Drive) -> DriveOut:
     r = db.scalars(select(EligibilityRule).where(EligibilityRule.drive_id == d.id)).first()
     apps = db.scalars(select(DriveApplication.stage).where(DriveApplication.drive_id == d.id)).all()
-    counts = {"applied": sum(1 for s in apps if s != "Withdrawn"), "shortlisted": sum(1 for s in apps if s in SHORTLIST_STAGES)}
+    counts = {"applied": sum(1 for s in apps if s != "Withdrawn"), "shortlisted": sum(1 for s in apps if s not in NOT_SHORTLISTED)}
     return DriveOut(
         id=d.id, company=d.company, role=d.role, job_type=d.job_type, jd_text=d.jd_text, jd_filename=d.jd_filename,
         skills=d.skills or [], ctc_lpa=d.ctc_lpa, stipend_month=d.stipend_month, location=d.location,
@@ -184,7 +183,7 @@ def _shortlist_row(rank: int | None, r: StudentRecord, blind: bool) -> dict[str,
         "placed_status": r.profile.placed_status,
         "stage": stage,
         "applied": r.application is not None and r.application.source == "student",
-        "shortlisted": stage in SHORTLIST_STAGES,
+        "shortlisted": is_shortlisted(r.application),
         "eligible": r.verdict.eligible,
         "reasons": r.verdict.reasons,
         "has_resume": r.candidate is not None,
@@ -195,7 +194,7 @@ def _ranked_rows(db: Session, drive: Drive, blind: bool) -> list[dict[str, Any]]
     recs = rank_drive(db, drive)
     rows, rank = [], 0
     for r in recs:
-        if not r.verdict.eligible:
+        if not in_drive(r):
             continue
         if r.breakdown is not None:
             rank += 1
@@ -208,7 +207,7 @@ def _set_stage(db: Session, user: User, drive: Drive, uid: str, row: dict[str, A
     now = datetime.now(timezone.utc).isoformat()
     before = app.stage if app else None
     if shortlist:
-        if app is not None and app.stage in SHORTLIST_STAGES:
+        if app is not None and is_shortlisted(app):
             return False
         snap = {"match_percent": row.get("match_percent"), "skill_percent": row.get("skill_percent"),
                 "rank": row.get("rank")} if row else {}

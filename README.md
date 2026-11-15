@@ -19,7 +19,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 5A | Auth: login/register, roles, JWT, multi-tenant isolation, student consent | done |
 | 5B | TPO core: bulk import, drives, eligibility with reasons, ranked blind shortlist, exports, audit log | done |
 | 5C | Rounds Kanban + results CSV, offers with placement policy, notifications, student campus drives, readiness, unified tracker | done |
-| 5D | Placement analytics, skill-gap heatmap, fairness report, recruiter share links | pending |
+| 5D | Placement dashboard, skill-gap heatmap + training recommendations, unplaced students, fairness report, recruiter share links | done |
 | 6 | Evaluation | pending |
 | 7 | Polish and docs | pending |
 
@@ -105,7 +105,15 @@ password `Demo@2026`: placement officer `tpo@demo.skillmatch.example`, students 
    selection, or upload a round's results CSV (`roll_no,result` with pass / fail): passes move to the next round,
    the rest are rejected. Students are notified of every move.
 7. **Offers**: record an offer (placement policy is checked), and record decisions students give offline.
-8. **Audit log**: every shortlist edit, stage move, offer, rule change, weight change, import and export, with before /
+8. **Dashboard**: placed % overall, by branch and batch; highest / median / average CTC; offers by company; the
+   eligible -> applied -> shortlisted -> offered -> accepted funnel. Every chart has a table view.
+9. **Analytics**: a branch x skill heatmap of how many students lack each skill drives require, with training
+   recommendations ("50% of CSE students lack Docker, required by 3 drives"); unplaced students with their best-fit
+   open drives and open-market jobs; a fairness report of shortlist rates by gender and branch for the system's
+   recommendation and the actual shortlist (groups under 10 hidden, parity below 0.8 flagged).
+10. **Recruiter share link**: a read-only, expiring page of a drive's shortlist (names hidden by default). Only a hash
+    of the link token is stored; links can be revoked and show view counts.
+11. **Audit log**: every shortlist edit, stage move, offer, rule change, weight change, import and export, with before /
    after values.
 
 Students see **Campus drives** (eligible first; ineligible ones show the exact reason), apply or withdraw before the
@@ -136,7 +144,8 @@ cd frontend; npm test
 # End to end against a running API on :8000:
 #   e2e.test.tsx         job seeker: sign up -> upload -> results -> apply -> tracker
 #   e2e_campus.test.tsx  campus: TPO creates drive -> student applies -> rounds -> offer -> student accepts
-cd frontend; $env:E2E="1"; npx vitest run src/test/e2e.test.tsx src/test/e2e_campus.test.tsx
+#   e2e_analytics.test.tsx  demo campus (seed first): dashboard, analytics, share link -> public page -> revoke
+cd frontend; $env:E2E="1"; npx vitest run
 ```
 
 The first start downloads the embedding model `BAAI/bge-small-en-v1.5` (~130 MB) and warms it up in the background.

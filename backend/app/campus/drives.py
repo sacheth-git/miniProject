@@ -27,6 +27,22 @@ from app.placement_policy.policy import Policy
 from app.skills.extractor import get_extractor
 from app.skills.jd_skill_weighter import PREFERRED_TYPE, REQUIRED_TYPE, extract_jd_skills
 
+NOT_SHORTLISTED = {"Eligible", "Applied", "Withdrawn", "Rejected"}
+
+
+def is_shortlisted(app: DriveApplication | None) -> bool:
+    """In the shortlist now: any active stage after Applied (custom round names included)."""
+    return app is not None and app.stage not in NOT_SHORTLISTED
+
+
+def in_drive(r: StudentRecord) -> bool:
+    """Part of this drive: eligible now, or already holds an application here.
+
+    Placement policy can make a student 'ineligible' after they get an offer; they still
+    belong to the drive they are in."""
+    return r.verdict.eligible or (r.application is not None and r.application.stage != "Withdrawn")
+
+
 DRIVE_EXPERIENCE = {"internship": (0.0, 1.0), "fte": (0.0, 2.0), "intern+ppo": (0.0, 1.0)}
 
 
@@ -128,7 +144,7 @@ def rank_drive(db: Session, drive: Drive, records: list[StudentRecord] | None = 
     index = get_index()
     idf = index.idf if index else {}
     for r in records:
-        if r.verdict.eligible and r.candidate is not None:
+        if in_drive(r) and r.candidate is not None:
             r.breakdown = scorer.score(build_profile(r.candidate), feats, idf)
-    records.sort(key=lambda r: (not r.verdict.eligible, r.breakdown is None, -(r.breakdown.score if r.breakdown else 0), r.profile.roll_no or ""))
+    records.sort(key=lambda r: (not in_drive(r), r.breakdown is None, -(r.breakdown.score if r.breakdown else 0), r.profile.roll_no or ""))
     return records
