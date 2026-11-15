@@ -242,3 +242,133 @@ export const tpo = {
   policy: () => call<Policy>("/tpo/settings/policy"),
   setPolicy: (p: Policy) => call<Policy>("/tpo/settings/policy", json("PUT", p)),
 };
+
+// ---------------- rounds & offers (TPO) ----------------
+export interface StageCard {
+  application_id: number;
+  student_id: string;
+  roll_no: string | null;
+  name: string | null;
+  branch: string | null;
+  cgpa: number | null;
+  stage: string;
+  source: string;
+  match_percent: number | null;
+  history: { stage: string; at: string; by: string; note?: string }[];
+  notes: string;
+}
+
+export interface StageBoard {
+  stages: string[];
+  columns: Record<string, StageCard[]>;
+  moved?: number;
+}
+
+export interface OfferRow {
+  id: number;
+  drive_id: string;
+  company: string;
+  role: string;
+  student_id: string;
+  roll_no: string | null;
+  name: string;
+  branch: string | null;
+  ctc_lpa: number;
+  status: "pending" | "accepted" | "declined";
+  note: string;
+  created_at: string;
+  decided_at: string | null;
+}
+
+export const rounds = {
+  board: (id: string) => call<StageBoard>(`/tpo/drives/${id}/stages`),
+  move: (id: string, student_ids: string[], stage: string, note = "") =>
+    call<StageBoard>(`/tpo/drives/${id}/stages`, json("POST", { student_ids, stage, note })),
+  results: (id: string, round_name: string, file: File) => {
+    const fd = new FormData();
+    fd.append("round_name", round_name);
+    fd.append("file", file);
+    return call<{ round: string; next_stage: string; passed: number; failed: number; problems: string[] }>(`/tpo/drives/${id}/stages/results`, { method: "POST", body: fd });
+  },
+  offers: (driveId?: string) => call<OfferRow[]>(`/tpo/offers${driveId ? `?drive_id=${driveId}` : ""}`),
+  offer: (drive_id: string, student_id: string, ctc_lpa?: number) => call<OfferRow>("/tpo/offers", json("POST", { drive_id, student_id, ctc_lpa })),
+  decide: (offerId: number, status: "accepted" | "declined") => call<OfferRow>(`/tpo/offers/${offerId}`, json("PATCH", { status })),
+};
+
+// ---------------- student campus ----------------
+export interface CampusDrive {
+  id: string;
+  company: string;
+  role: string;
+  job_type: Drive["job_type"];
+  ctc_lpa: number | null;
+  stipend_month: number | null;
+  location: string | null;
+  category: "regular" | "dream";
+  status: Drive["status"];
+  deadline: string | null;
+  deadline_passed: boolean;
+  rounds: string[];
+  eligible: boolean;
+  reasons: string[];
+  match_percent: number | null;
+  matched_skills: string[];
+  missing_required: string[];
+  missing_preferred: string[];
+  stage: string | null;
+  applied: boolean;
+  offer: { id: number; ctc_lpa: number; status: "pending" | "accepted" | "declined" } | null;
+}
+
+export interface CampusDriveDetail extends CampusDrive {
+  jd_text: string;
+  stages: string[];
+  timeline: { stage: string; at: string; by: string; note?: string }[];
+  explanation: import("./types").Explanation | null;
+}
+
+export interface Readiness {
+  score: number;
+  match: number | null;
+  completeness: number;
+  ats: number;
+  drives_considered: number;
+  checks: { profile: { label: string; ok: boolean; fix: string }[]; resume: { label: string; ok: boolean; fix: string }[] };
+  actions: { kind: string; text: string }[];
+  weights: Record<string, number>;
+}
+
+export interface NotificationItem {
+  id: number;
+  kind: string;
+  title: string;
+  body: string;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+}
+
+export interface TrackerItem {
+  kind: "campus" | "open_market";
+  source_label: string;
+  id: string;
+  title: string;
+  company: string;
+  stage: string;
+  updated_at: string;
+  link: string | null;
+  apply_url: string | null;
+  final: boolean;
+}
+
+export const campus = {
+  drives: () => call<CampusDrive[]>("/student/drives"),
+  drive: (id: string) => call<CampusDriveDetail>(`/student/drives/${id}`),
+  apply: (id: string) => call<CampusDriveDetail>(`/student/drives/${id}/apply`, { method: "POST" }),
+  withdraw: (id: string) => call<CampusDriveDetail>(`/student/drives/${id}/withdraw`, { method: "POST" }),
+  decide: (offerId: number, decision: "accept" | "decline") => call<CampusDriveDetail>(`/student/offers/${offerId}/${decision}`, { method: "POST" }),
+  readiness: () => call<Readiness>("/student/readiness"),
+  notifications: () => call<{ unread: number; items: NotificationItem[] }>("/student/notifications"),
+  markRead: (ids?: number[]) => call<{ marked: number }>("/student/notifications/read", json("POST", ids ?? [])),
+  tracker: () => call<TrackerItem[]>("/student/tracker"),
+};

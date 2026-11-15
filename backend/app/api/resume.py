@@ -137,6 +137,14 @@ def update_settings(body: ResumeSettings, cand: Candidate = Depends(owned_candid
 @router.delete("/{candidate_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_resume(candidate_id: str, cand: Candidate = Depends(owned_candidate), db: Session = Depends(get_db)) -> Response:
     """Permanently delete the candidate and every derived record."""
+    from app.api.student_campus import active_drive_applications
+
+    active = active_drive_applications(db, cand.user_id)
+    if active:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"You have {active} active campus drive application(s). Withdraw them (or wait until they close) before deleting your data.",
+        )
     db.execute(delete(Job).where(Job.owner_id == candidate_id))  # their imported jobs
     db.delete(cand)
     db.commit()

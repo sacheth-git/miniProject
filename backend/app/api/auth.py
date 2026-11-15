@@ -262,6 +262,14 @@ def delete_account(user: User = Depends(get_current_user), db: Session = Depends
     """Delete the account and every resume, match, import and tracker entry it owns."""
     if user.role == "tpo":
         raise HTTPException(status.HTTP_409_CONFLICT, "Transfer or close the institution before deleting a TPO account")
+    from app.api.student_campus import active_drive_applications
+
+    active = active_drive_applications(db, user.id)
+    if active:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"You have {active} active campus drive application(s). Withdraw them (or wait until they close) before deleting your data.",
+        )
     cand_ids = list(db.scalars(select(Candidate.id).where(Candidate.user_id == user.id)))
     if cand_ids:
         db.execute(delete(Job).where(Job.owner_id.in_(cand_ids)))

@@ -6,8 +6,9 @@ import { download, tpo, type EligibilityStudent, type ShortlistRow } from "../..
 import { DataTable, type Column } from "../../components/DataTable";
 import { Chip, ErrorNote, ScoreBar, Spinner } from "../../components/ui";
 import { pay, STATUS_TONE, TYPE_LABEL } from "./DrivesPage";
+import { OffersTab, RoundsTab } from "./RoundsOffers";
 
-const TABS = ["Shortlist", "Eligibility", "Export"] as const;
+const TABS = ["Shortlist", "Rounds", "Offers", "Eligibility", "Export"] as const;
 type Tab = (typeof TABS)[number];
 
 export function DriveDetailPage() {
@@ -40,9 +41,10 @@ export function DriveDetailPage() {
             {t}
           </button>
         ))}
-        <span className="ml-auto self-center text-xs muted">Rounds and offers tracking arrive in the next phase</span>
       </div>
       {tab === "Shortlist" && <ShortlistTab id={d.id} />}
+      {tab === "Rounds" && <RoundsTab id={d.id} />}
+      {tab === "Offers" && <OffersTab id={d.id} defaultCtc={d.ctc_lpa} />}
       {tab === "Eligibility" && <EligibilityTab id={d.id} />}
       {tab === "Export" && <ExportTab id={d.id} />}
     </div>

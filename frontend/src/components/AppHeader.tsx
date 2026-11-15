@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Moon, Sun, UserRound, X } from "lucide-react";
 import { isSeeker, useAuth } from "../lib/auth";
 import { useTracking } from "../lib/tracking";
+import { NotificationBell } from "./NotificationBell";
 
 const SEEKER_LINKS = [
   { to: "/jobs", label: "Jobs" },
@@ -10,6 +11,14 @@ const SEEKER_LINKS = [
   { to: "/tracker", label: "Applications" },
   { to: "/import", label: "Import" },
   { to: "/elsewhere", label: "Search elsewhere" },
+];
+const STUDENT_LINKS = [
+  { to: "/jobs", label: "Jobs" },
+  { to: "/campus", label: "Campus drives" },
+  { to: "/readiness", label: "Readiness" },
+  { to: "/skills", label: "Skill gap" },
+  { to: "/tracker", label: "Applications" },
+  { to: "/import", label: "Import" },
 ];
 const TPO_LINKS = [
   { to: "/tpo", label: "Students" },
@@ -46,7 +55,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
     return () => document.removeEventListener("mousedown", on);
   }, [menu]);
 
-  const links = !user ? GUEST_LINKS : user.role === "tpo" ? TPO_LINKS : isSeeker(user) ? SEEKER_LINKS : GUEST_LINKS;
+  const links = !user ? GUEST_LINKS : user.role === "tpo" ? TPO_LINKS : user.role === "student" ? STUDENT_LINKS : isSeeker(user) ? SEEKER_LINKS : GUEST_LINKS;
   const active = applications.filter((a) => a.status !== "Rejected").length;
   const navCls = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-1.5 border-b-2 px-3 text-sm ${
@@ -80,6 +89,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
+          {isSeeker(user) && <NotificationBell />}
           <button className="btn-ghost p-2" onClick={onToggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>

@@ -264,9 +264,6 @@ def main() -> None:
                                cgpa=cgpa, active_backlogs=active, history_backlogs=history, tenth_pct=tenth,
                                twelfth_pct=twelfth, diploma_pct=diploma, gender=gender, consent_given_at=consent_at,
                                consent_withdrawn_at=withdrawn)
-            if rng.random() < 0.12 and batch == 2026:
-                p.placed_status = rng.choice(["offered", "placed"])
-                p.current_best_offer_ctc = round(rng.uniform(4.0, 8.0), 1)
             db.add(p)
             pdf, _ = resume_pdf(rng, name, email, branch, cgpa, batch)
             res = process_pdf(pdf, bias_aware=True)
@@ -296,12 +293,48 @@ def main() -> None:
             drive_ids.append(d.id)
         db.commit()
 
-        # A few student applications so dashboards are not empty (stages and offers grow in Phase 5C).
-        students = db.scalars(select(StudentProfile).where(StudentProfile.institution_id == inst.id)).all()
-        for d_id, branch_set in ((drive_ids[0], {"CSE", "IT"}), (drive_ids[2], {"CSE", "IT"})):
-            for p in rng.sample([s for s in students if s.branch in branch_set and s.has_consent], 12):
-                db.add(DriveApplication(drive_id=d_id, student_id=p.user_id, stage="Applied", source="student",
-                                        stage_history=[{"stage": "Applied", "at": now.isoformat(), "by": "student"}]))
+        # Drive history through the real lifecycle code: applications, shortlists, rounds, offers.
+        import app.services.notify as notify_mod
+        from app.campus.drives import rank_drive
+        from app.campus.lifecycle import apply, decide_offer, move_stage, record_offer
+
+        notify_mod.send_email = lambda *a, **k: True  # no console email spam while seeding
+        by_company = {db.get(Drive, d).company: db.get(Drive, d) for d in drive_ids}
+        plan = [("Kaveri Systems", 14, 8, 3, 2), ("Deccan Motors", 14, 8, 3, 2), ("Nimbus Analytics", 16, 10, 2, 1),
+                ("BlueOrbit Software", 12, 0, 0, 0)]
+        for company, n_apply, n_short, n_offer, n_accept in plan:
+            d = by_company[company]
+            ranked = [r for r in rank_drive(db, d) if r.verdict.eligible and r.breakdown is not None]
+            # Students apply (a mix of strong and weaker matches, like real life).
+            appliers = ranked[: n_apply // 2] + rng.sample(ranked[n_apply // 2:], min(len(ranked) - n_apply // 2, n_apply - n_apply // 2))
+            for r in appliers:
+                try:
+                    apply(db, r.user, d)
+                except Exception as exc:  # policy may block (e.g. accepted elsewhere): skip
+                    print(f"  skip apply {r.profile.roll_no}: {getattr(exc, 'detail', exc)}")
+            db.commit()
+            apps = {a.student_id: a for a in db.scalars(select(DriveApplication).where(DriveApplication.drive_id == d.id))}
+            chosen = [r for r in ranked if r.user.id in apps][:n_short]
+            for r in chosen:
+                move_stage(db, tpo, d, apps[r.user.id], "Shortlisted")
+            stages = [s for s in (d.rounds or [])]
+            for i, r in enumerate(chosen):
+                depth = len(stages) if i < n_offer + 1 else rng.randint(0, len(stages) - 1)
+                for st in stages[:depth]:
+                    move_stage(db, tpo, d, apps[r.user.id], st)
+                if depth < len(stages):
+                    move_stage(db, tpo, d, apps[r.user.id], "Rejected", f"Did not clear {stages[depth]}")
+            db.commit()
+            for i, r in enumerate(chosen[:n_offer]):
+                try:
+                    o = record_offer(db, tpo, d, r.user.id, d.ctc_lpa)
+                    db.commit()
+                    if i < n_accept:
+                        decide_offer(db, r.user, o, True)
+                        db.commit()
+                except Exception as exc:
+                    db.rollback()
+                    print(f"  skip offer {r.profile.roll_no}: {getattr(exc, 'detail', exc)}")
         db.commit()
 
     print(f"\nSeeded in {time.perf_counter() - t0:.0f}s: {args.students} students, {len(DRIVES)} drives.")

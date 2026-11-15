@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from app.auth.deps import ensure_same_institution, tpo_user
 from app.campus import export as exp
 from app.campus.drives import StudentRecord, evaluate_drive, extract_drive_skills, rank_drive
+from app.campus.lifecycle import notify_new_drive
 from app.core.db import get_db
 from app.eligibility.engine import reason_group, validate_custom_rule
 from app.matching.explain import explanation_dict
@@ -277,6 +278,9 @@ def create_drive(body: DriveIn, user: User = Depends(tpo_user), db: Session = De
     r = _rules(db, d.id)
     for k, v in (body.rules or RulesIn()).model_dump().items():
         setattr(r, k, v)
+    db.flush()
+    if d.status == "open":
+        notify_new_drive(db, d)
     audit(db, user, "drive.create", "drive", d.id, after={"company": d.company, "role": d.role, "skills": len(skills),
                                                          "rules": (body.rules or RulesIn()).model_dump()})
     db.commit()
@@ -297,6 +301,9 @@ def update_drive(drive_id: str, body: DrivePatch, user: User = Depends(tpo_user)
         setattr(d, k, v)
     if changes:
         audit(db, user, "drive.update", "drive", d.id, before=_jsonable(before), after=_jsonable(changes))
+    if changes.get("status") == "open" and before.get("status") != "open":
+        db.flush()
+        notify_new_drive(db, d)
     new_skills = None
     if body.skills is not None:
         new_skills = [s.model_dump() for s in body.skills]

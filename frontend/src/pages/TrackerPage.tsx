@@ -6,7 +6,17 @@ import { api } from "../lib/api";
 import { useCandidate } from "../lib/candidate";
 import { timeAgo } from "../lib/format";
 import { APP_STATUSES, type Application, type AppStatus } from "../lib/types";
-import { EmptyState, ErrorNote, Spinner } from "../components/ui";
+import { Chip, EmptyState, ErrorNote, Spinner } from "../components/ui";
+import { useAuth } from "../lib/auth";
+import { campus, type TrackerItem } from "../lib/tpo";
+
+/** Campus stages mapped onto tracker columns (rounds count as interviews). */
+function columnFor(stage: string): AppStatus {
+  if (stage === "Applied") return "Applied";
+  if (stage === "Offer" || stage === "Accepted") return "Offer";
+  if (stage === "Rejected" || stage === "Withdrawn") return "Rejected";
+  return "Interview";
+}
 
 const COLUMN_HINT: Record<AppStatus, string> = {
   Saved: "Jobs you bookmarked",
@@ -22,6 +32,9 @@ export function TrackerPage() {
   const qc = useQueryClient();
   const key = ["applications", candidateId];
   const apps = useQuery({ queryKey: key, queryFn: () => api.applications(candidateId!), enabled: !!candidateId });
+  const { user } = useAuth();
+  const campusQ = useQuery({ queryKey: ["tracker", "campus"], queryFn: campus.tracker, enabled: user?.role === "student" });
+  const campusItems = (campusQ.data ?? []).filter((t) => t.kind === "campus");
   const [dragId, setDragId] = useState<number | null>(null);
   const [over, setOver] = useState<AppStatus | null>(null);
 
@@ -41,7 +54,7 @@ export function TrackerPage() {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
-  if (!candidateId) {
+  if (!candidateId && campusItems.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-8">
         <EmptyState title="Upload your resume to start tracking" action={<Link to="/" className="btn-primary">Upload resume</Link>} />
@@ -66,17 +79,18 @@ export function TrackerPage() {
       </div>
       {apps.isLoading && <div className="mt-6"><Spinner /></div>}
       {apps.error && <div className="mt-6"><ErrorNote error={apps.error} /></div>}
-      {apps.data && list.length === 0 && (
+      {apps.data && list.length === 0 && campusItems.length === 0 && (
         <div className="mt-6">
           <EmptyState title="Nothing tracked yet" action={<Link to="/jobs" className="btn-primary">Browse matched jobs</Link>}>
             Save a job or apply from the results page and it shows up here.
           </EmptyState>
         </div>
       )}
-      {list.length > 0 && (
+      {(list.length > 0 || campusItems.length > 0) && (
         <div className="mt-5 grid gap-3 overflow-x-auto pb-4 [grid-template-columns:repeat(6,minmax(15rem,1fr))]">
           {APP_STATUSES.map((s) => {
             const items = list.filter((a) => a.status === s);
+            const campusHere = campusItems.filter((c) => columnFor(c.stage) === s);
             return (
               <section
                 key={s}
@@ -94,11 +108,12 @@ export function TrackerPage() {
                 <header className="px-1 pb-2">
                   <h2 className="flex items-center justify-between text-sm font-semibold">
                     {s}
-                    <span className="rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-slate-700">{items.length}</span>
+                    <span className="rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-slate-700">{items.length + campusHere.length}</span>
                   </h2>
                   <p className="text-xs muted">{COLUMN_HINT[s]}</p>
                 </header>
                 <div className="space-y-2">
+                  {campusHere.map((c) => <CampusCard key={c.id} c={c} />)}
                   {items.map((a) => (
                     <TrackerCard
                       key={a.id}
@@ -143,7 +158,8 @@ function TrackerCard({
   const [open, setOpen] = useState(false);
   return (
     <article draggable onDragStart={onDragStart} className={`card cursor-grab p-3 text-sm active:cursor-grabbing ${dragging ? "opacity-50" : ""}`}>
-      <h3 className="font-medium leading-snug">
+      <Chip tone="slate">Open market</Chip>
+      <h3 className="mt-1 font-medium leading-snug">
         {a.job_id ? (
           <Link to={`/jobs?job=${a.job_id}`} className="hover:text-brand-600 hover:underline">
             {a.title}
@@ -193,6 +209,20 @@ function TrackerCard({
           onBlur={() => notes !== a.notes && onNotes(notes)}
         />
       )}
+    </article>
+  );
+}
+
+/** Campus drive cards are read-only here: the placement office moves stages. */
+function CampusCard({ c }: { c: TrackerItem }) {
+  return (
+    <article className="card border-brand-200 p-3 text-sm dark:border-slate-700">
+      <Chip tone="blue">Campus drive · {c.stage}</Chip>
+      <h3 className="mt-1 font-medium leading-snug">
+        {c.link ? <Link to={c.link} className="hover:text-brand-600 hover:underline">{c.title}</Link> : c.title}
+      </h3>
+      <p className="text-xs muted">{c.company}</p>
+      <p className="mt-1 text-xs muted">Updated {timeAgo(c.updated_at).toLowerCase()}</p>
     </article>
   );
 }

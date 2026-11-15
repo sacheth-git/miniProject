@@ -39,6 +39,18 @@ def link_check_job() -> None:
         http.close()
 
 
+def deadline_job() -> None:
+    from app.campus.lifecycle import deadline_reminders
+
+    with SessionLocal() as db:
+        try:
+            n = deadline_reminders(db)
+            if n:
+                log.info("Sent %d drive deadline reminders", n)
+        except Exception:
+            log.exception("Deadline reminders failed")
+
+
 def start_scheduler(ingest_hours: int = 12) -> BackgroundScheduler:
     global _scheduler
     if _scheduler is not None:
@@ -46,6 +58,7 @@ def start_scheduler(ingest_hours: int = 12) -> BackgroundScheduler:
     sched = BackgroundScheduler(timezone="Asia/Kolkata", job_defaults={"coalesce": True, "max_instances": 1})
     sched.add_job(ingest_job, IntervalTrigger(hours=ingest_hours), id="ingest", replace_existing=True)
     sched.add_job(link_check_job, CronTrigger(hour=2, minute=30), id="link_check", replace_existing=True)
+    sched.add_job(deadline_job, IntervalTrigger(hours=1), id="deadline_reminders", replace_existing=True)
     sched.start()
     _scheduler = sched
     log.info("Scheduler started: ingest every %dh, link check daily 02:30 IST", ingest_hours)

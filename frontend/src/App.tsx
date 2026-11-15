@@ -20,6 +20,7 @@ import { DriveEditorPage } from "./pages/tpo/DriveEditorPage";
 import { DrivesPage } from "./pages/tpo/DrivesPage";
 import { StudentsPage } from "./pages/tpo/StudentsPage";
 import { ConsentPage } from "./pages/ConsentPage";
+import { CampusDrivePage, CampusDrivesPage, ReadinessPage } from "./pages/CampusPages";
 import { TrackerPage } from "./pages/TrackerPage";
 import { UploadPage } from "./pages/UploadPage";
 
@@ -78,6 +79,9 @@ function Shell() {
           <Route path="/elsewhere" element={seeker(<ElsewherePage />)} />
           <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
           <Route path="/consent" element={<RequireAuth roles={["student"]}><ConsentPage /></RequireAuth>} />
+          <Route path="/campus" element={<RequireAuth roles={["student"]}><CampusDrivesPage /></RequireAuth>} />
+          <Route path="/campus/:id" element={<RequireAuth roles={["student"]}><CampusDrivePage /></RequireAuth>} />
+          <Route path="/readiness" element={<RequireAuth roles={["student"]}><ReadinessPage /></RequireAuth>} />
           <Route path="/tpo" element={tpoOnly(<StudentsPage />)} />
           <Route path="/tpo/drives" element={tpoOnly(<DrivesPage />)} />
           <Route path="/tpo/drives/new" element={tpoOnly(<DriveEditorPage />)} />

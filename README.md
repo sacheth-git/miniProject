@@ -18,7 +18,8 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 5 | Frontend: upload, ranked results with filters, apply menu, job details, skill gap, import, tracker, settings | done |
 | 5A | Auth: login/register, roles, JWT, multi-tenant isolation, student consent | done |
 | 5B | TPO core: bulk import, drives, eligibility with reasons, ranked blind shortlist, exports, audit log | done |
-| 5C–5D | Rounds, offers, notifications, student drives, readiness, analytics, share links | pending |
+| 5C | Rounds Kanban + results CSV, offers with placement policy, notifications, student campus drives, readiness, unified tracker | done |
+| 5D | Placement analytics, skill-gap heatmap, fairness report, recruiter share links | pending |
 | 6 | Evaluation | pending |
 | 7 | Polish and docs | pending |
 
@@ -100,7 +101,21 @@ password `Demo@2026`: placement officer `tpo@demo.skillmatch.example`, students 
 4. **Shortlist**: eligible students ranked by the same skill-weighted score students see. Blind review hides names
    (on by default). Shortlist the top N, everyone above a match %, or tick students by hand; "Why" explains each rank.
 5. **Export**: Excel, CSV, PDF summary or a ZIP of resumes, with chosen columns, blind or named.
-6. **Audit log**: every shortlist edit, rule change, weight change, import and export, with before / after values.
+6. **Rounds**: a Kanban per drive (Applied, Shortlisted, each round, Offer, Accepted, Rejected). Drag a card, move a
+   selection, or upload a round's results CSV (`roll_no,result` with pass / fail): passes move to the next round,
+   the rest are rejected. Students are notified of every move.
+7. **Offers**: record an offer (placement policy is checked), and record decisions students give offline.
+8. **Audit log**: every shortlist edit, stage move, offer, rule change, weight change, import and export, with before /
+   after values.
+
+Students see **Campus drives** (eligible first; ineligible ones show the exact reason), apply or withdraw before the
+deadline, follow a stage timeline, accept or decline offers, and get a **Readiness** score (match with open drives,
+profile completeness, resume ATS checks) with the top 3 things to improve. One **Applications** board shows campus and
+open-market applications with a source label. Notifications arrive in-app (bell) and by email when `SMTP_HOST` is set
+(printed to the console otherwise): new eligible drive, deadline within 24 h, stage changes, offers.
+Accepting an offer marks the student placed, declines their other pending offers and withdraws their other active
+campus applications (when "block after accepting" is on). Students can't delete their data while a campus
+application is still active; the app tells them why.
 
 SkillMatch recommends; the placement officer makes every decision. Gender, name, photo and college are never used in
 scoring, and gender is never available as an eligibility filter.
@@ -118,8 +133,10 @@ scoring, and gender is never available as an eligibility filter.
 ```powershell
 cd backend;  .\.venv\Scripts\python.exe -m pytest --cov=app
 cd frontend; npm test
-# End to end against a running API on :8000 (real upload, ranking, apply, tracker):
-cd frontend; $env:E2E="1"; npx vitest run src/test/e2e.test.tsx
+# End to end against a running API on :8000:
+#   e2e.test.tsx         job seeker: sign up -> upload -> results -> apply -> tracker
+#   e2e_campus.test.tsx  campus: TPO creates drive -> student applies -> rounds -> offer -> student accepts
+cd frontend; $env:E2E="1"; npx vitest run src/test/e2e.test.tsx src/test/e2e_campus.test.tsx
 ```
 
 The first start downloads the embedding model `BAAI/bge-small-en-v1.5` (~130 MB) and warms it up in the background.
