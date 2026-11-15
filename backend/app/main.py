@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import admin, applications, auth, deeplinks, health, imports, jobs, match, resume, tpo
+from app.api import admin, applications, auth, deeplinks, health, imports, jobs, match, resume, tpo, tpo_drives
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -53,6 +53,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(auth.student_router)
     app.include_router(tpo.router)
+    app.include_router(tpo_drives.router)
     app.include_router(resume.router)
     app.include_router(jobs.router)
     app.include_router(imports.router)

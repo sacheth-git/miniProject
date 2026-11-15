@@ -11,7 +11,12 @@ const SEEKER_LINKS = [
   { to: "/import", label: "Import" },
   { to: "/elsewhere", label: "Search elsewhere" },
 ];
-const TPO_LINKS = [{ to: "/tpo", label: "Students" }];
+const TPO_LINKS = [
+  { to: "/tpo", label: "Students" },
+  { to: "/tpo/drives", label: "Drives" },
+  { to: "/tpo/audit", label: "Audit log" },
+  { to: "/tpo/policy", label: "Policy" },
+];
 const GUEST_LINKS = [{ to: "/jobs", label: "Jobs" }];
 
 const ROLE_LABEL: Record<string, string> = {
@@ -66,7 +71,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
         </Link>
         <nav aria-label="Primary" className="hidden items-stretch md:flex">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} className={navCls}>
+            <NavLink key={l.to} to={l.to} end={l.to === "/tpo"} className={navCls}>
               {l.label}
               {l.to === "/tracker" && active > 0 && (
                 <span className="rounded-full bg-slate-200 px-1.5 text-[11px] font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">{active}</span>

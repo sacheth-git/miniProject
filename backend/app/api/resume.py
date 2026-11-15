@@ -16,6 +16,7 @@ from app.models.job import Job
 from app.models.user import User
 from app.parsing.pdf_parser import PDFParseError
 from app.schemas.resume import CandidateOut, PreferencesIn, ProcessingStep, SkillEdit, UploadResponse
+from app.services import resume_store
 from app.services.resume_pipeline import process_pdf, process_text
 from app.skills.taxonomy import get_taxonomy
 
@@ -56,6 +57,7 @@ async def upload_resume(
     db.add(cand)
     db.commit()
     db.refresh(cand)
+    resume_store.save(cand.id, data)  # original PDF, for the TPO's resume ZIP export
     log.info("Parsed resume %s: %d skills, %.1f yrs", cand.id, len(cand.skills), cand.years_experience)
     out = UploadResponse.model_validate(cand, from_attributes=True)
     return out.model_copy(update={"steps": [ProcessingStep(**s) for s in result.steps]})
@@ -138,5 +140,6 @@ def delete_resume(candidate_id: str, cand: Candidate = Depends(owned_candidate),
     db.execute(delete(Job).where(Job.owner_id == candidate_id))  # their imported jobs
     db.delete(cand)
     db.commit()
+    resume_store.delete(candidate_id)
     log.info("Deleted candidate %s and all derived data", candidate_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

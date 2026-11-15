@@ -141,6 +141,7 @@ export interface User {
   institution_id: string | null;
   institution_name: string | null;
   consent: boolean | null;
+  consent_status: "pending" | "given" | "withdrawn" | null;
   candidate_id: string | null;
 }
 
@@ -185,6 +186,9 @@ export interface StudentRow {
   cgpa: number | null;
   placed_status: string;
   consent: boolean;
+  consent_status: "pending" | "given" | "withdrawn";
+  active_backlogs: number;
+  must_reset_password: boolean;
   has_resume: boolean;
 }
 

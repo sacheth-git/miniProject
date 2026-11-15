@@ -16,6 +16,17 @@ sys.path.insert(0, str(BACKEND / "scripts"))
 
 
 @pytest.fixture(scope="session", autouse=True)
+def _isolate_file_stores(tmp_path_factory: pytest.TempPathFactory) -> None:
+    """Resume PDFs and import uploads go to temp dirs, never backend/data/."""
+    import app.campus.bulk_import as bi
+    import app.services.resume_store as rs
+
+    rs.STORE = tmp_path_factory.mktemp("resumes")
+    bi.IMPORT_DIR = tmp_path_factory.mktemp("imports")
+    bi.RUN_INLINE = True  # shared in-memory SQLite connection: no background thread in tests
+
+
+@pytest.fixture(scope="session", autouse=True)
 def _create_tables() -> None:
     import app.models  # noqa: F401
     from app.core.db import Base, engine

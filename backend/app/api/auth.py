@@ -29,6 +29,7 @@ from app.core.logging import get_logger
 from app.models.candidate import Candidate
 from app.models.job import Job
 from app.models.user import Institution, StudentProfile, User
+from app.services import resume_store
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 student_router = APIRouter(prefix="/student", tags=["student"])
@@ -75,6 +76,7 @@ class UserOut(BaseModel):
     institution_id: str | None
     institution_name: str | None
     consent: bool | None  # students only
+    consent_status: str | None  # pending | given | withdrawn (students only)
     candidate_id: str | None  # latest resume
 
 
@@ -114,7 +116,9 @@ def user_out(db: Session, u: User) -> UserOut:
     return UserOut(
         id=u.id, email=u.email, full_name=u.full_name, role=u.role, is_admin=u.is_admin,
         must_reset_password=u.must_reset_password, institution_id=u.institution_id,
-        institution_name=inst.name if inst else None, consent=prof.has_consent if prof else None, candidate_id=cand,
+        institution_name=inst.name if inst else None, consent=prof.has_consent if prof else None,
+        consent_status=("given" if prof.has_consent else "withdrawn" if prof.consent_withdrawn_at else "pending") if prof else None,
+        candidate_id=cand,
     )
 
 
@@ -264,6 +268,8 @@ def delete_account(user: User = Depends(get_current_user), db: Session = Depends
         db.execute(delete(Candidate).where(Candidate.id.in_(cand_ids)))
     db.delete(user)
     db.commit()
+    for cid in cand_ids:
+        resume_store.delete(cid)
     log.info("Deleted account %s and %d resume(s)", user.id, len(cand_ids))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 

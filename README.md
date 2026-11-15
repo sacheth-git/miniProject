@@ -17,7 +17,8 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 4 | Matching: skill-weighted scorer, FAISS retrieval, 5 baselines, explain, skill gap | done |
 | 5 | Frontend: upload, ranked results with filters, apply menu, job details, skill gap, import, tracker, settings | done |
 | 5A | Auth: login/register, roles, JWT, multi-tenant isolation, student consent | done |
-| 5B–5D | TPO mode: drives, eligibility, shortlists, rounds, analytics | pending |
+| 5B | TPO core: bulk import, drives, eligibility with reasons, ranked blind shortlist, exports, audit log | done |
+| 5C–5D | Rounds, offers, notifications, student drives, readiness, analytics, share links | pending |
 | 6 | Evaluation | pending |
 | 7 | Polish and docs | pending |
 
@@ -74,6 +75,35 @@ Placement officers register their institution from the same page. Guests can bro
 everything personal requires signing in. Passwords are hashed with argon2; access tokens last 30 minutes
 and refresh automatically; signing out (or changing the password) revokes every session.
 Accounts registered with an email in `ADMIN_EMAILS` can run ingestion (`/admin/*`).
+
+## Demo campus
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe scripts\seed_demo.py     # ~40 s: 1 institution, 120 synthetic students, 6 drives
+```
+
+Everything is synthetic (random name combinations, fictional companies). Logins printed by the script, all with
+password `Demo@2026`: placement officer `tpo@demo.skillmatch.example`, students such as
+`meera.001@demo.skillmatch.example`. Re-running replaces only the demo institution.
+
+## Placement office (TPO) workflow
+
+1. **Students**: share the invite code, or import a CSV (`roll_no,name,email,branch,batch,cgpa,active_backlogs,tenth,twelfth`)
+   plus a ZIP of `{roll_no}.pdf` resumes. The preview flags bad rows (bad CGPA, duplicate roll number, missing resume)
+   before anything changes; the import then runs in the background with a progress bar. New students get a temporary
+   password (downloadable once) and must set their own, then agree to share their profile.
+2. **Drives**: paste or upload the JD; skills and weights are extracted and editable (required / preferred, weight).
+   Set eligibility (branches, batch, CGPA, backlogs, 10th / 12th or diploma), rounds and deadline.
+3. **Eligibility**: every ineligible student gets explicit reasons ("CGPA 6.8 < 7", "Branch ECE not allowed",
+   "Dream rule: drive CTC 10 LPA < 1.5 x current offer 8 LPA"), including the institution's placement policy.
+4. **Shortlist**: eligible students ranked by the same skill-weighted score students see. Blind review hides names
+   (on by default). Shortlist the top N, everyone above a match %, or tick students by hand; "Why" explains each rank.
+5. **Export**: Excel, CSV, PDF summary or a ZIP of resumes, with chosen columns, blind or named.
+6. **Audit log**: every shortlist edit, rule change, weight change, import and export, with before / after values.
+
+SkillMatch recommends; the placement officer makes every decision. Gender, name, photo and college are never used in
+scoring, and gender is never available as an eligibility filter.
 
 ## Using the app
 

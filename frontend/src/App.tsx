@@ -14,7 +14,12 @@ import { JobsPage } from "./pages/JobsPage";
 import { LandingPage } from "./pages/LandingPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { StatusPage } from "./pages/StatusPage";
-import { TpoHomePage } from "./pages/TpoHomePage";
+import { AuditPage, PolicyPage } from "./pages/tpo/AuditPolicyPages";
+import { DriveDetailPage } from "./pages/tpo/DriveDetailPage";
+import { DriveEditorPage } from "./pages/tpo/DriveEditorPage";
+import { DrivesPage } from "./pages/tpo/DrivesPage";
+import { StudentsPage } from "./pages/tpo/StudentsPage";
+import { ConsentPage } from "./pages/ConsentPage";
 import { TrackerPage } from "./pages/TrackerPage";
 import { UploadPage } from "./pages/UploadPage";
 
@@ -37,6 +42,7 @@ function Home() {
   if (!user) return <LandingPage />;
   if (user.must_reset_password) return <Navigate to="/change-password" replace />;
   if (user.role === "tpo") return <Navigate to="/tpo" replace />;
+  if (user.role === "student" && user.consent_status === "pending") return <Navigate to="/consent" replace />;
   return isSeeker(user) ? <UploadPage /> : <LandingPage />;
 }
 
@@ -52,6 +58,7 @@ function Shell() {
   }, [dark]);
 
   const seeker = (el: JSX.Element) => <RequireAuth roles={[...SEEKERS]}>{el}</RequireAuth>;
+  const tpoOnly = (el: JSX.Element) => <RequireAuth roles={["tpo"]}>{el}</RequireAuth>;
   return (
     <div className="flex min-h-full flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">
@@ -70,7 +77,14 @@ function Shell() {
           <Route path="/import" element={seeker(<ImportPage />)} />
           <Route path="/elsewhere" element={seeker(<ElsewherePage />)} />
           <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
-          <Route path="/tpo" element={<RequireAuth roles={["tpo"]}><TpoHomePage /></RequireAuth>} />
+          <Route path="/consent" element={<RequireAuth roles={["student"]}><ConsentPage /></RequireAuth>} />
+          <Route path="/tpo" element={tpoOnly(<StudentsPage />)} />
+          <Route path="/tpo/drives" element={tpoOnly(<DrivesPage />)} />
+          <Route path="/tpo/drives/new" element={tpoOnly(<DriveEditorPage />)} />
+          <Route path="/tpo/drives/:id" element={tpoOnly(<DriveDetailPage />)} />
+          <Route path="/tpo/drives/:id/edit" element={tpoOnly(<DriveEditorPage />)} />
+          <Route path="/tpo/audit" element={tpoOnly(<AuditPage />)} />
+          <Route path="/tpo/policy" element={tpoOnly(<PolicyPage />)} />
           <Route path="/status" element={<StatusPage />} />
           <Route path="*" element={<div className="mx-auto max-w-3xl px-4 py-12">Page not found. <Link to="/" className="text-brand-600 hover:underline">Go home</Link></div>} />
         </Routes>

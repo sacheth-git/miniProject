@@ -243,6 +243,9 @@ class Scorer:
     def jd_weights(self, req: list[dict[str, Any]], pref: list[dict[str, Any]], idf: dict[str, float]) -> np.ndarray:
         out = []
         for s, t in [(s, REQUIRED_TYPE) for s in req] + [(s, PREFERRED_TYPE) for s in pref]:
+            if s.get("weight") is not None:  # set explicitly (campus drives: TPO-edited)
+                out.append(float(s["weight"]))
+                continue
             tw = t if self.cfg.use_type_weights else 1.0
             iw = idf.get(s["skill_id"], 1.0) if self.cfg.use_idf else 1.0
             out.append(tw * iw)

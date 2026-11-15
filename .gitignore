@@ -36,3 +36,5 @@ Thumbs.db
 .ipynb_checkpoints/
 *.tsbuildinfo
 frontend/.vite/
+backend/data/resumes/
+backend/data/imports/
