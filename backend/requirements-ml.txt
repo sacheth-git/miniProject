@@ -10,3 +10,8 @@ scikit-learn==1.6.0
 scipy==1.14.1
 numpy>=1.26,<2.2
 beautifulsoup4==4.12.3
+
+# Evaluation
+matplotlib==3.9.2
+datasets==3.1.0  # sentence-transformers fine-tuning (eval/finetune.py)
+accelerate==1.6.0  # sentence-transformers fine-tuning

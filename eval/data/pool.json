@@ -1,0 +1,1202 @@
+[
+ {
+  "id": "f79a90d2f3884ab892b706cf9a96f38b",
+  "title": "Software Engineer, Full Stack (Enterprise Lifecycle) (High Seniority)",
+  "company": "Benchling",
+  "family": "fullstack"
+ },
+ {
+  "id": "2ac54475555d4159a6a31764efb00526",
+  "title": "Full Stack Engineer, Money Movement",
+  "company": "Stripe",
+  "family": "fullstack"
+ },
+ {
+  "id": "58a2c2f4f2204deebfdb7dc200b766da",
+  "title": "Full Stack Technical Developer",
+  "company": "Elastic",
+  "family": "fullstack"
+ },
+ {
+  "id": "c7f0ee7d1bb240e5b0da1fcf84b3c64f",
+  "title": "Fullstack Developer (Backend with Devops and Python)",
+  "company": "METRO Global Solution Center IN",
+  "family": "fullstack"
+ },
+ {
+  "id": "dd0070f1fd604591928b2b3d50cce943",
+  "title": "Full-Stack Software Engineer, Applied Foundations",
+  "company": "Openai",
+  "family": "fullstack"
+ },
+ {
+  "id": "741e0a9f921c4449996e136e98e27059",
+  "title": "Full Stack Software Engineer, Cybersecurity Products",
+  "company": "Openai",
+  "family": "fullstack"
+ },
+ {
+  "id": "bfe5213abe184f67b78780c5a7ec45fe",
+  "title": "Python Full Stack Developer",
+  "company": "Compunet Connections",
+  "family": "fullstack"
+ },
+ {
+  "id": "4348f8cfba8a40d9b1981bcee55fd01e",
+  "title": "Technical Lead (Full Stack)",
+  "company": "Sigmoid",
+  "family": "fullstack"
+ },
+ {
+  "id": "8c6810f5edaa409d8bb5ad478080bd1e",
+  "title": "Principal Fullstack/Backend Software Engineer, User Connections",
+  "company": "Roblox",
+  "family": "fullstack"
+ },
+ {
+  "id": "04192afbd5d94ae4b419a2fe04702117",
+  "title": "Lead Software Engineer (Fullstack - Node.js, React, Typescript, Java, Kotlin)",
+  "company": "Thoughtworks",
+  "family": "fullstack"
+ },
+ {
+  "id": "41e7882ef6cf429d9bacbd3808321945",
+  "title": "Sr. Software Engineer - Full Stack",
+  "company": "Pinterest",
+  "family": "fullstack"
+ },
+ {
+  "id": "5212c9170f79491482283c224394888f",
+  "title": "Engineering Lead, Full Stack, Growth Team",
+  "company": "Airwallex",
+  "family": "fullstack"
+ },
+ {
+  "id": "1140503494414977911ad312e62fafab",
+  "title": "Senior Software Engineer, Fullstack (International)",
+  "company": "Affirm",
+  "family": "fullstack"
+ },
+ {
+  "id": "8901ed723041469dbd5ef8e43edaed57",
+  "title": "Senior Software Engineer \u2013 Java Full Stack",
+  "company": "Toast",
+  "family": "fullstack"
+ },
+ {
+  "id": "46b9281595d3438580186107ba7e7473",
+  "title": "Applied AI Engineer, Startups",
+  "company": "Openai",
+  "family": "ml"
+ },
+ {
+  "id": "1f1685937d294621a408fdd4f6afe045",
+  "title": "Research Engineer, Machine Learning (Reinforcement Learning)",
+  "company": "Anthropic",
+  "family": "ml"
+ },
+ {
+  "id": "43a1e21697844c8ea1beadb7d559910e",
+  "title": "Research Engineer, Machine Learning (RL Velocity)",
+  "company": "Anthropic",
+  "family": "ml"
+ },
+ {
+  "id": "6cf5b898af884dc18747e1181a9722c3",
+  "title": "Applied Data Scientist, Personalization & Machine Learning",
+  "company": "Openai",
+  "family": "ml"
+ },
+ {
+  "id": "6feedd8c72e640a9953090248284c60a",
+  "title": "Machine Learning Engineer \u2013 Ad Sciences",
+  "company": "InMobi",
+  "family": "ml"
+ },
+ {
+  "id": "ebeb8d89de5f4c4fbf6c16ee046facd5",
+  "title": "Machine Learning Engineer, Implicit Signals",
+  "company": "Openai",
+  "family": "ml"
+ },
+ {
+  "id": "9a15d8d2bfc243159f9edaba2ad0209c",
+  "title": "Machine Learning Engineer - Subscriptions",
+  "company": "Spotify",
+  "family": "ml"
+ },
+ {
+  "id": "dfd439df27914ac59692aa01e31195e7",
+  "title": "Principal Machine Learning Engineer",
+  "company": "Zscaler",
+  "family": "ml"
+ },
+ {
+  "id": "8b8cbf462d4e43a8bf6012fc26a2b4fb",
+  "title": "Principal Machine Learning Engineer- LLM Fine-tuning and Optimization",
+  "company": "Airbnb",
+  "family": "ml"
+ },
+ {
+  "id": "846efcadf36249aba8ac00f5683fbfd6",
+  "title": "Senior Machine Learning Engineer",
+  "company": "Coinbase",
+  "family": "ml"
+ },
+ {
+  "id": "d5d8a9fc910b401cbab19baf3e4cf92d",
+  "title": "Senior Applied Scientist II, Ads Optimization",
+  "company": "Instacart",
+  "family": "ml"
+ },
+ {
+  "id": "53def50cedd94eeb988475ead74d8755",
+  "title": "Sr. Engineer - Machine Learning",
+  "company": "Magna International, Inc",
+  "family": "ml"
+ },
+ {
+  "id": "9721bcf75fc44626a76f5b830777696e",
+  "title": "Senior Staff Applied Scientist, Science Platform",
+  "company": "Reddit",
+  "family": "ml"
+ },
+ {
+  "id": "38ebda4ba1d3426ab1185b451a65cbd6",
+  "title": "Staff Machine Learning Engineer, Traffic Intelligence",
+  "company": "Airbnb",
+  "family": "ml"
+ },
+ {
+  "id": "9303e44368814dd18e681ab326dc0dfe",
+  "title": "Agent Data Scientist",
+  "company": "Decagon",
+  "family": "data_sci"
+ },
+ {
+  "id": "a3dc4a72eaf94912a88991bf39289140",
+  "title": "Data Scientist",
+  "company": "Quest Global",
+  "family": "data_sci"
+ },
+ {
+  "id": "5ff42ccc26a847d891d34c3d9c3c88ea",
+  "title": "Data Scientist",
+  "company": "Global Payment Holding Company",
+  "family": "data_sci"
+ },
+ {
+  "id": "6d51543dfd624afea571b6efee87aef6",
+  "title": "Data Scientist, Product",
+  "company": "Harvey",
+  "family": "data_sci"
+ },
+ {
+  "id": "077121e90ac34469bb8daf645f137ea2",
+  "title": "Data Scientist",
+  "company": "Onit",
+  "family": "data_sci"
+ },
+ {
+  "id": "47287d2785ef414a8ea8e04ee11047df",
+  "title": "Data Scientist",
+  "company": "ascendion",
+  "family": "data_sci"
+ },
+ {
+  "id": "413dc2f380544575933094c225d4b9a5",
+  "title": "Data Scientist",
+  "company": "EXL",
+  "family": "data_sci"
+ },
+ {
+  "id": "273f40b8db7946c19b9e27f152c1e841",
+  "title": "Lead Data Scientist, Credit Risk",
+  "company": "Chime Financial, Inc",
+  "family": "data_sci"
+ },
+ {
+  "id": "ca14292359f449a2b719ee24d996899d",
+  "title": "Senior Data Scientist",
+  "company": "Databricks",
+  "family": "data_sci"
+ },
+ {
+  "id": "8f270a2b04254ba893e0e37845c12677",
+  "title": "Senior Data Scientist, Ads",
+  "company": "Reddit",
+  "family": "data_sci"
+ },
+ {
+  "id": "e0b439737a6a4a8186b29f50def32e9e",
+  "title": "Senior Staff Data Scientist, Guest & Host Marketplace AI",
+  "company": "Airbnb",
+  "family": "data_sci"
+ },
+ {
+  "id": "45d5e57a57f6496987d0f9c733733fd6",
+  "title": "Senior Data Scientist, Anaytics (Risk & Compliance)",
+  "company": "Airwallex",
+  "family": "data_sci"
+ },
+ {
+  "id": "112c4db56604411db8545789e8c5c27e",
+  "title": "Staff Data Scientist - Ads Measurement, Signals, Privacy",
+  "company": "Reddit",
+  "family": "data_sci"
+ },
+ {
+  "id": "d4c4cdb3ec7d408799586bee77c3b98f",
+  "title": "Director, Data Science",
+  "company": "Figma",
+  "family": "data_sci"
+ },
+ {
+  "id": "66145babbf984e32b6bb4f97e5e9a8ab",
+  "title": "Data Engineer",
+  "company": "Benchling",
+  "family": "data_eng"
+ },
+ {
+  "id": "47b1f39d25fd4ca7929034d20c40c2df",
+  "title": "Analytics Engineer",
+  "company": "Linear",
+  "family": "data_eng"
+ },
+ {
+  "id": "6abb9bd7013e46af9826a8705d7696f4",
+  "title": "Analytics Engineer Intern",
+  "company": "Coinbase",
+  "family": "data_eng"
+ },
+ {
+  "id": "79f3a9fd444445b3874692d4dd17940c",
+  "title": "Data Engineer, Core Experimentation",
+  "company": "Openai",
+  "family": "data_eng"
+ },
+ {
+  "id": "4950e7382e514f0f81bd512ae2f2d450",
+  "title": "GTM Engineer - Data Platform",
+  "company": "Modal",
+  "family": "data_eng"
+ },
+ {
+  "id": "37c32b46973f446488ca6074a0fd2edd",
+  "title": "Data Engineer",
+  "company": "Openai",
+  "family": "data_eng"
+ },
+ {
+  "id": "3fe0af0f9c67453fb513043ab949bb14",
+  "title": "Learning & Development Partner \u2013 Data Engineering Business",
+  "company": "Sigmoid",
+  "family": "data_eng"
+ },
+ {
+  "id": "c46ec5f50de84842b97c08fb774ed248",
+  "title": "Senior Data Engineer",
+  "company": "SoFi",
+  "family": "data_eng"
+ },
+ {
+  "id": "5e8f204f4c9b4182ae91c9ab9abaeb49",
+  "title": "Staff Data Engineer",
+  "company": "Webflow",
+  "family": "data_eng"
+ },
+ {
+  "id": "e1734a9753a3411a80ed7e3e047e5494",
+  "title": "Senior Manager, Data Engineering - Valorant",
+  "company": "Riot Games",
+  "family": "data_eng"
+ },
+ {
+  "id": "a806680972e04113ae82b673f8df7c23",
+  "title": "Senior Engineering Manager, Ads Data Platform",
+  "company": "Roblox",
+  "family": "data_eng"
+ },
+ {
+  "id": "748636c6aa3642fc9582218da178d52a",
+  "title": "Senior Data Engineer",
+  "company": "ZoomInfo Technologies LLC",
+  "family": "data_eng"
+ },
+ {
+  "id": "9a4b6bf59c7e4fa388701c0bbfa8be89",
+  "title": "Staff+ Research Engineer, RL Data Platform",
+  "company": "Anthropic",
+  "family": "data_eng"
+ },
+ {
+  "id": "9b110da6b18642abab82030c89e542aa",
+  "title": "Specialist Solutions Architect - Data Engineering",
+  "company": "Databricks",
+  "family": "data_eng"
+ },
+ {
+  "id": "cf762946f95f424eb4e9c8810d3beeb1",
+  "title": "Associate Data Analyst (New Graduate, Thai Speaking) (Marketing Analytics, Bangkok Based)",
+  "company": "Agoda",
+  "family": "data_analyst"
+ },
+ {
+  "id": "348616874dad4ff8a4aca3c0556a4b20",
+  "title": "Data Analyst - HR",
+  "company": "DNEG",
+  "family": "data_analyst"
+ },
+ {
+  "id": "eab35ed6aaaf43da98731fd138163ab7",
+  "title": "Vice President, Marketing Analytics \u2013 Content & Product Marketing",
+  "company": "Careers at KKR",
+  "family": "data_analyst"
+ },
+ {
+  "id": "4daa7094772d414ab0ca38f31f32c298",
+  "title": "Technical Operations & Insights Analyst",
+  "company": "Figma",
+  "family": "data_analyst"
+ },
+ {
+  "id": "01a45f2ccf024191891d7e0301fd0bf5",
+  "title": "Data Analyst",
+  "company": "U.S. Bank",
+  "family": "data_analyst"
+ },
+ {
+  "id": "fc1033bb93394d70958bae81b623f518",
+  "title": "AM/M - Risk Analytics - User Lending",
+  "company": "Meesho",
+  "family": "data_analyst"
+ },
+ {
+  "id": "c1d7abca7cc646ee8c0bf263c57ac89b",
+  "title": "Growth Management & Analytics- Recharges & Utilities I Exp- 4-6 Years",
+  "company": "Paytm",
+  "family": "data_analyst"
+ },
+ {
+  "id": "da2a72852c554f4c8614cc8dd6837b25",
+  "title": "Senior Data Analyst, Public Sector",
+  "company": "Scale AI",
+  "family": "data_analyst"
+ },
+ {
+  "id": "420a4edda5e34ec89c34359b0fd9fa8c",
+  "title": "Senior Marketing Analytics Manager",
+  "company": "Duolingo",
+  "family": "data_analyst"
+ },
+ {
+  "id": "4c035959ede6401a9122714620a58bf3",
+  "title": "Sr. Manager, Enterprise Analytics - G&A",
+  "company": "6sense",
+  "family": "data_analyst"
+ },
+ {
+  "id": "76b3d21e2c06471c9e9cebc1a741db7e",
+  "title": "Internal Audit Data Analytics Lead",
+  "company": "Stripe",
+  "family": "data_analyst"
+ },
+ {
+  "id": "a0aa4126650a453ebe8c6081ecef2fab",
+  "title": "Revenue Analytics Manager",
+  "company": "Cresta",
+  "family": "data_analyst"
+ },
+ {
+  "id": "0777896d961d494badf24e36788a6a04",
+  "title": "Analytics Lead, Central Market Management",
+  "company": "Lyft",
+  "family": "data_analyst"
+ },
+ {
+  "id": "2841ea5dd414498e803edaac87990418",
+  "title": "Data Analyst / Senior Data Analyst",
+  "company": "Rhythm Innovations",
+  "family": "data_analyst"
+ },
+ {
+  "id": "2dc69debef5e494f91b870be919b9228",
+  "title": "DevOps Engineer",
+  "company": "Sarvam",
+  "family": "devops"
+ },
+ {
+  "id": "477286923f8b4c69a955f73359d49b66",
+  "title": "Devops Engineer",
+  "company": "Euphoric Thought Technologies",
+  "family": "devops"
+ },
+ {
+  "id": "4c9d1a0148684203911cb989ae42e274",
+  "title": "Systems Engineer - Platform / SRE (Kubernetes/GCP)",
+  "company": "trivago",
+  "family": "devops"
+ },
+ {
+  "id": "6e4578c43a68441bbc6e823b52c2ab04",
+  "title": "Software Engineer, Infrastructure Engineering",
+  "company": "Reddit",
+  "family": "devops"
+ },
+ {
+  "id": "a399825956934dc3b111f855f2600e70",
+  "title": "Splunk Infrastructure Engineer",
+  "company": "Okta",
+  "family": "devops"
+ },
+ {
+  "id": "6f7d553da59d441e8ccee21758d9b76c",
+  "title": "Embedded DevOps Engineer",
+  "company": "Veralto",
+  "family": "devops"
+ },
+ {
+  "id": "331e3b98b2514529aed52c0b7f69608a",
+  "title": "DevOps Engineer, Edge and Developer Experience (Remote Eligible in Bulgaria)",
+  "company": "Smartsheet",
+  "family": "devops"
+ },
+ {
+  "id": "6d5e9c333f004f0fa179f8561649001f",
+  "title": "Senior Site Reliability Engineer, Ads",
+  "company": "Reddit",
+  "family": "devops"
+ },
+ {
+  "id": "112167d7c6d047c49d90d2e9c61a880c",
+  "title": "Lead Platform Engineer",
+  "company": "Careers at KKR",
+  "family": "devops"
+ },
+ {
+  "id": "ba2c7fac7c374319ae877cadece5840b",
+  "title": "Senior Information Security Infrastructure Engineer - Security Architecture - InfoSec",
+  "company": "Elastic",
+  "family": "devops"
+ },
+ {
+  "id": "35c819a02a0e4fc2b2f23c983a297a89",
+  "title": "Member of Technical Staff - Platform Engineering",
+  "company": "Modal",
+  "family": "devops"
+ },
+ {
+  "id": "39236e755c664c34aefb4e4bba30b21a",
+  "title": "Sr. DevOps Engineer",
+  "company": "Zscaler",
+  "family": "devops"
+ },
+ {
+  "id": "1243a710b5424334a0d3705a821a2e09",
+  "title": "Senior Site Reliability Engineer (Hosted Infra)",
+  "company": "Elastic",
+  "family": "devops"
+ },
+ {
+  "id": "f023374aeb664060a9fc76ce87417cc8",
+  "title": "Senior Corporate Enterprise Platform Engineer, Windows",
+  "company": "Dropbox",
+  "family": "devops"
+ },
+ {
+  "id": "a22c029bb3974b9e92d4c5a3f34a04f5",
+  "title": "Hardware Field Quality Engineer Intern (Summer 2027)",
+  "company": "Lyft",
+  "family": "qa"
+ },
+ {
+  "id": "d15aecc243914eda9c6f438902a9bd88",
+  "title": "SDET Intern",
+  "company": "Epic Games",
+  "family": "qa"
+ },
+ {
+  "id": "4f44ca50dad74bb79e761405a1727b12",
+  "title": "Embedded Quality Assurance Engineer",
+  "company": "X-Rite",
+  "family": "qa"
+ },
+ {
+  "id": "7ff614116b6a44858d77cb715e225cec",
+  "title": "Operations Quality Assurance, Associate (Merchant Risk / Underwriting)",
+  "company": "Airwallex",
+  "family": "qa"
+ },
+ {
+  "id": "6544f089460449eb8738d6b881a5f905",
+  "title": "Robotics Test Engineer",
+  "company": "Openai",
+  "family": "qa"
+ },
+ {
+  "id": "710fd5ba3303427d9ca906d2de6f82c4",
+  "title": "SDET-2",
+  "company": "Zinier",
+  "family": "qa"
+ },
+ {
+  "id": "193900cc95c84c8084efe0b70502e070",
+  "title": "QA Automation Engineer",
+  "company": "Verkada",
+  "family": "qa"
+ },
+ {
+  "id": "0b0e7c2b2b044ab297e6789e8b1f97f9",
+  "title": "Senior Embedded Test Engineer",
+  "company": "Emerson",
+  "family": "qa"
+ },
+ {
+  "id": "48196c46757042a290e0678bb97cd20a",
+  "title": "SDET II",
+  "company": "ZoomInfo Technologies LLC",
+  "family": "qa"
+ },
+ {
+  "id": "6dfdbd9082414b508210861e1a201261",
+  "title": "Senior Test Engineer \u2013 Alarms",
+  "company": "Verkada",
+  "family": "qa"
+ },
+ {
+  "id": "47182ace33fb44c6b00b33111abbba1c",
+  "title": "Senior Quality Engineer",
+  "company": "Roblox",
+  "family": "qa"
+ },
+ {
+  "id": "efc1e8d778a54552951e171a61e8409b",
+  "title": "Senior Software Test Engineer",
+  "company": "Coursera",
+  "family": "qa"
+ },
+ {
+  "id": "9175d02ff8214e84a17e26afb37f5b9c",
+  "title": "Senior Software Engineer, Mobile QA",
+  "company": "Coinbase",
+  "family": "qa"
+ },
+ {
+  "id": "aa2f751c602842099e95f4471d6b9e07",
+  "title": "Staff Software Engineer, Mobile QA",
+  "company": "Coinbase",
+  "family": "qa"
+ },
+ {
+  "id": "e40e7c3ecbba4e5e976785a42ef5a60f",
+  "title": "Front-end Software Engineer",
+  "company": "Tripadvisor",
+  "family": "frontend"
+ },
+ {
+  "id": "ea056c7b0238425fb36face3d53f600a",
+  "title": "UI Engineer \u2013 React.js",
+  "company": "Training Basket",
+  "family": "frontend"
+ },
+ {
+  "id": "81c595dab9a549bb9a05fe6b57906464",
+  "title": "Jr. Frontend Developer (Angular)",
+  "company": "Enzigma",
+  "family": "frontend"
+ },
+ {
+  "id": "62ccc40a926d48d39611e5347f5061e8",
+  "title": "Frontend Engineer, Chanakya",
+  "company": "Sarvam",
+  "family": "frontend"
+ },
+ {
+  "id": "83ee0612f2864a53b752bc1b3aedd031",
+  "title": "Frontend Engineer, Design Systems",
+  "company": "Stripe",
+  "family": "frontend"
+ },
+ {
+  "id": "ce479ede7564438384c6cba50d162f43",
+  "title": "Front End Software Engineer, Media Player",
+  "company": "Reddit",
+  "family": "frontend"
+ },
+ {
+  "id": "e240b1be9e604ba3a893f41fd72189d4",
+  "title": "Software Engineer Intern, Frontend (Summer 2027)",
+  "company": "Lyft",
+  "family": "frontend"
+ },
+ {
+  "id": "08185df5a475483db646965234fd4642",
+  "title": "Senior Front End Software Engineer (Autofill)",
+  "company": "Bitwarden",
+  "family": "frontend"
+ },
+ {
+  "id": "11fbe3682c1e461a98dd657feb84c643",
+  "title": "Frontend Engineering Lead - Content",
+  "company": "trivago",
+  "family": "frontend"
+ },
+ {
+  "id": "1e3e3771b43a4a9b8f5974db7d659f83",
+  "title": "Staff Frontend Engineer, SecureAI",
+  "company": "Okta",
+  "family": "frontend"
+ },
+ {
+  "id": "3f58141af17a43819a5279a46a465012",
+  "title": "Sr Software Engineer II - Ads Manager (Front End)",
+  "company": "Instacart",
+  "family": "frontend"
+ },
+ {
+  "id": "957197edc30d4c6694e83830a04c21e5",
+  "title": "Senior Frontend Software Engineer, Ads Experience",
+  "company": "Roblox",
+  "family": "frontend"
+ },
+ {
+  "id": "e79083abd6434b04a539b23831431473",
+  "title": "Senior Engineering Manager, Grafana Frontend | Canada | Remote",
+  "company": "Grafana Labs",
+  "family": "frontend"
+ },
+ {
+  "id": "d3d2b9ad7cc24933ae28f0768e8ae168",
+  "title": "Senior Software Engineer, Frontend (Consumer - Payments)",
+  "company": "Coinbase",
+  "family": "frontend"
+ },
+ {
+  "id": "9195a59a07a4468199913970d7ffc2d5",
+  "title": "Java Backend Developer",
+  "company": "VY SYSTEMS PRIVATE LIMITED",
+  "family": "backend"
+ },
+ {
+  "id": "58526e7b891340b69891d79369579bba",
+  "title": "Software Development Engineer (Backend)",
+  "company": "AbleCredit",
+  "family": "backend"
+ },
+ {
+  "id": "76cb6cfac4fa45e9ad23bf9a5b980254",
+  "title": "Back-end Software Engineer",
+  "company": "Tripadvisor",
+  "family": "backend"
+ },
+ {
+  "id": "ab0faf6997b542cc94b6c2575b4b522a",
+  "title": "Backend Engineer, Consumer Devices",
+  "company": "Openai",
+  "family": "backend"
+ },
+ {
+  "id": "8a6305d07c0d4009ba54c013e83c5a7d",
+  "title": "Backend Engineer (Ruby), Plan: Spec-Driven Development",
+  "company": "GitLab",
+  "family": "backend"
+ },
+ {
+  "id": "e4a57dced64345328150e86ce73609e4",
+  "title": "Backend Software Engineer - Codex for Finance",
+  "company": "Openai",
+  "family": "backend"
+ },
+ {
+  "id": "4178ebd0b0b54735b8aadcbca4f14a6d",
+  "title": "Backend Developer (Python and Django)",
+  "company": "Ditto Insurance",
+  "family": "backend"
+ },
+ {
+  "id": "506c20af0d1c4aa6898900ba56971225",
+  "title": "Senior Backend Engineer - Alerts and Operations",
+  "company": "Verkada",
+  "family": "backend"
+ },
+ {
+  "id": "5433b7c97ebd4fed86ca3bd2d86e30cc",
+  "title": "Senior Software Engineer, Backend, Monetization",
+  "company": "Duolingo",
+  "family": "backend"
+ },
+ {
+  "id": "97ab7f1c772e4fe6a493b3a7b56d4b1c",
+  "title": "J2EE Backend Development \u2013 Lead Programmer Analyst (Exp: 5 Yrs to 7 Yrs)",
+  "company": "Bilvantis Technologies",
+  "family": "backend"
+ },
+ {
+  "id": "1493bc260e9945479f42eb7955f17c39",
+  "title": "Senior Software Engineer, Backend \u2014 Toast International",
+  "company": "Toast",
+  "family": "backend"
+ },
+ {
+  "id": "069fc8b2f6f740c193e7aa6dacc8d9cd",
+  "title": "Senior Software Engineer, Web3 Backend",
+  "company": "Robinhood",
+  "family": "backend"
+ },
+ {
+  "id": "5d7d74db353440f78a9b250407afd40c",
+  "title": "Senior Backend Engineer - ClickPipes Platform",
+  "company": "Clickhouse",
+  "family": "backend"
+ },
+ {
+  "id": "544a0335e4c94e5ea675f32eb10df524",
+  "title": "Senior/Staff - Go Backend Engineer - remote friendly",
+  "company": "Qonto",
+  "family": "backend"
+ },
+ {
+  "id": "2c938d830fa24f84a66546fbfd63673a",
+  "title": "Firmware Engineer",
+  "company": "Stripe",
+  "family": "embedded"
+ },
+ {
+  "id": "94853402c8cb4f2d8955802012489e40",
+  "title": "Hardware Systems Engineer, Hardware Tools / Firmware",
+  "company": "Cloudflare",
+  "family": "embedded"
+ },
+ {
+  "id": "66f47f6e18ec43f69ee775373e3a1333",
+  "title": "Embedded Software Engineer | C, Device Driver, Linux ,Multithreading - 6 years",
+  "company": "Cisco",
+  "family": "embedded"
+ },
+ {
+  "id": "7bd084d13e2e447995e5b70e72db1a7b",
+  "title": "Embedded Development Engineer",
+  "company": "Emerson",
+  "family": "embedded"
+ },
+ {
+  "id": "7815c64910e847fba660a252339680c8",
+  "title": "Hardware Engineer",
+  "company": "Verkada",
+  "family": "embedded"
+ },
+ {
+  "id": "a9716991349c439497800a888f20692f",
+  "title": "Openings for Embedded Software Engineer with Zigbee",
+  "company": "Tekskills India Private Limited",
+  "family": "embedded"
+ },
+ {
+  "id": "809ca3aa21cd4c7aa0dae03a2aeb95c4",
+  "title": "Embedded Security Engineer",
+  "company": "S2V Automation Pvt Ltd",
+  "family": "embedded"
+ },
+ {
+  "id": "f3c8f1ba8e3d46d2a0ee9d419789b973",
+  "title": "Lead Engineer - Embedded Hardware, Power & Safety",
+  "company": "Origin",
+  "family": "embedded"
+ },
+ {
+  "id": "493758697107474c97ef4e29def28b18",
+  "title": "Lead Embedded Linux Engineer - Intercom",
+  "company": "Verkada",
+  "family": "embedded"
+ },
+ {
+  "id": "e8aa2cc7740e4ef5a87a7bdd481163d8",
+  "title": "Hardware Engineering Program Manager",
+  "company": "Verkada",
+  "family": "embedded"
+ },
+ {
+  "id": "9f64c715adb14f21b62edecc8bf6deab",
+  "title": "Manager, Embedded Finance Operations",
+  "company": "Toast",
+  "family": "embedded"
+ },
+ {
+  "id": "e4d69a7f6924464185d37715aac4a9c1",
+  "title": "Staff or Senior Firmware Engineer",
+  "company": "Samsara",
+  "family": "embedded"
+ },
+ {
+  "id": "b10762e21ea1487a8c2e560a25ffc279",
+  "title": "Senior Embedded Software Engineer",
+  "company": "Sarla Aviation",
+  "family": "embedded"
+ },
+ {
+  "id": "15c40c7bcd1b466d93122da90c230676",
+  "title": "Senior Embedded Engineer - Cameras BSP",
+  "company": "Verkada",
+  "family": "embedded"
+ },
+ {
+  "id": "1ea01b6c30a143f2820d8a5adf842572",
+  "title": "Mechanical Engineer, Dynamometer and Actuator Testing Infrastructure",
+  "company": "Openai",
+  "family": "mech"
+ },
+ {
+  "id": "17bce75c62eb43bea91bd3c888b9cd6f",
+  "title": "Mechanical Engineering (Design and Product)",
+  "company": "Vector Robotics",
+  "family": "mech"
+ },
+ {
+  "id": "629db731c8924197b28452978b5e81f1",
+  "title": "Data Center Mechanical Engineer",
+  "company": "Anthropic",
+  "family": "mech"
+ },
+ {
+  "id": "70e0ec0ca65c4d2d9553dd4f4da6ba26",
+  "title": "Mechanical Engineer (E3) - Design for Manufacturing (DFM)",
+  "company": "Applied Materials",
+  "family": "mech"
+ },
+ {
+  "id": "58dc70221c6942ba9b0352a62a371dde",
+  "title": "Project Design Mechanical Engineer, Fleet Remediation Engineering",
+  "company": "Amazon",
+  "family": "mech"
+ },
+ {
+  "id": "4c52a3112fb44bfd973bbe93bbdd5be1",
+  "title": "Mechanical Design Engineer",
+  "company": "Infosys",
+  "family": "mech"
+ },
+ {
+  "id": "2f999d94f12d475fb4b571c9c6678a16",
+  "title": "Physical Design Engineer",
+  "company": "Openai",
+  "family": "mech"
+ },
+ {
+  "id": "2358cbc1002f4a0187c5f82f11676e80",
+  "title": "ETO Mechanical Engineer - Senior Engineer Design",
+  "company": "SLB",
+  "family": "mech"
+ },
+ {
+  "id": "5f0449063d844e20a74d8c91e9d4601e",
+  "title": "Senior Engineer - Design (Mechanical)",
+  "company": "Caterpillar, Inc.",
+  "family": "mech"
+ },
+ {
+  "id": "61c0e33ff72b45b08a73a070e9752a44",
+  "title": "Senior Design Engineer",
+  "company": "Trane Technologies",
+  "family": "mech"
+ },
+ {
+  "id": "9be55f726f8f42a0a5cfd5a2c16a31ad",
+  "title": "Solutions Architect - Manufacturing",
+  "company": "Databricks",
+  "family": "mech"
+ },
+ {
+  "id": "afb42b96fdc04197b951d1e339f23762",
+  "title": "Senior Design Engineer - Design System & Platform UI",
+  "company": "Clickhouse",
+  "family": "mech"
+ },
+ {
+  "id": "ad8701759b0948afaeb6f21af0290958",
+  "title": "Sr. Production Engineer",
+  "company": "Zscaler",
+  "family": "mech"
+ },
+ {
+  "id": "f5ba630934ca4f069d0e4833947e8c26",
+  "title": "Manager, Software Engineering - Production Engineering",
+  "company": "Figma",
+  "family": "mech"
+ },
+ {
+  "id": "b6c4c616014f44b6a83cf43df55eedbc",
+  "title": "Software Engineer, Cloud Infrastructure",
+  "company": "Verkada",
+  "family": "swe"
+ },
+ {
+  "id": "86d9da883d0e49bc92b9e541b0114d63",
+  "title": "Software Engineer",
+  "company": "Otelier",
+  "family": "swe"
+ },
+ {
+  "id": "8906eeb395d442178b6a3e8843abf052",
+  "title": "Software Engineer, Vulnerability Management",
+  "company": "Stripe",
+  "family": "swe"
+ },
+ {
+  "id": "b1aa02cb975a43d49672c685e8a60600",
+  "title": "Software Engineer, Cloud Infrastructure",
+  "company": "Benchling",
+  "family": "swe"
+ },
+ {
+  "id": "d12886e0392e4407b21b547d813bf781",
+  "title": "VoidZero Developer Relations Engineer",
+  "company": "Cloudflare",
+  "family": "swe"
+ },
+ {
+  "id": "1b0e7e01228247f2a34c22171d989d57",
+  "title": "Software Engineer",
+  "company": "Comtron",
+  "family": "swe"
+ },
+ {
+  "id": "b302b750ac334e03828577e1b969db84",
+  "title": "Software Engineer, Payments Infrastructure",
+  "company": "Sierra",
+  "family": "swe"
+ },
+ {
+  "id": "3353109a0b584d00834629806fdf2191",
+  "title": "Software Engineer, GPU Infrastructure",
+  "company": "Cohere",
+  "family": "swe"
+ },
+ {
+  "id": "9bbc8ccb903d40edae6cbe8e82abab07",
+  "title": "Software Engineer, CDN Configuration Group",
+  "company": "Cloudflare",
+  "family": "swe"
+ },
+ {
+  "id": "d390be8dd1fb41d989870a5def9bcc77",
+  "title": "Software Engineering Intern (Summer)",
+  "company": "Datadog",
+  "family": "swe"
+ },
+ {
+  "id": "4e84365f57004c609304a758451d42d5",
+  "title": "Principal Software Engineer, Orchestration",
+  "company": "Roblox",
+  "family": "swe"
+ },
+ {
+  "id": "fb85ca4a60744c4e95c1cd2d2e796e41",
+  "title": "Staff+ Software Engineer, People Products",
+  "company": "Anthropic",
+  "family": "swe"
+ },
+ {
+  "id": "23869c3845034db4976753ee7349bb69",
+  "title": "Staff Software Engineer, Service Configuration Deployments",
+  "company": "Pinterest",
+  "family": "swe"
+ },
+ {
+  "id": "a857fdf3bddd4fc880c8a254e537d76f",
+  "title": "Senior Software Engineer, Test Frameworks & Tools",
+  "company": "Roblox",
+  "family": "swe"
+ },
+ {
+  "id": "4bc446c253c14ea4a902c3f6499c45eb",
+  "title": "Sr Software Engineer, EPD Ads",
+  "company": "Pinterest",
+  "family": "swe"
+ },
+ {
+  "id": "b4853f13b3914bdbbc762afcd0edd172",
+  "title": "Senior Software Engineer, Agent Gateway",
+  "company": "Okta",
+  "family": "swe"
+ },
+ {
+  "id": "f138acad901348cf814fedd65461f29b",
+  "title": "SDE II - Gen AI",
+  "company": "Glance",
+  "family": "swe"
+ },
+ {
+  "id": "cd530674b7e84278b5c016d42fd51f08",
+  "title": "Senior Software Engineer, Observability",
+  "company": "Robinhood",
+  "family": "swe"
+ },
+ {
+  "id": "35122246f55540da9e3f87a58aa1ea58",
+  "title": "Staff Software Engineer - OpenTelemetry Python instrumentation | Spain | Remote",
+  "company": "Grafana Labs",
+  "family": "swe"
+ },
+ {
+  "id": "ae85f780b78d45be97357cc4016b675b",
+  "title": "Sr. Software Engineer - Observability",
+  "company": "Databricks",
+  "family": "swe"
+ },
+ {
+  "id": "ae09c0bee8ec4db49faafadd33b62e8f",
+  "title": "Analyst, FRR, Reported Fraud, OM, UK",
+  "company": "Careers at Tide",
+  "family": null
+ },
+ {
+  "id": "d149bbe62eb544179fd560990ed24bb9",
+  "title": "Sr. Solutions Architect, Enterprise East (Presales)",
+  "company": "Elastic",
+  "family": null
+ },
+ {
+  "id": "a8cf9072bb0f46dd9b832d70c87f1251",
+  "title": "Manager, Solutions Architecture - Enterprise (West)",
+  "company": "Stripe",
+  "family": null
+ },
+ {
+  "id": "a24d247305e24d989bded915dff23360",
+  "title": "Principal Forward Deployed Engineer (EMEA)",
+  "company": "Docker",
+  "family": null
+ },
+ {
+  "id": "f96ca21154974e3596a6a3f46db09e55",
+  "title": "Senior Sales Engineer",
+  "company": "Instacart",
+  "family": null
+ },
+ {
+  "id": "51b2a4b785fb43f38ae3139487334750",
+  "title": "Senior Product Designer, Prediction Markets",
+  "company": "Robinhood",
+  "family": null
+ },
+ {
+  "id": "8c4550df9a21456ca28635f525a25b13",
+  "title": "Commercial Account Executive (Singapore & Philippines Market)",
+  "company": "Datadog",
+  "family": null
+ },
+ {
+  "id": "c052894267a24c3cb8b2b87a4f108104",
+  "title": "General Manager, LATAM (Sales & Partners)",
+  "company": "Amplitude",
+  "family": null
+ },
+ {
+  "id": "96e3347883c0405492777412d774456f",
+  "title": "Senior Salesforce Business Systems Administrator",
+  "company": "Salesloft",
+  "family": null
+ },
+ {
+  "id": "1d118b33f9384fd186cad4ba74bcdc8d",
+  "title": "Manager, Commercial Outcome Architects (Customer Success)",
+  "company": "Notion",
+  "family": null
+ },
+ {
+  "id": "3838a41d3a904b19bc4f0fa262ea42f1",
+  "title": "Employee Relations Lead",
+  "company": "CLEAR - Corporate",
+  "family": null
+ },
+ {
+  "id": "0549ffe4d9a24d29b6dfe6076004ab4c",
+  "title": "Customer Success Associate",
+  "company": "Datadog",
+  "family": null
+ },
+ {
+  "id": "a263da9ada0c402fb73e44c693a321ad",
+  "title": "Lead, Data Center Security Delivery (Construction to Operations)",
+  "company": "Anthropic",
+  "family": null
+ },
+ {
+  "id": "7ccf988a96184ea6bc9eded0bbcd8db4",
+  "title": "Lead Workforce Manager - Capacity Planning & BPO Strategy",
+  "company": "Qonto",
+  "family": null
+ },
+ {
+  "id": "2c77022d3ef34a2386948ecbd05e3d1a",
+  "title": "Executive Business Partner",
+  "company": "Twilio",
+  "family": null
+ },
+ {
+  "id": "4a58df962b2849b3bca3b7d679642c86",
+  "title": "Employee investigations/Forensics",
+  "company": "Paytm",
+  "family": null
+ },
+ {
+  "id": "d9d9de74ccc049ecbea04e4841fe20a4",
+  "title": "Senior Sourcing Manager",
+  "company": "Robinhood",
+  "family": null
+ },
+ {
+  "id": "253f70b4020e4ecb9a513de543671dd9",
+  "title": "FP&A Analyst GTM",
+  "company": "Datadog",
+  "family": null
+ },
+ {
+  "id": "d4ba42a6cd064811b9bfa133b0af2fc0",
+  "title": "Senior Associate - Video Editor",
+  "company": "InMobi",
+  "family": null
+ },
+ {
+  "id": "bb55e1da412b4270bc9f2fdecfe98644",
+  "title": "Technical Sourcer",
+  "company": "Discord",
+  "family": null
+ },
+ {
+  "id": "ee4ba15b748748d095df0ca516059e3d",
+  "title": "Executive Business Partner, EMEA (Strategy)",
+  "company": "Openai",
+  "family": null
+ },
+ {
+  "id": "cbf6666d9bd549fabe78d13e06eacd26",
+  "title": "Head of Strategic Partnerships, Labs",
+  "company": "Scale AI",
+  "family": null
+ },
+ {
+  "id": "05260e768b294bc4988081a8253eb85c",
+  "title": "Director, Accounting",
+  "company": "Observe.AI",
+  "family": null
+ },
+ {
+  "id": "a8057ff9438048f5a93c380e09aa7807",
+  "title": "IT Operations Specialist I",
+  "company": "Cloudflare",
+  "family": null
+ },
+ {
+  "id": "e89a0e7554e7430e9cc572f0b9691fe5",
+  "title": "Group Product Manager",
+  "company": "Headout",
+  "family": null
+ },
+ {
+  "id": "d613702b88a94d439e586406d45202ed",
+  "title": "Sales Development Representative, Latin America",
+  "company": "Okta",
+  "family": null
+ }
+]

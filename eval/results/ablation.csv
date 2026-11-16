@@ -1,0 +1,12 @@
+variant,ndcg10,delta,p10,mrr
+Ours (full),0.5524,0.0,0.3575,0.7892
+- section-level semantics (whole doc only),0.5182,-0.0342,0.3125,0.8086
+- skill term,0.5586,0.0062,0.38,0.7021
+- IDF weighting,0.554,0.0016,0.3625,0.7892
+- required/preferred weighting,0.5605,0.0081,0.37,0.7844
+- IDF and type weighting,0.5564,0.004,0.3675,0.7886
+- soft skill match (exact only),0.5246,-0.0278,0.34,0.754
+- shrinkage for thin JDs,0.525,-0.0274,0.34,0.7717
+- context fit,0.5066,-0.0457,0.3225,0.7207
+- missing-skill penalty,0.602,0.0497,0.4025,0.7821
+- cosine calibration,0.5599,0.0075,0.3725,0.7538

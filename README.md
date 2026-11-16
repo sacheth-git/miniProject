@@ -20,7 +20,7 @@ application page. Jobs from LinkedIn, Indeed and Naukri arrive only through offi
 | 5B | TPO core: bulk import, drives, eligibility with reasons, ranked blind shortlist, exports, audit log | done |
 | 5C | Rounds Kanban + results CSV, offers with placement policy, notifications, student campus drives, readiness, unified tracker | done |
 | 5D | Placement dashboard, skill-gap heatmap + training recommendations, unplaced students, fairness report, recruiter share links | done |
-| 6 | Evaluation | pending |
+| 6 | Evaluation: gold-set tooling, baselines, ablation, significance, weight learning, fine-tuning, latency, bias, campus (proxy labels until human labels arrive) | done |
 | 7 | Polish and docs | pending |
 
 ## Requirements (Windows 11)
@@ -209,6 +209,11 @@ cd backend
 
 Endpoints: `GET /match/{candidate_id}?method=ours|tfidf|bm25|keyword_jaccard|sbert_whole|sbert_section`,
 `GET /match/{candidate_id}/{job_id}/explain`, `GET /gap/{candidate_id}`. Ingestion rebuilds the index automatically.
+
+## Evaluation
+
+See `eval/README.md` for the run order and `docs/report.md` for the results. The current numbers use
+title-based proxy labels; label the pooled pairs with `eval/label_app.py` and re-run to replace them.
 
 ## Database migrations
 

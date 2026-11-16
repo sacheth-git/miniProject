@@ -16,13 +16,14 @@ ScorerConfig switches each ingredient off for the ablation study.
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
 import numpy as np
 
-from app.core.config import get_settings
+from app.core.config import BACKEND_DIR, get_settings
 from app.embeddings.encoder import Encoder
 from app.matching.calibration import Calibration
 from app.parsing.profile import EDUCATION_LEVELS
@@ -44,6 +45,17 @@ class Weights:
 
     @classmethod
     def from_settings(cls) -> Weights:
+        """Weights from data/learned_weights.json when they were learned from HUMAN labels
+        (eval/evaluate.py writes it); otherwise the configured defaults (W_ALPHA... in .env).
+        Weights learned from proxy labels are reported in the evaluation but never applied."""
+        learned = BACKEND_DIR / "data" / "learned_weights.json"
+        if learned.exists():
+            try:
+                w = json.loads(learned.read_text(encoding="utf-8"))
+                if w.get("label_source") == "human" and w.get("val_ndcg10", 0) >= w.get("default_val_ndcg10", 1):
+                    return cls(float(w["alpha"]), float(w["beta"]), float(w["gamma"]), float(w["delta"]))
+            except (ValueError, KeyError, OSError):
+                pass  # malformed file: fall back to the configured defaults
         s = get_settings()
         return cls(s.w_alpha, s.w_beta, s.w_gamma, s.w_delta)
 

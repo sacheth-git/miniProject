@@ -38,3 +38,4 @@ Thumbs.db
 frontend/.vite/
 backend/data/resumes/
 backend/data/imports/
+backend/data/learned_weights.json

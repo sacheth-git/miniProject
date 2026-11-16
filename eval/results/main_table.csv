@@ -1,0 +1,31 @@
+method,metric,mean,ci_low,ci_high
+Keyword Jaccard,P@5,0.3,0.235,0.365
+Keyword Jaccard,P@10,0.27,0.225,0.3125
+Keyword Jaccard,R@10,0.3689,0.3013,0.4332
+Keyword Jaccard,MRR,0.4581,0.3614,0.5571
+Keyword Jaccard,NDCG@10,0.4234,0.3734,0.4717
+TF-IDF,P@5,0.36,0.29,0.435
+TF-IDF,P@10,0.3125,0.275,0.35
+TF-IDF,R@10,0.396,0.3351,0.4595
+TF-IDF,MRR,0.6933,0.5808,0.8069
+TF-IDF,NDCG@10,0.4768,0.4311,0.5226
+BM25,P@5,0.235,0.18,0.29
+BM25,P@10,0.19,0.1575,0.2225
+BM25,R@10,0.2378,0.1897,0.2891
+BM25,MRR,0.5076,0.391,0.6289
+BM25,NDCG@10,0.3223,0.2809,0.3668
+SBERT whole-doc,P@5,0.375,0.3,0.445
+SBERT whole-doc,P@10,0.295,0.2525,0.335
+SBERT whole-doc,R@10,0.3773,0.3086,0.4416
+SBERT whole-doc,MRR,0.678,0.5601,0.7884
+SBERT whole-doc,NDCG@10,0.4907,0.4332,0.5439
+SBERT + section-level,P@5,0.375,0.295,0.455
+SBERT + section-level,P@10,0.305,0.2574,0.3525
+SBERT + section-level,R@10,0.4021,0.3229,0.4788
+SBERT + section-level,MRR,0.5594,0.4559,0.6729
+SBERT + section-level,NDCG@10,0.4619,0.4008,0.5212
+Ours (skill-weighted),P@5,0.455,0.4,0.515
+Ours (skill-weighted),P@10,0.3575,0.32,0.3925
+Ours (skill-weighted),R@10,0.4624,0.3954,0.53
+Ours (skill-weighted),MRR,0.7892,0.6887,0.8838
+Ours (skill-weighted),NDCG@10,0.5524,0.5048,0.5989
