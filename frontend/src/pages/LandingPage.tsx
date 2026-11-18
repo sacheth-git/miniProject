@@ -1,11 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Building2, Clock, MapPin, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ArrowRight, Building2, Clock, GraduationCap, MapPin, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { SOURCE_LABELS } from "../lib/format";
 import { Chip, MatchRing, ScoreBar } from "../components/ui";
-import { Wordmark } from "../components/AppHeader";
 
 const POPULAR: [string, Record<string, string>][] = [
   ["Software engineer", { role: "software engineer" }],
@@ -100,9 +99,70 @@ function MatchPreview() {
   );
 }
 
+const SHORTLIST: [string, string, string, number | null, string][] = [
+  ["21CS045", "CSE", "8.9", 91, "Shortlisted"],
+  ["21IT012", "IT", "8.4", 87, "Shortlisted"],
+  ["21CS101", "CSE", "7.9", 84, "Applied"],
+  ["21EC033", "ECE", "8.1", 78, "Applied"],
+  ["21ME007", "ME", "7.2", null, "Not eligible: branch"],
+];
+
+/** An example of the TPO's ranked, blind shortlist, drawn like the real drive page. */
+function ShortlistPreview() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950" aria-label="Example of a campus drive shortlist">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-ink-950 px-5 py-4 text-white dark:border-slate-800">
+        <div>
+          <p className="text-xs text-slate-400">Campus drive · example</p>
+          <p className="font-semibold">Kaveri Systems: Software Engineer</p>
+        </div>
+        <p className="text-sm text-slate-300">12 LPA · Bengaluru</p>
+      </div>
+      <dl className="grid grid-cols-3 divide-x divide-slate-200 border-b border-slate-200 bg-white dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-900">
+        {[["Eligible", "142"], ["Applied", "96"], ["Shortlisted", "24"]].map(([l, v]) => (
+          <div key={l} className="px-5 py-3">
+            <dt className="text-xs muted">{l}</dt>
+            <dd className="text-xl font-semibold tabular-nums">{v}</dd>
+          </div>
+        ))}
+      </dl>
+      <table className="w-full text-sm">
+        <caption className="sr-only">Ranked shortlist, names hidden</caption>
+        <thead>
+          <tr className="text-left text-xs muted">
+            <th className="px-5 py-2 font-medium">Roll no.</th>
+            <th className="px-2 py-2 font-medium">Branch</th>
+            <th className="px-2 py-2 text-right font-medium">CGPA</th>
+            <th className="px-2 py-2 text-right font-medium">Match</th>
+            <th className="px-5 py-2 font-medium">Stage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-200 bg-white dark:divide-slate-800 dark:bg-slate-900">
+          {SHORTLIST.map(([roll, br, cg, m, stage]) => (
+            <tr key={roll} className={m === null ? "text-slate-400" : ""}>
+              <td className="px-5 py-2.5 font-mono text-xs">{roll}</td>
+              <td className="px-2 py-2.5">{br}</td>
+              <td className="px-2 py-2.5 text-right tabular-nums">{cg}</td>
+              <td className="px-2 py-2.5 text-right font-medium tabular-nums">{m === null ? "–" : `${m}%`}</td>
+              <td className="px-5 py-2.5">
+                {stage === "Shortlisted" ? <Chip tone="green">{stage}</Chip> : m === null ? <span className="text-xs">{stage}</span> : <Chip>{stage}</Chip>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="border-t border-slate-200 px-5 py-3 text-xs muted dark:border-slate-800">Blind mode on: names hidden, ranked by skill match</p>
+    </div>
+  );
+}
+
 export function LandingPage() {
   const stats = useQuery({ queryKey: ["jobs", "stats"], queryFn: api.jobStats, staleTime: 300_000 });
   const s = stats.data;
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
+  }, [hash]);
   return (
     <div>
       {/* Hero: continues the ink header */}
@@ -133,10 +193,47 @@ export function LandingPage() {
                 </Link>
               ))}
             </div>
+            <a href="#colleges" className="mt-8 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white">
+              <GraduationCap className="h-4 w-4 text-brand-500" aria-hidden />
+              Placement officer? Run your campus drives on HireX
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
           </div>
           <div className="lg:translate-y-6">
             <MatchPreview />
           </div>
+        </div>
+      </section>
+
+      {/* Placement officers: the second audience, shown right after the hero */}
+      <section id="colleges" aria-labelledby="colleges-h" className="scroll-mt-16 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:py-20">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-sm font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-200">
+              <GraduationCap className="h-4 w-4" aria-hidden />
+              For placement officers (TPO)
+            </p>
+            <h2 id="colleges-h" className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl sm:leading-tight">
+              Run every campus drive from one dashboard
+            </h2>
+            <p className="mt-4 max-w-xl text-lg muted">
+              Import your students, set the eligibility rules, and get a ranked, explainable shortlist for each company,
+              then track rounds and offers until students accept.
+            </p>
+            <dl className="mt-8 grid gap-6 sm:grid-cols-3">
+              {CAMPUS.map(([t, d]) => (
+                <div key={t} className="border-t-2 border-brand-500 pt-3">
+                  <dt className="text-sm font-semibold">{t}</dt>
+                  <dd className="mt-1 text-sm muted">{d}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/register" className="btn-primary h-11 px-6 text-base">Set up your placement office</Link>
+              <a href="#how-h" className="btn-secondary h-11 px-6 text-base">How it works</a>
+            </div>
+          </div>
+          <ShortlistPreview />
         </div>
       </section>
 
@@ -192,25 +289,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Colleges */}
-      <section aria-labelledby="colleges-h" className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6">
-        <div className="grid gap-8 rounded-2xl bg-ink-950 p-8 text-white md:grid-cols-[1fr_2fr] md:p-10">
-          <div>
-            <p className="text-sm text-slate-400"><Wordmark /> for colleges</p>
-            <h2 id="colleges-h" className="mt-2 text-2xl font-semibold">Run campus placements end to end</h2>
-            <p className="mt-2 text-sm text-slate-300">From eligibility to accepted offers, with every round tracked.</p>
-            <Link to="/register" className="btn-primary mt-6">Set up your placement office</Link>
-          </div>
-          <dl className="grid gap-6 sm:grid-cols-3">
-            {CAMPUS.map(([t, d]) => (
-              <div key={t} className="border-t border-white/15 pt-4">
-                <dt className="font-medium">{t}</dt>
-                <dd className="mt-1 text-sm text-slate-400">{d}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
     </div>
   );
 }

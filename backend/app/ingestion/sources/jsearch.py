@@ -41,6 +41,9 @@ def parse(data: dict) -> list[RawJob]:  # type: ignore[type-arg]
             continue
         if not options:
             options = [ApplyOption(j.get("job_publisher") or "Apply", apply, bool(j.get("job_apply_is_direct")))]
+        # Employer's own application page first, so one click on Apply skips the job-board hop when possible.
+        options.sort(key=lambda o: not o.is_direct)
+        apply = options[0].url
         ts = j.get("job_posted_at_datetime_utc")
         try:
             posted = datetime.fromisoformat(ts.replace("Z", "+00:00")) if ts else None

@@ -85,6 +85,9 @@ def test_parsers_produce_raw_jobs() -> None:
     gh = greenhouse.parse_board(BOARD, GREENHOUSE)
     assert len(gh) == 1 and gh[0].description == "<p>Python and Kafka</p>" and gh[0].job_type == "Full-time"
     assert gh[0].company == "Acme Inc" and gh[0].apply_options[0].is_direct
+    # Apply opens Greenhouse's hosted application form; the careers page stays as the second option.
+    assert gh[0].apply_url.startswith("https://job-boards.greenhouse.io/embed/job_app?for=")
+    assert gh[0].apply_options[0].url == gh[0].apply_url and len(gh[0].apply_options) == 2
 
     lv = lever.parse_board(BOARD, LEVER)
     assert lv[0].remote is True and "Excel" in lv[0].description and lv[0].posted_at is not None
@@ -97,7 +100,9 @@ def test_parsers_produce_raw_jobs() -> None:
     assert jooble.parse(JOOBLE)[0].apply_options[0].publisher == "naukri.com"
 
     js = jsearch.parse(JSEARCH)[0]
-    assert [o.publisher for o in js.apply_options] == ["LinkedIn", "Naukri", "Flipkart Careers"]
+    # Employer's own page first (is_direct), so Apply skips the job-board hop.
+    assert [o.publisher for o in js.apply_options] == ["Flipkart Careers", "LinkedIn", "Naukri"]
+    assert js.apply_url == js.apply_options[0].url
     assert "Qualifications" in js.description and js.location == "Bengaluru, IN"
 
     sp = serpapi.parse(SERPAPI)

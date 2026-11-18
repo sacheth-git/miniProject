@@ -37,7 +37,10 @@ const TPO_LINKS = [
   { to: "/tpo/audit", label: "Audit log" },
   { to: "/tpo/policy", label: "Policy" },
 ];
-const GUEST_LINKS = [{ to: "/jobs", label: "Jobs" }];
+const GUEST_LINKS = [
+  { to: "/jobs", label: "Jobs" },
+  { to: "/#colleges", label: "For colleges (TPO)" },
+];
 
 const ROLE_LABEL: Record<string, string> = {
   student: "Student",
@@ -88,7 +91,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
         </Link>
         <nav aria-label="Primary" className="hidden items-stretch md:flex">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.to === "/tpo"} className={navCls}>
+            <NavLink key={l.to} to={l.to} end={l.to === "/tpo"} className={({ isActive }) => navCls({ isActive: isActive && !l.to.includes("#") })}>
               {l.label}
               {l.to === "/tracker" && active > 0 && (
                 <span className="text-xs tabular-nums text-slate-400">{active}</span>
@@ -146,7 +149,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
       {mobile && (
         <nav aria-label="Primary" className="border-t border-white/10 px-2 py-2 md:hidden">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm ${isActive ? "bg-white/10 font-medium text-white" : "text-slate-300"}`}>
+            <NavLink key={l.to} to={l.to} className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm ${isActive && !l.to.includes("#") ? "bg-white/10 font-medium text-white" : "text-slate-300"}`}>
               {l.label}
             </NavLink>
           ))}

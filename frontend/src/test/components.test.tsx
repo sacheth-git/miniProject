@@ -14,27 +14,31 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 describe("ApplyMenu", () => {
-  test("multiple apply options open as a menu and each opens its exact URL in a new tab", () => {
+  test("Apply opens the employer's page in one click; the chevron lists every option", () => {
     const open = vi.spyOn(window, "open").mockReturnValue(null);
     renderApp(<ApplyMenu job={job()} />);
-    fireEvent.click(screen.getByRole("button", { name: /apply/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^apply$/i }));
+    expect(open).toHaveBeenCalledWith("https://boards.greenhouse.io/nimbus/jobs/1", "_blank", "noopener,noreferrer");
+    fireEvent.click(screen.getByRole("button", { name: "More ways to apply" }));
     const items = screen.getAllByRole("menuitem").map((m) => m.textContent);
-    expect(items).toEqual(["Apply on LinkedIn", "Apply on Naukri", "Apply on company site"]);
+    expect(items).toEqual(["Job page on company site", "Apply on LinkedIn", "Apply on Naukri"]);
     fireEvent.click(screen.getByRole("menuitem", { name: /naukri/i }));
     expect(open).toHaveBeenCalledWith("https://www.naukri.com/job-listings-1", "_blank", "noopener,noreferrer");
   });
 
-  test("a single option is a direct button", () => {
+  test("a single option is one Apply button with no menu", () => {
     const open = vi.spyOn(window, "open").mockReturnValue(null);
-    const single = job({ apply_options: [{ publisher: "Acme careers (Lever)", url: "https://jobs.lever.co/acme/1", is_direct: true }] });
+    const single = job({ apply_options: [{ publisher: "Acme careers (Lever)", url: "https://jobs.lever.co/acme/1/apply", is_direct: true }] });
     renderApp(<ApplyMenu job={single} />);
-    fireEvent.click(screen.getByRole("button", { name: /apply on company site/i }));
-    expect(open).toHaveBeenCalledWith("https://jobs.lever.co/acme/1", "_blank", "noopener,noreferrer");
+    expect(screen.queryByRole("button", { name: "More ways to apply" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^apply$/i }));
+    expect(open).toHaveBeenCalledWith("https://jobs.lever.co/acme/1/apply", "_blank", "noopener,noreferrer");
   });
 
   test("labels", () => {
     expect(applyLabel({ publisher: "Stripe careers (Greenhouse)", url: "", is_direct: true })).toBe("company site");
     expect(applyLabel({ publisher: "LinkedIn", url: "", is_direct: false })).toBe("LinkedIn");
+    expect(applyLabel({ publisher: "Stripe application form", url: "", is_direct: true })).toBe("application form");
   });
 });
 

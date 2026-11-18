@@ -26,6 +26,11 @@ def _dt(s: str | None) -> datetime | None:
         return None
 
 
+def application_form_url(token: str, job_id: object) -> str:
+    """Greenhouse's official hosted application form for a job (the form a careers page embeds)."""
+    return f"https://job-boards.greenhouse.io/embed/job_app?for={token}&token={job_id}"
+
+
 def parse_board(board: Board, data: dict) -> list[RawJob]:  # type: ignore[type-arg]
     out: list[RawJob] = []
     for j in data.get("jobs", []):
@@ -41,12 +46,16 @@ def parse_board(board: Board, data: dict) -> list[RawJob]:  # type: ignore[type-
                 title=j.get("title", "").strip(),
                 company=BOARD_SUFFIX.sub("", j.get("company_name") or board.name).strip() or board.name,
                 description=html.unescape(j.get("content") or ""),
-                apply_url=url,
+                apply_url=application_form_url(board.token, j["id"]),
                 source_url=url,
                 location=(j.get("location") or {}).get("name"),
                 job_type=emp,
                 posted_at=_dt(j.get("first_published") or j.get("updated_at")),
-                apply_options=[ApplyOption(f"{board.name} careers (Greenhouse)", url, True)],
+                # First option opens the application form itself; the second is the posting on the careers site.
+                apply_options=[
+                    ApplyOption(f"{board.name} application form", application_form_url(board.token, j["id"]), True),
+                    ApplyOption(f"{board.name} careers (Greenhouse)", url, True),
+                ],
             )
         )
     return out
