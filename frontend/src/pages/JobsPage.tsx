@@ -106,7 +106,7 @@ export function JobsPage() {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
           <h1 className="text-2xl font-semibold">{candidateId ? "Jobs matched to your profile" : "Find your next job"}</h1>
           <p className="mt-1 text-sm text-slate-400">
-            {candidateId ? "Ranked by how well your skills fit each job" : "One feed from company career sites and job boards, mixed across sources"}
+            {candidateId ? "Ranked by how well your skills fit each job" : "Every source in one feed: company career sites and job boards"}
           </p>
           <div className="mt-5">
             <FilterBar value={filters} onChange={setFilters} />
@@ -145,14 +145,11 @@ export function JobsPage() {
               </select>
             ) : (
               <select className="input h-8 w-auto py-0" value={browseSort} onChange={(e) => setBrowseSort(e.target.value as "mixed" | "recent")}>
-                <option value="mixed">Mixed sources</option>
+                <option value="mixed">Recommended</option>
                 <option value="recent">Most recent</option>
               </select>
             )}
           </label>
-          <Link to="/elsewhere" className="link">
-            Search LinkedIn, Naukri, Indeed
-          </Link>
         </div>
       </div>
 

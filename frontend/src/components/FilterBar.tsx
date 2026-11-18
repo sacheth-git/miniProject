@@ -99,15 +99,6 @@ export function FilterBar({ value, onChange }: Props) {
           <option value="3-5">3-5 years</option>
           <option value="5+">5+ years</option>
         </select>
-        <select aria-label="Source" className={select} value={value.source ?? ""} onChange={(e) => set({ source: e.target.value || undefined })}>
-          <option value="">All sources</option>
-          <option value="greenhouse,lever,ashby">Company career sites</option>
-          <option value="jsearch,serpapi">LinkedIn, Naukri, Indeed (via Google Jobs)</option>
-          <option value="adzuna">Adzuna</option>
-          <option value="jooble">Jooble</option>
-          <option value="remotive">Remotive</option>
-          <option value="import">My imports</option>
-        </select>
         <select
           aria-label="Date posted"
           className={select}

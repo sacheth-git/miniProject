@@ -7,7 +7,6 @@ import { AuthProvider, isSeeker, useAuth } from "./lib/auth";
 import { CandidateProvider } from "./lib/candidate";
 import { TrackingProvider } from "./lib/tracking";
 import { ChangePasswordPage, LoginPage, RegisterPage } from "./pages/AuthPages";
-import { ElsewherePage } from "./pages/ElsewherePage";
 import { GapPage } from "./pages/GapPage";
 import { ImportPage } from "./pages/ImportPage";
 import { JobsPage } from "./pages/JobsPage";
@@ -84,7 +83,6 @@ function Shell() {
           <Route path="/skills" element={seeker(<GapPage />)} />
           <Route path="/tracker" element={seeker(<TrackerPage />)} />
           <Route path="/import" element={seeker(<ImportPage />)} />
-          <Route path="/elsewhere" element={seeker(<ElsewherePage />)} />
           <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
           <Route path="/consent" element={<RequireAuth roles={["student"]}><ConsentPage /></RequireAuth>} />
           <Route path="/campus" element={<RequireAuth roles={["student"]}><CampusDrivesPage /></RequireAuth>} />

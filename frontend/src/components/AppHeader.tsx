@@ -19,7 +19,6 @@ const SEEKER_LINKS = [
   { to: "/skills", label: "Skill gap" },
   { to: "/tracker", label: "Applications" },
   { to: "/import", label: "Import" },
-  { to: "/elsewhere", label: "Search elsewhere" },
 ];
 const STUDENT_LINKS = [
   { to: "/jobs", label: "Jobs" },
