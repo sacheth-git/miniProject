@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { tpo, type AuditItem, type Policy } from "../../lib/tpo";
 import { DataTable, type Column } from "../../components/DataTable";
-import { Chip, ErrorNote, Spinner } from "../../components/ui";
+import { Chip, ErrorNote, PageHeader, PageLoading, Spinner } from "../../components/ui";
 
 const ACTIONS = ["", "shortlist", "drive", "students", "policy"];
 
@@ -30,9 +30,8 @@ export function AuditPage() {
     { key: "summary", header: "Change", sortable: false, render: summary },
   ];
   return (
-    <div className="mx-auto max-w-7xl space-y-5 px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Audit log</h1>
-      <p className="text-sm muted">Every shortlist edit, rule change, skill-weight change, import and export, with before and after values.</p>
+    <div className="page">
+      <PageHeader title="Audit log" description="Every shortlist edit, rule change, skill-weight change, import and export, with before and after values" />
       <div className="card flex flex-wrap gap-3 p-4">
         <label className="text-sm">
           <span className="label">Action</span>
@@ -59,7 +58,7 @@ export function AuditPage() {
       </section>
       {open && (
         <div className="card p-4" aria-live="polite">
-          <div className="flex justify-between"><h2 className="font-semibold">{open.action} #{open.id}</h2><button className="btn-ghost text-xs" onClick={() => setOpen(null)}>Close</button></div>
+          <div className="flex justify-between"><h2 className="font-semibold">{open.action} #{open.id}</h2><button className="btn-ghost h-8 px-2 text-xs" onClick={() => setOpen(null)}>Close</button></div>
           <div className="mt-2 grid gap-3 md:grid-cols-2">
             <pre className="max-h-64 overflow-auto rounded bg-slate-50 p-2 text-xs dark:bg-slate-950">Before: {JSON.stringify(open.before, null, 2)}</pre>
             <pre className="max-h-64 overflow-auto rounded bg-slate-50 p-2 text-xs dark:bg-slate-950">After: {JSON.stringify(open.after, null, 2)}</pre>
@@ -75,10 +74,10 @@ export function PolicyPage() {
   const [p, setP] = useState<Policy | null>(null);
   useEffect(() => { if (pol.data) setP(pol.data); }, [pol.data]);
   const save = useMutation({ mutationFn: (x: Policy) => tpo.setPolicy(x), onSuccess: () => pol.refetch() });
-  if (!p) return <div className="p-8"><Spinner /></div>;
+  if (!p) return <PageLoading />;
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Placement policy</h1>
+    <div className="page-narrow">
+      <h1 className="text-2xl font-semibold">Placement policy</h1>
       <div className="card space-y-5 p-5">
         <label className="flex items-start gap-3">
           <input type="checkbox" className="mt-1" checked={p.one_offer_rule} onChange={(e) => setP({ ...p, one_offer_rule: e.target.checked })} />

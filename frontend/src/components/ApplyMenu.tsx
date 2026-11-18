@@ -36,7 +36,7 @@ export function ApplyMenu({ job, size = "md" }: { job: JobSummary; size?: "sm" |
     };
   }, [open]);
 
-  const cls = size === "sm" ? "btn-primary px-2.5 py-1.5 text-xs" : "btn-primary";
+  const cls = size === "sm" ? "btn-primary h-8 px-2.5 text-xs" : "btn-primary";
   if (!options.length) {
     return (
       <button className={cls} disabled title="No application link for this job">

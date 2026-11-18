@@ -8,7 +8,7 @@ import { ErrorNote } from "../components/ui";
 function Shell({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children: ReactNode }) {
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-10 sm:py-16">
-      <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+      <h1 className="text-2xl font-semibold">{title}</h1>
       {subtitle && <p className="mt-1 text-sm muted">{subtitle}</p>}
       <div className="card mt-6 p-6">{children}</div>
     </div>
@@ -41,7 +41,7 @@ export function LoginPage() {
   };
 
   return (
-    <Shell title="Sign in" subtitle={<>New to SkillMatch? <Link to="/register" className="text-brand-600 hover:underline">Create an account</Link></>}>
+    <Shell title="Sign in" subtitle={<>New to SkillMatch? <Link to="/register" className="link">Create an account</Link></>}>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label" htmlFor="email">Email</label>
@@ -105,15 +105,15 @@ export function RegisterPage() {
     );
     return (
       <div className="mx-auto max-w-md px-4 py-10 sm:py-16">
-        <h1 className="text-2xl font-semibold tracking-tight">Are you a campus student?</h1>
+        <h1 className="text-2xl font-semibold">Are you a campus student?</h1>
         <p className="mt-1 text-sm muted">
-          Already have an account? <Link to="/login" className="text-brand-600 hover:underline">Sign in</Link>
+          Already have an account? <Link to="/login" className="link">Sign in</Link>
         </p>
         <div className="mt-6 space-y-3">
           <Option p="student" icon={<GraduationCap className="h-5 w-5" />} title="Yes, I'm a student" text="Join your college with the invite code from your placement office. You also get every open-market job." />
           <Option p="seeker" icon={<Briefcase className="h-5 w-5" />} title="No, I'm looking for jobs on my own" text="Upload your resume and get ranked jobs and internships." />
         </div>
-        <button className="mt-6 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:underline" onClick={() => setPath("tpo")}>
+        <button className="mt-6 inline-flex items-center gap-1.5 text-sm link" onClick={() => setPath("tpo")}>
           <Building2 className="h-4 w-4" /> I'm a placement officer (TPO)
         </button>
       </div>
@@ -122,7 +122,7 @@ export function RegisterPage() {
 
   const title = path === "student" ? "Join as a student" : path === "tpo" ? "Set up your placement office" : "Create your account";
   return (
-    <Shell title={title} subtitle={<button className="text-brand-600 hover:underline" onClick={() => setPath(null)}>Back</button>}>
+    <Shell title={title} subtitle={<button className="link" onClick={() => setPath(null)}>Back</button>}>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label" htmlFor="name">Full name</label>

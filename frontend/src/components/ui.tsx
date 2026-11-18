@@ -1,6 +1,59 @@
 import type { ReactNode } from "react";
-import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { SOURCE_LABELS } from "../lib/format";
+
+/** Standard page title block: optional back link or context line, title, description, actions on the right. */
+export function PageHeader({
+  title,
+  description,
+  actions,
+  back,
+  eyebrow,
+  children,
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+  back?: { to: string; label: string };
+  eyebrow?: ReactNode;
+  children?: ReactNode;
+}) {
+  return (
+    <header className="flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0 flex-1">
+        {back && (
+          <Link to={back.to} className="mb-2 inline-flex items-center gap-1 text-sm muted hover:text-slate-900 dark:hover:text-white">
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+            {back.label}
+          </Link>
+        )}
+        {eyebrow && <p className="mb-1 text-sm muted">{eyebrow}</p>}
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">{title}</h1>
+        {description && <div className="mt-1 max-w-3xl text-sm muted">{description}</div>}
+        {children}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </header>
+  );
+}
+
+/** Full-page loading and error states, sized like the page they replace. */
+export function PageLoading({ label = "Loading" }: { label?: string }) {
+  return (
+    <div className="page-narrow">
+      <Spinner label={label} />
+    </div>
+  );
+}
+
+export function PageError({ error }: { error: unknown }) {
+  return (
+    <div className="page-narrow">
+      <ErrorNote error={error} />
+    </div>
+  );
+}
 
 export function Spinner({ label = "Loading" }: { label?: string }) {
   return (
@@ -14,7 +67,7 @@ export function Spinner({ label = "Loading" }: { label?: string }) {
 export function EmptyState({ title, children, action }: { title: string; children?: ReactNode; action?: ReactNode }) {
   return (
     <div className="card flex flex-col items-center px-6 py-12 text-center">
-      <h2 className="text-base font-semibold">{title}</h2>
+      <h2 className="section-title">{title}</h2>
       {children && <div className="mt-1 max-w-md text-sm muted">{children}</div>}
       {action && <div className="mt-4">{action}</div>}
     </div>
@@ -76,9 +129,8 @@ export function MatchRing({ percent, size = 52 }: { percent: number; size?: numb
           className={`fill-none ${color}`}
         />
       </svg>
-      <span className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-        <span className="text-sm font-semibold">{p}%</span>
-        <span className="text-[9px] uppercase muted">match</span>
+      <span className="absolute inset-0 flex items-center justify-center leading-none">
+        <span className={`${size >= 80 ? "text-xl" : "text-sm"} font-semibold tabular-nums`}>{p}%</span>
       </span>
     </div>
   );
@@ -90,7 +142,7 @@ export function ScoreBar({ label, value, hint }: { label: string; value: number;
     <div>
       <div className="flex justify-between text-xs">
         <span className="font-medium">{label}</span>
-        <span className="muted">{p}%</span>
+        <span className="tabular-nums muted">{p}%</span>
       </div>
       <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800" title={hint}>
         <div className="h-full rounded-full bg-brand-500" style={{ width: `${p}%` }} />

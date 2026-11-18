@@ -11,12 +11,12 @@ export function SettingsPage() {
   const { user } = useAuth();
   const { candidate } = useCandidate();
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Settings and privacy</h1>
+    <div className="page-narrow">
+      <h1 className="text-2xl font-semibold">Settings and privacy</h1>
       {isSeeker(user) && candidate && <BiasSection />}
       {isSeeker(user) && !candidate && (
         <p className="card p-5 text-sm">
-          No resume on file. <Link to="/" className="text-brand-600 hover:underline">Upload one</Link> to start matching.
+          No resume on file. <Link to="/" className="link">Upload one</Link> to start matching.
         </p>
       )}
       {isSeeker(user) && <CampusSection />}

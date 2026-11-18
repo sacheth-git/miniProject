@@ -8,8 +8,8 @@ import { Chip, ErrorNote, Spinner } from "../../components/ui";
 
 export function AnalyticsPage() {
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Placement analytics</h1>
+    <div className="page">
+      <h1 className="text-2xl font-semibold">Placement analytics</h1>
       <SkillGapSection />
       <FairnessSection />
       <UnplacedSection />
@@ -142,13 +142,13 @@ function UnplacedSection() {
     { key: "cgpa", header: "CGPA", align: "right", render: (s) => s.cgpa?.toFixed(2) ?? "-" },
     { key: "best", header: "Best-fit open drives", sortable: false, render: (s) =>
       s.best_drives.length ? (
-        <ul className="text-xs">{s.best_drives.map((d) => <li key={d.drive_id}><Link className="text-brand-600 hover:underline" to={`/tpo/drives/${d.drive_id}`}>{d.company}</Link> · {d.match_percent}%</li>)}</ul>
+        <ul className="text-xs">{s.best_drives.map((d) => <li key={d.drive_id}><Link className="link" to={`/tpo/drives/${d.drive_id}`}>{d.company}</Link> · {d.match_percent}%</li>)}</ul>
       ) : <span className="text-xs muted">{s.has_resume ? "No eligible open drive" : "No resume"}</span> },
     { key: "jobs", header: "Open-market jobs", sortable: false, render: (s) =>
       open === s.user_id && jobs.data ? (
-        <ul className="text-xs">{jobs.data.map((j) => <li key={j.job_id}><a className="text-brand-600 hover:underline" href={j.apply_url} target="_blank" rel="noopener noreferrer">{j.title}</a> · {j.company} · {j.match_percent}%</li>)}{jobs.data.length === 0 && <li className="muted">None found</li>}</ul>
+        <ul className="text-xs">{jobs.data.map((j) => <li key={j.job_id}><a className="link" href={j.apply_url} target="_blank" rel="noopener noreferrer">{j.title}</a> · {j.company} · {j.match_percent}%</li>)}{jobs.data.length === 0 && <li className="muted">None found</li>}</ul>
       ) : (
-        <button className="btn-ghost px-2 py-1 text-xs" disabled={!s.has_resume || (jobs.isPending && open === s.user_id)} onClick={() => { setOpen(s.user_id); jobs.mutate(s.user_id); }}>
+        <button className="btn-ghost h-8 px-2 text-xs" disabled={!s.has_resume || (jobs.isPending && open === s.user_id)} onClick={() => { setOpen(s.user_id); jobs.mutate(s.user_id); }}>
           {jobs.isPending && open === s.user_id ? "Finding" : "Find jobs"}
         </button>
       ) },

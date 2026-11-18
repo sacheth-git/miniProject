@@ -56,7 +56,7 @@ export function RoundsTab({ id }: { id: string }) {
               {movable.map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
-          <button className="btn-primary py-1.5" disabled={!sel.size || !target || move.isPending} onClick={() => move.mutate({ ids: [...sel], stage: target })}>Move</button>
+          <button className="btn-primary h-8" disabled={!sel.size || !target || move.isPending} onClick={() => move.mutate({ ids: [...sel], stage: target })}>Move</button>
         </div>
         <form onSubmit={submitResults} className="flex flex-wrap items-end gap-2">
           <div>
@@ -67,7 +67,7 @@ export function RoundsTab({ id }: { id: string }) {
             </select>
           </div>
           <input type="file" accept=".csv,text/csv" aria-label="Results CSV (roll_no, result)" className="text-sm" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-          <button className="btn-secondary py-1.5" disabled={!file || !roundName || results.isPending}><Upload className="h-4 w-4" aria-hidden /> Apply results</button>
+          <button className="btn-secondary h-8" disabled={!file || !roundName || results.isPending}><Upload className="h-4 w-4" aria-hidden /> Apply results</button>
         </form>
         <p className="w-full text-xs muted">
           Results CSV: columns <span className="font-mono">roll_no,result</span> with pass / fail. Passed students move to the next round; the rest are rejected. Students are notified of every move.
@@ -148,7 +148,7 @@ export function OffersTab({ id, defaultCtc }: { id: string; defaultCtc: number |
           <label className="label" htmlFor="oc">CTC (LPA)</label>
           <input id="oc" type="number" step="0.1" min="0" className="input w-28 py-1.5" value={ctc} onChange={(e) => setCtc(e.target.value)} />
         </div>
-        <button className="btn-primary py-1.5" disabled={!student || create.isPending}>Record offer</button>
+        <button className="btn-primary h-8" disabled={!student || create.isPending}>Record offer</button>
         <p className="w-full text-xs muted">Placement policy is checked: a student who has accepted an offer, or holds one and this drive doesn't clear the dream bar, can't receive another.</p>
       </form>
       {create.error && <ErrorNote error={create.error} />}
@@ -170,8 +170,8 @@ export function OffersTab({ id, defaultCtc }: { id: string; defaultCtc: number |
                 <td className="px-3 py-2 text-right">
                   {o.status === "pending" && (
                     <span className="flex justify-end gap-1">
-                      <button className="btn-ghost px-2 py-1 text-xs" onClick={() => decide.mutate({ id: o.id, status: "accepted" })}>Mark accepted</button>
-                      <button className="btn-ghost px-2 py-1 text-xs" onClick={() => decide.mutate({ id: o.id, status: "declined" })}>Mark declined</button>
+                      <button className="btn-ghost h-8 px-2 text-xs" onClick={() => decide.mutate({ id: o.id, status: "accepted" })}>Mark accepted</button>
+                      <button className="btn-ghost h-8 px-2 text-xs" onClick={() => decide.mutate({ id: o.id, status: "declined" })}>Mark declined</button>
                     </span>
                   )}
                 </td>

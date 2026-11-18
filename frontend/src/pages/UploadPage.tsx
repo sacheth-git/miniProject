@@ -20,7 +20,7 @@ export function UploadPage() {
   const { candidate } = useCandidate();
   const [replacing, setReplacing] = useState(false);
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="page-mid">
       {!candidate || replacing ? (
         <Uploader onDone={() => setReplacing(false)} onCancel={candidate ? () => setReplacing(false) : undefined} />
       ) : (
@@ -65,7 +65,7 @@ function Uploader({ onDone, onCancel }: { onDone: () => void; onCancel?: () => v
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Find jobs that match your skills</h1>
+      <h1 className="text-2xl font-semibold">Find jobs that match your skills</h1>
       <p className="mt-2 max-w-2xl muted">
         Upload your resume once. We read your skills and experience, rank open roles and internships from employer career
         sites and job boards, and show you why each one fits.
@@ -224,7 +224,7 @@ function Profile({ candidate, onReplace }: { candidate: Candidate; onReplace: ()
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Your profile</h1>
+          <h1 className="text-2xl font-semibold">Your profile</h1>
           <p className="mt-1 text-sm muted">
             From {candidate.filename ?? "your resume"} · {candidate.years_experience} years of experience ·{" "}
             {candidate.education_level === "unknown" ? "education not detected" : candidate.education_level.replace("_", " ")}
@@ -253,7 +253,7 @@ function Profile({ candidate, onReplace }: { candidate: Candidate; onReplace: ()
                 title={s.evidence}
               >
                 {s.name}
-                {s.method === "user" && <span className="text-[10px] muted">added</span>}
+                {s.method === "user" && <span className="text-xs muted">added</span>}
                 <button
                   className="rounded-full p-0.5 hover:bg-slate-200 dark:hover:bg-slate-700"
                   aria-label={`Remove ${s.name}`}
@@ -301,7 +301,7 @@ function Profile({ candidate, onReplace }: { candidate: Candidate; onReplace: ()
           <legend className="label">Job type</legend>
           <div className="flex flex-wrap gap-2">
             {["internship", "full-time", "contract"].map((t) => (
-              <label key={t} className={`btn-secondary cursor-pointer py-1.5 ${prefs.job_types.includes(t) ? "border-brand-500 text-brand-700 dark:text-brand-200" : ""}`}>
+              <label key={t} className={`btn-secondary h-8 cursor-pointer ${prefs.job_types.includes(t) ? "border-brand-500 text-brand-700 dark:text-brand-200" : ""}`}>
                 <input type="checkbox" className="sr-only" checked={prefs.job_types.includes(t)} onChange={() => toggleType(t)} />
                 {t === "full-time" ? "Full-time" : t[0].toUpperCase() + t.slice(1)}
               </label>

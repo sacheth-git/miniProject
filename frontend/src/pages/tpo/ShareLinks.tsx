@@ -34,7 +34,7 @@ export function ShareLinks({ driveId }: { driveId: string }) {
         <div><label className="label" htmlFor="sl-label">Label</label><input id="sl-label" className="input w-48 py-1.5" placeholder="e.g. Acme HR" value={label} onChange={(e) => setLabel(e.target.value)} /></div>
         <div><label className="label" htmlFor="sl-days">Expires after (days)</label><input id="sl-days" type="number" min={1} max={60} className="input w-24 py-1.5" value={days} onChange={(e) => setDays(Number(e.target.value))} /></div>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={blind} onChange={(e) => setBlind(e.target.checked)} /> Hide names and emails</label>
-        <button className="btn-primary py-1.5" disabled={create.isPending} onClick={() => create.mutate()}>Create link</button>
+        <button className="btn-primary h-8" disabled={create.isPending} onClick={() => create.mutate()}>Create link</button>
       </div>
       {create.error && <ErrorNote error={create.error} />}
       {fresh && (
@@ -59,7 +59,7 @@ export function ShareLinks({ driveId }: { driveId: string }) {
                   <td>{l.blind ? "Hidden" : "Shown"}</td>
                   <td>{l.revoked_at ? <Chip tone="slate">Revoked</Chip> : expired ? <Chip tone="amber">Expired</Chip> : new Date(l.expires_at).toLocaleDateString()}</td>
                   <td className="text-right tabular-nums">{l.views}</td>
-                  <td className="text-right">{!l.revoked_at && !expired && <button className="btn-ghost px-2 py-1 text-xs" onClick={() => revoke.mutate(l.id)}>Revoke</button>}</td>
+                  <td className="text-right">{!l.revoked_at && !expired && <button className="btn-ghost h-8 px-2 text-xs" onClick={() => revoke.mutate(l.id)}>Revoke</button>}</td>
                 </tr>
               );
             })}

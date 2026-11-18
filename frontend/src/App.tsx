@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import { AppHeader } from "./components/AppHeader";
 import { RequireAuth } from "./components/RequireAuth";
-import { Spinner } from "./components/ui";
+import { EmptyState, PageLoading } from "./components/ui";
 import { AuthProvider, isSeeker, useAuth } from "./lib/auth";
 import { CandidateProvider } from "./lib/candidate";
 import { TrackingProvider } from "./lib/tracking";
@@ -43,7 +43,7 @@ const SEEKERS = ["student", "job_seeker"] as const;
 /** "/" is the landing page for guests, resume home for seekers, dashboard for TPOs. */
 function Home() {
   const { user, loading } = useAuth();
-  if (loading) return <div className="p-8"><Spinner /></div>;
+  if (loading) return <PageLoading />;
   if (!user) return <LandingPage />;
   if (user.must_reset_password) return <Navigate to="/change-password" replace />;
   if (user.role === "tpo") return <Navigate to="/tpo" replace />;
@@ -65,7 +65,7 @@ function Shell() {
   const seeker = (el: JSX.Element) => <RequireAuth roles={[...SEEKERS]}>{el}</RequireAuth>;
   const tpoOnly = (el: JSX.Element) => (
     <RequireAuth roles={["tpo"]}>
-      <Suspense fallback={<div className="p-8"><Spinner /></div>}>{el}</Suspense>
+      <Suspense fallback={<PageLoading />}>{el}</Suspense>
     </RequireAuth>
   );
   return (
@@ -101,12 +101,14 @@ function Shell() {
           <Route path="/tpo/audit" element={tpoOnly(<AuditPage />)} />
           <Route path="/tpo/policy" element={tpoOnly(<PolicyPage />)} />
           <Route path="/status" element={<StatusPage />} />
-          <Route path="*" element={<div className="mx-auto max-w-3xl px-4 py-12">Page not found. <Link to="/" className="text-brand-600 hover:underline">Go home</Link></div>} />
+          <Route path="*" element={<div className="page-narrow"><EmptyState title="Page not found" action={<Link to="/" className="btn-primary">Go home</Link>}>The link may be old or mistyped.</EmptyState></div>} />
         </Routes>
       </main>
-      <footer className="border-t border-slate-200 py-4 text-center text-xs muted dark:border-slate-800">
-        SkillMatch recommends jobs; you apply on the employer's or job board's own site. Listings come from official APIs.{" "}
-        <Link to="/status" className="hover:underline">System status</Link>
+      <footer className="border-t border-slate-200 dark:border-slate-800">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs muted sm:px-6">
+          <p>Listings come from official job APIs. You apply on the employer's or job board's own site</p>
+          <Link to="/status" className="hover:underline">System status</Link>
+        </div>
       </footer>
     </div>
   );

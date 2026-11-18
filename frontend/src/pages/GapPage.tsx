@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { useCandidate } from "../lib/candidate";
 import type { GapSkill } from "../lib/types";
-import { EmptyState, ErrorNote, Spinner } from "../components/ui";
+import { EmptyState, ErrorNote, PageHeader, Spinner } from "../components/ui";
 
 export function GapPage() {
   const { candidateId, candidate, setCandidate } = useCandidate();
@@ -15,7 +15,7 @@ export function GapPage() {
 
   if (!candidateId) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="page-narrow">
         <EmptyState title="Upload your resume first" action={<Link to="/" className="btn-primary">Upload resume</Link>}>
           Skill-gap advice compares your skills with the jobs that fit you best.
         </EmptyState>
@@ -26,12 +26,11 @@ export function GapPage() {
   const have = new Set(candidate?.skills.map((s) => s.skill_id));
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Skills to learn next</h1>
-      <p className="mt-1 muted">
-        We re-scored your {gap.data?.jobs_considered ?? 50} best-matching jobs as if you had each missing skill. These raise
-        your matches the most.
-      </p>
+    <div className="page-mid">
+      <PageHeader
+        title="Skills to learn next"
+        description={`We re-scored your ${gap.data?.jobs_considered ?? 50} best-matching jobs as if you had each missing skill. These raise your matches the most.`}
+      />
       {gap.isLoading && <div className="mt-6"><Spinner label="Working out your skill gap" /></div>}
       {gap.error && <div className="mt-6"><ErrorNote error={gap.error} /></div>}
       {gap.data && gap.data.by_total_gain.length === 0 && (
@@ -85,12 +84,12 @@ function GapRow({ g, rank, max, owned, onAdd }: { g: GapSkill; rank: number; max
       <div className="ml-7 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs muted">
         <span>For example:</span>
         {g.example_jobs.map((j) => (
-          <Link key={j.id} to={`/jobs?job=${j.id}`} className="text-brand-600 hover:underline">
+          <Link key={j.id} to={`/jobs?job=${j.id}`} className="link">
             {j.title} at {j.company}
           </Link>
         ))}
         {!owned && (
-          <button className="ml-auto text-brand-600 hover:underline" onClick={onAdd}>
+          <button className="ml-auto link" onClick={onAdd}>
             I already know this
           </button>
         )}

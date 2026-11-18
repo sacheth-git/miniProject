@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Check, CircleAlert, Clock, MapPin } from "lucide-react";
 import { campus, type CampusDrive, type CampusDriveDetail } from "../lib/tpo";
-import { Chip, EmptyState, ErrorNote, MatchRing, ScoreBar, Spinner } from "../components/ui";
+import { Chip, EmptyState, ErrorNote, MatchRing, PageError, PageHeader, PageLoading, ScoreBar } from "../components/ui";
 
 const TYPE: Record<string, string> = { fte: "Full-time", internship: "Internship", "intern+ppo": "Internship + PPO" };
 
@@ -23,14 +23,14 @@ function deadlineText(d: CampusDrive): string {
 
 export function CampusDrivesPage() {
   const q = useQuery({ queryKey: ["campus", "drives"], queryFn: campus.drives });
-  if (q.isLoading) return <div className="p-8"><Spinner label="Loading campus drives" /></div>;
-  if (q.error) return <div className="mx-auto max-w-3xl p-8"><ErrorNote error={q.error} /></div>;
+  if (q.isLoading) return <PageLoading label="Loading campus drives" />;
+  if (q.error) return <PageError error={q.error} />;
   const eligible = q.data!.filter((d) => d.eligible);
   const other = q.data!.filter((d) => !d.eligible);
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
+    <div className="page-mid">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Campus drives</h1>
+        <h1 className="text-2xl font-semibold">Campus drives</h1>
         <p className="mt-1 text-sm muted">Drives from your placement office. Your match score is visible only to you and your placement office.</p>
       </div>
       {q.data!.length === 0 && <EmptyState title="No open drives right now">You'll get a notification when a drive you're eligible for opens.</EmptyState>}
@@ -55,7 +55,7 @@ function DriveCard({ d }: { d: CampusDrive }) {
     <article className={`card flex gap-4 p-4 ${d.eligible ? "" : "opacity-80"}`}>
       <div className="min-w-0 flex-1">
         <h3 className="font-semibold">
-          <Link to={`/campus/${d.id}`} className="hover:text-brand-600 hover:underline">{d.role}</Link>
+          <Link to={`/campus/${d.id}`} className="hover:link">{d.role}</Link>
         </h3>
         <p className="text-sm">{d.company}</p>
         <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs muted">
@@ -97,8 +97,8 @@ export function CampusDrivePage() {
   const withdraw = useMutation({ mutationFn: () => campus.withdraw(id), onSuccess: done });
   const decide = useMutation({ mutationFn: (v: "accept" | "decline") => campus.decide(q.data!.offer!.id, v), onSuccess: done });
 
-  if (q.isLoading) return <div className="p-8"><Spinner /></div>;
-  if (q.error) return <div className="mx-auto max-w-3xl p-8"><ErrorNote error={q.error} /></div>;
+  if (q.isLoading) return <PageLoading />;
+  if (q.error) return <PageError error={q.error} />;
   const d = q.data!;
   const reached = new Set(d.timeline.map((t) => t.stage));
   const canWithdraw = d.applied && !d.deadline_passed && ["Applied", "Shortlisted"].includes(d.stage ?? "");
@@ -106,16 +106,14 @@ export function CampusDrivePage() {
   const e = d.explanation;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 px-4 py-8">
-      <p className="text-sm"><Link to="/campus" className="text-brand-600 hover:underline">Campus drives</Link></p>
-      <div className="flex flex-wrap items-start gap-4">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-semibold tracking-tight">{d.role}</h1>
-          <p>{d.company}</p>
-          <p className="mt-1 text-sm muted">{TYPE[d.job_type]} · {pay(d)} · {d.location ?? "Location TBD"} · {deadlineText(d)}</p>
-        </div>
-        {d.match_percent !== null && <MatchRing percent={d.match_percent} size={64} />}
-      </div>
+    <div className="page-mid">
+      <PageHeader
+        back={{ to: "/campus", label: "Campus drives" }}
+        eyebrow={d.company}
+        title={d.role}
+        description={`${TYPE[d.job_type]} · ${pay(d)} · ${d.location ?? "Location TBD"} · ${deadlineText(d)}`}
+        actions={d.match_percent !== null ? <MatchRing percent={d.match_percent} size={64} /> : undefined}
+      />
 
       {d.offer && d.offer.status === "pending" && (
         <section className="card border-emerald-300 p-5 dark:border-emerald-800" aria-labelledby="offer-h">
@@ -191,13 +189,13 @@ export function CampusDrivePage() {
 
 export function ReadinessPage() {
   const q = useQuery({ queryKey: ["campus", "readiness"], queryFn: campus.readiness });
-  if (q.isLoading) return <div className="p-8"><Spinner label="Checking your readiness" /></div>;
-  if (q.error) return <div className="mx-auto max-w-3xl p-8"><ErrorNote error={q.error} /></div>;
+  if (q.isLoading) return <PageLoading label="Checking your readiness" />;
+  if (q.error) return <PageError error={q.error} />;
   const r = q.data!;
   const pct = Math.round(r.score * 100);
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Placement readiness</h1>
+    <div className="page-mid">
+      <h1 className="text-2xl font-semibold">Placement readiness</h1>
       <div className="card flex flex-wrap items-center gap-6 p-6">
         <MatchRing percent={pct} size={96} />
         <div className="min-w-60 flex-1 space-y-2">

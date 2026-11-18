@@ -112,11 +112,11 @@ export function DataTable<T>({
             {current * pageSize + 1}-{Math.min(sorted.length, (current + 1) * pageSize)} of {sorted.length}
           </span>
           <span className="flex gap-1">
-            <button className="btn-ghost p-1" onClick={() => setPage(current - 1)} disabled={current === 0} aria-label="Previous page">
+            <button className="btn-ghost h-8 w-8 p-0" onClick={() => setPage(current - 1)} disabled={current === 0} aria-label="Previous page">
               <ChevronLeft className="h-4 w-4" />
             </button>
             <span className="px-2 py-1">Page {current + 1} of {pages}</span>
-            <button className="btn-ghost p-1" onClick={() => setPage(current + 1)} disabled={current >= pages - 1} aria-label="Next page">
+            <button className="btn-ghost h-8 w-8 p-0" onClick={() => setPage(current + 1)} disabled={current >= pages - 1} aria-label="Next page">
               <ChevronRight className="h-4 w-4" />
             </button>
           </span>

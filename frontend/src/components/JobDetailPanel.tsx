@@ -52,7 +52,7 @@ export function JobDetailPanel({ jobId, onClose }: { jobId: string; onClose?: ()
           </div>
           {why.data && <MatchRing percent={Math.round(why.data.score * 100)} size={60} />}
           {onClose && (
-            <button className="btn-ghost p-1.5" onClick={onClose} aria-label="Close job details">
+            <button className="btn-ghost h-8 w-8 p-0" onClick={onClose} aria-label="Close job details">
               <X className="h-5 w-5" />
             </button>
           )}

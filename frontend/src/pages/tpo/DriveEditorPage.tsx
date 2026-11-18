@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
 import { tpo, type DriveInput, type DriveSkill, type Rules } from "../../lib/tpo";
-import { ErrorNote, Spinner } from "../../components/ui";
+import { ErrorNote, PageLoading } from "../../components/ui";
 
 const BRANCHES = ["CSE", "IT", "ECE", "EEE", "MECH", "CIVIL", "AIML", "ISE"];
 const STEPS = ["Job description", "Skills", "Eligibility", "Rounds and dates"] as const;
@@ -59,15 +59,15 @@ export function DriveEditorPage() {
     },
   });
 
-  if (editing && existing.isLoading) return <div className="p-8"><Spinner /></div>;
+  if (editing && existing.isLoading) return <PageLoading />;
   const set = (patch: Partial<DriveInput>) => setD((x) => ({ ...x, ...patch }));
   const setRules = (patch: Partial<Rules>) => setD((x) => ({ ...x, rules: { ...x.rules, ...patch } }));
   const setSkill = (i: number, patch: Partial<DriveSkill>) => set({ skills: d.skills.map((s, j) => (j === i ? { ...s, ...patch } : s)) });
   const canNext = step === 0 ? d.company.trim() && d.role.trim() : true;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">{editing ? `Edit ${d.company || "drive"}` : "New campus drive"}</h1>
+    <div className="page-mid">
+      <h1 className="text-2xl font-semibold">{editing ? `Edit ${d.company || "drive"}` : "New campus drive"}</h1>
       <ol className="mt-5 flex flex-wrap gap-2 text-sm" aria-label="Steps">
         {STEPS.map((s, i) => (
           <li key={s}>
@@ -138,7 +138,7 @@ export function DriveEditorPage() {
                       <input aria-label={`${s.name} weight`} type="range" min={0} max={2} step={0.05} value={s.weight} onChange={(e) => setSkill(i, { weight: Number(e.target.value) })} />
                       <span className="w-10 tabular-nums">{s.weight.toFixed(2)}</span>
                     </td>
-                    <td><button className="btn-ghost p-1" aria-label={`Remove ${s.name}`} onClick={() => set({ skills: d.skills.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></button></td>
+                    <td><button className="btn-ghost h-8 w-8 p-0" aria-label={`Remove ${s.name}`} onClick={() => set({ skills: d.skills.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></button></td>
                   </tr>
                 ))}
               </tbody>
@@ -163,7 +163,7 @@ export function DriveEditorPage() {
                 {BRANCHES.map((b) => {
                   const on = d.rules.allowed_branches.includes(b);
                   return (
-                    <label key={b} className={`btn-secondary cursor-pointer py-1 ${on ? "border-brand-500 text-brand-700 dark:text-brand-200" : ""}`}>
+                    <label key={b} className={`btn-secondary h-8 cursor-pointer ${on ? "border-brand-500 text-brand-700 dark:text-brand-200" : ""}`}>
                       <input type="checkbox" className="sr-only" checked={on} onChange={() => setRules({ allowed_branches: on ? d.rules.allowed_branches.filter((x) => x !== b) : [...d.rules.allowed_branches, b] })} />
                       {b}
                     </label>

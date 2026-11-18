@@ -73,9 +73,9 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-      <div className="mx-auto flex h-14 max-w-7xl items-stretch gap-4 px-4">
+      <div className="mx-auto flex h-14 max-w-7xl items-stretch gap-6 px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-brand-600 text-sm font-bold text-white" aria-hidden>
+          <span className="grid h-7 w-7 place-items-center rounded-md bg-brand-600 text-sm font-semibold text-white" aria-hidden>
             S
           </span>
           SkillMatch
@@ -85,14 +85,14 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
             <NavLink key={l.to} to={l.to} end={l.to === "/tpo"} className={navCls}>
               {l.label}
               {l.to === "/tracker" && active > 0 && (
-                <span className="rounded-full bg-slate-200 px-1.5 text-[11px] font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">{active}</span>
+                <span className="text-xs tabular-nums muted">{active}</span>
               )}
             </NavLink>
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
           {isSeeker(user) && <NotificationBell />}
-          <button className="btn-ghost p-2" onClick={onToggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+          <button className="btn-ghost w-9 p-0" onClick={onToggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           {!user ? (
@@ -132,7 +132,7 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
               )}
             </div>
           )}
-          <button className="btn-ghost p-2 md:hidden" onClick={() => setMobile((m) => !m)} aria-label="Menu" aria-expanded={mobile}>
+          <button className="btn-ghost w-9 p-0 md:hidden" onClick={() => setMobile((m) => !m)} aria-label="Menu" aria-expanded={mobile}>
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>

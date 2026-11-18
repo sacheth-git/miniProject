@@ -34,11 +34,11 @@ export function StudentsPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
+    <div className="page">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm muted">Placement office</p>
-          <h1 className="text-2xl font-semibold tracking-tight">{inst.data?.name ?? "Students"}</h1>
+          <h1 className="text-2xl font-semibold">{inst.data?.name ?? "Students"}</h1>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {inst.data && (
@@ -47,7 +47,7 @@ export function StudentsPage() {
                 <p className="text-[11px] muted">Student invite code</p>
                 <p className="font-mono font-semibold tracking-widest">{inst.data.invite_code}</p>
               </div>
-              <button className="btn-ghost p-1.5" aria-label="Copy invite code" onClick={() => navigator.clipboard?.writeText(inst.data!.invite_code).then(() => setCopied(true))}>
+              <button className="btn-ghost h-8 w-8 p-0" aria-label="Copy invite code" onClick={() => navigator.clipboard?.writeText(inst.data!.invite_code).then(() => setCopied(true))}>
                 <Copy className="h-4 w-4" />
               </button>
               {copied && <span className="text-xs muted">Copied</span>}
@@ -116,7 +116,7 @@ function ImportWizard({ onClose }: { onClose: () => void }) {
     <section className="card p-5" aria-labelledby="import-h">
       <div className="flex items-start justify-between">
         <h2 id="import-h" className="font-semibold">Import students</h2>
-        <button className="btn-ghost text-xs" onClick={onClose}>Close</button>
+        <button className="btn-ghost h-8 px-2 text-xs" onClick={onClose}>Close</button>
       </div>
 
       {!preview && (
@@ -124,7 +124,7 @@ function ImportWizard({ onClose }: { onClose: () => void }) {
           <p className="text-sm muted">
             Upload a CSV with one row per student, and optionally a ZIP of resumes named by roll number (e.g. <span className="font-mono">4XX22CS001.pdf</span>).
             Nothing changes until you review the preview and confirm.{" "}
-            <a href={templateHref} download="students-template.csv" className="text-brand-600 hover:underline">Download CSV template</a>
+            <a href={templateHref} download="students-template.csv" className="link">Download CSV template</a>
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>

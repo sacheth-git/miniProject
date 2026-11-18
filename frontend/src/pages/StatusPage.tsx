@@ -8,10 +8,10 @@ export function StatusPage() {
   });
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-xl font-semibold">System status</h1>
-      <div className="mt-4 rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-        {isLoading && <p className="text-sm text-slate-500">Checking backend...</p>}
+    <section className="page-narrow">
+      <h1 className="text-2xl font-semibold">System status</h1>
+      <div className="card p-5">
+        {isLoading && <p className="text-sm muted">Checking backend...</p>}
         {error && (
           <p role="alert" className="text-sm text-red-600">
             Backend unreachable. Start it with the command in README.

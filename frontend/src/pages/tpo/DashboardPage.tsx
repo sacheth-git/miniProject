@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { analytics } from "../../lib/tpo";
 import { ChartCard, HBars, SimpleTable, StatTile } from "../../components/charts";
-import { ErrorNote, Spinner } from "../../components/ui";
+import { PageError, PageLoading } from "../../components/ui";
 
 const lpa = (x: number | null) => (x === null ? "-" : `${x} LPA`);
 
 export function DashboardPage() {
   const q = useQuery({ queryKey: ["tpo", "summary"], queryFn: analytics.summary });
-  if (q.isLoading) return <div className="p-8"><Spinner label="Loading placement numbers" /></div>;
-  if (q.error) return <div className="mx-auto max-w-3xl p-8"><ErrorNote error={q.error} /></div>;
+  if (q.isLoading) return <PageLoading label="Loading placement numbers" />;
+  if (q.error) return <PageError error={q.error} />;
   const s = q.data!;
   const f = s.funnel.total;
   const funnel = [
@@ -20,10 +20,10 @@ export function DashboardPage() {
     { label: "Accepted", value: f.accepted },
   ];
   return (
-    <div className="mx-auto max-w-7xl space-y-5 px-4 py-8">
+    <div className="page">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Placement dashboard</h1>
-        <Link to="/tpo/analytics" className="text-sm text-brand-600 hover:underline">Skill gaps, fairness and unplaced students</Link>
+        <h1 className="text-2xl font-semibold">Placement dashboard</h1>
+        <Link to="/tpo/analytics" className="text-sm link">Skill gaps, fairness and unplaced students</Link>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">

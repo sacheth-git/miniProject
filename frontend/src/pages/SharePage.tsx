@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { analytics } from "../lib/tpo";
-import { ErrorNote, Spinner } from "../components/ui";
+import { PageError, PageLoading } from "../components/ui";
 
 /** Public, read-only recruiter view of a drive shortlist (no sign-in; the link expires). */
 export function SharePage() {
   const { token = "" } = useParams();
   const q = useQuery({ queryKey: ["share", token], queryFn: () => analytics.shared(token), retry: false });
-  if (q.isLoading) return <div className="p-8"><Spinner /></div>;
-  if (q.error) return <div className="mx-auto max-w-xl p-8"><ErrorNote error={q.error} /></div>;
+  if (q.isLoading) return <PageLoading />;
+  if (q.error) return <PageError error={q.error} />;
   const s = q.data!;
   const cell = (v: unknown) => (Array.isArray(v) ? v.join(", ") : v === null || v === undefined ? "-" : String(v));
   return (
-    <div className="mx-auto max-w-6xl space-y-4 px-4 py-8">
+    <div className="page">
       <div>
         <p className="text-sm muted">{s.institution} · shared shortlist</p>
-        <h1 className="text-2xl font-semibold tracking-tight">{s.company}: {s.role}</h1>
+        <h1 className="text-2xl font-semibold">{s.company}: {s.role}</h1>
         <p className="mt-1 text-sm muted">
           {s.location ?? ""}{s.ctc_lpa ? ` · ${s.ctc_lpa} LPA` : ""}{s.rounds.length ? ` · Rounds: ${s.rounds.join(" → ")}` : ""}
         </p>

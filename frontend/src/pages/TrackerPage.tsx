@@ -56,7 +56,7 @@ export function TrackerPage() {
 
   if (!candidateId && campusItems.length === 0) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="page-narrow">
         <EmptyState title="Upload your resume to start tracking" action={<Link to="/" className="btn-primary">Upload resume</Link>} />
       </div>
     );
@@ -72,9 +72,9 @@ export function TrackerPage() {
 
   const list = apps.data ?? [];
   return (
-    <div className="mx-auto max-w-[96rem] px-4 py-6">
+    <div className="mx-auto w-full max-w-[96rem] space-y-6 px-4 py-8 sm:px-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">My applications</h1>
+        <h1 className="text-2xl font-semibold">My applications</h1>
         <p className="text-sm muted">Drag cards between columns, or use the status menu on each card.</p>
       </div>
       {apps.isLoading && <div className="mt-6"><Spinner /></div>}
@@ -161,7 +161,7 @@ function TrackerCard({
       <Chip tone="slate">Open market</Chip>
       <h3 className="mt-1 font-medium leading-snug">
         {a.job_id ? (
-          <Link to={`/jobs?job=${a.job_id}`} className="hover:text-brand-600 hover:underline">
+          <Link to={`/jobs?job=${a.job_id}`} className="hover:link">
             {a.title}
           </Link>
         ) : (
@@ -188,14 +188,14 @@ function TrackerCard({
           ))}
         </select>
         {a.apply_url && (
-          <a href={a.apply_url} target="_blank" rel="noopener noreferrer" className="btn-ghost p-1.5" aria-label="Open application page">
+          <a href={a.apply_url} target="_blank" rel="noopener noreferrer" className="btn-ghost h-8 w-8 p-0" aria-label="Open application page">
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
         )}
-        <button className="btn-ghost p-1.5 text-xs" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+        <button className="btn-ghost h-8 px-2 text-xs" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
           Notes{a.notes ? " ·" : ""}
         </button>
-        <button className="btn-ghost ml-auto p-1.5" onClick={onDelete} aria-label={`Remove ${a.title} from tracker`}>
+        <button className="btn-ghost ml-auto h-8 w-8 p-0" onClick={onDelete} aria-label={`Remove ${a.title} from tracker`}>
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
@@ -219,7 +219,7 @@ function CampusCard({ c }: { c: TrackerItem }) {
     <article className="card border-brand-200 p-3 text-sm dark:border-slate-700">
       <Chip tone="blue">Campus drive · {c.stage}</Chip>
       <h3 className="mt-1 font-medium leading-snug">
-        {c.link ? <Link to={c.link} className="hover:text-brand-600 hover:underline">{c.title}</Link> : c.title}
+        {c.link ? <Link to={c.link} className="hover:link">{c.title}</Link> : c.title}
       </h3>
       <p className="text-xs muted">{c.company}</p>
       <p className="mt-1 text-xs muted">Updated {timeAgo(c.updated_at).toLowerCase()}</p>

@@ -28,9 +28,9 @@ export function JobCard({ job, match, selected, onSelect }: Props) {
     >
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold leading-snug">
+          <h3 className="text-base font-semibold leading-snug">
             <button
-              className="text-left hover:text-brand-600 hover:underline focus-visible:underline focus-visible:outline-none"
+              className="text-left hover:link focus-visible:underline focus-visible:outline-none"
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect();

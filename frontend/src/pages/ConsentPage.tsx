@@ -18,7 +18,7 @@ export function ConsentPage() {
   });
   return (
     <div className="mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">Share your profile with your placement office?</h1>
+      <h1 className="text-2xl font-semibold">Share your profile with your placement office?</h1>
       {c.isLoading && <Spinner />}
       {c.data && (
         <div className="card mt-6 space-y-4 p-6">

@@ -29,9 +29,9 @@ export function DrivesPage() {
     { key: "shortlisted", header: "Shortlisted", align: "right", sortValue: (d) => d.counts.shortlisted ?? 0, render: (d) => d.counts.shortlisted ?? 0 },
   ];
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
+    <div className="page">
       <div className="flex items-end justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Campus drives</h1>
+        <h1 className="text-2xl font-semibold">Campus drives</h1>
         <Link to="/tpo/drives/new" className="btn-primary"><Plus className="h-4 w-4" aria-hidden /> New drive</Link>
       </div>
       <section className="card overflow-hidden">

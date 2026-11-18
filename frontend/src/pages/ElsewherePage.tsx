@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { api } from "../lib/api";
 import { useCandidate } from "../lib/candidate";
-import { EmptyState, ErrorNote, Spinner } from "../components/ui";
+import { EmptyState, ErrorNote, PageHeader, Spinner } from "../components/ui";
 
 const ABOUT: Record<string, string> = {
   LinkedIn: "Large professional network. Some jobs use Easy Apply; others send you to the company site.",
@@ -17,7 +17,7 @@ export function ElsewherePage() {
 
   if (!candidateId) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-8">
+      <div className="page-narrow">
         <EmptyState title="Upload your resume first" action={<Link to="/" className="btn-primary">Upload resume</Link>}>
           We build searches for LinkedIn, Naukri and Indeed from your skills and target role.
         </EmptyState>
@@ -26,12 +26,11 @@ export function ElsewherePage() {
   }
   const platforms = ["LinkedIn", "Naukri", "Indeed"];
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Search other job sites</h1>
-      <p className="mt-1 muted">
-        These open each site's own search with your role and skills filled in. We don't copy listings from these sites.
-        To see their jobs ranked here, import a listing or an alert email.
-      </p>
+    <div className="page-mid">
+      <PageHeader
+        title="Search other job sites"
+        description="These open each site's own search with your role and skills filled in. We don't copy listings from these sites. To see their jobs ranked here, import a listing or an alert email."
+      />
       {q.isLoading && <div className="mt-6"><Spinner /></div>}
       {q.error && <div className="mt-6"><ErrorNote error={q.error} /></div>}
       {q.data && (
@@ -40,7 +39,7 @@ export function ElsewherePage() {
             Searching for <span className="font-medium">{q.data.role}</span>
             {q.data.location && <> in <span className="font-medium">{q.data.location}</span></>}
             {q.data.internship && <> (internships)</>}.{" "}
-            <Link to="/" className="text-brand-600 hover:underline">Change target role or location</Link>
+            <Link to="/" className="link">Change target role or location</Link>
           </p>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {platforms.map((p) => (
@@ -61,7 +60,7 @@ export function ElsewherePage() {
             ))}
           </div>
           <p className="mt-6 text-sm">
-            Found something good? <Link to="/import" className="text-brand-600 hover:underline">Import it</Link> to see your match score and track it.
+            Found something good? <Link to="/import" className="link">Import it</Link> to see your match score and track it.
           </p>
         </>
       )}

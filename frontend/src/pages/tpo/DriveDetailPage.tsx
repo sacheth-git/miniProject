@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Download, Info, Pencil, X } from "lucide-react";
 import { download, tpo, type EligibilityStudent, type ShortlistRow } from "../../lib/tpo";
 import { DataTable, type Column } from "../../components/DataTable";
-import { Chip, ErrorNote, ScoreBar, Spinner } from "../../components/ui";
+import { Chip, ErrorNote, PageError, PageHeader, PageLoading, ScoreBar, Spinner } from "../../components/ui";
 import { pay, STATUS_TONE, TYPE_LABEL } from "./DrivesPage";
 import { OffersTab, RoundsTab } from "./RoundsOffers";
 import { ShareLinks } from "./ShareLinks";
@@ -16,25 +16,24 @@ export function DriveDetailPage() {
   const { id = "" } = useParams();
   const drive = useQuery({ queryKey: ["tpo", "drive", id], queryFn: () => tpo.drive(id) });
   const [tab, setTab] = useState<Tab>("Shortlist");
-  if (drive.isLoading) return <div className="p-8"><Spinner /></div>;
-  if (drive.error) return <div className="p-8"><ErrorNote error={drive.error} /></div>;
+  if (drive.isLoading) return <PageLoading />;
+  if (drive.error) return <PageError error={drive.error} />;
   const d = drive.data!;
   return (
-    <div className="mx-auto max-w-7xl space-y-5 px-4 py-8">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="text-sm"><Link to="/tpo/drives" className="text-brand-600 hover:underline">Drives</Link></p>
-          <h1 className="text-2xl font-semibold tracking-tight">{d.company}: {d.role}</h1>
-          <p className="mt-1 flex flex-wrap items-center gap-2 text-sm muted">
-            <Chip tone={STATUS_TONE[d.status]}>{d.status}</Chip>
-            {d.category === "dream" && <Chip tone="blue">Dream</Chip>}
-            <span>{TYPE_LABEL[d.job_type]}</span>·<span>{pay(d)}</span>·<span>{d.location ?? "Location TBD"}</span>
-            {d.deadline && <>·<span>Apply by {new Date(d.deadline).toLocaleDateString()}</span></>}
-          </p>
-          <p className="mt-1 text-xs muted">Rounds: {d.rounds.join(" → ") || "-"}</p>
-        </div>
-        <Link to={`/tpo/drives/${d.id}/edit`} className="btn-secondary"><Pencil className="h-4 w-4" aria-hidden /> Edit drive</Link>
-      </div>
+    <div className="page">
+      <PageHeader
+        back={{ to: "/tpo/drives", label: "Drives" }}
+        title={`${d.company}: ${d.role}`}
+        actions={<Link to={`/tpo/drives/${d.id}/edit`} className="btn-secondary"><Pencil className="h-4 w-4" aria-hidden /> Edit drive</Link>}
+      >
+        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm muted">
+          <Chip tone={STATUS_TONE[d.status]}>{d.status}</Chip>
+          {d.category === "dream" && <Chip tone="blue">Dream</Chip>}
+          <span>{TYPE_LABEL[d.job_type]}</span>·<span>{pay(d)}</span>·<span>{d.location ?? "Location TBD"}</span>
+          {d.deadline && <>·<span>Apply by {new Date(d.deadline).toLocaleDateString()}</span></>}
+        </p>
+        <p className="mt-1 text-sm muted">Rounds: {d.rounds.join(" → ") || "-"}</p>
+      </PageHeader>
       <div role="tablist" className="flex gap-1 border-b border-slate-200 dark:border-slate-800">
         {TABS.map((t) => (
           <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
@@ -94,7 +93,7 @@ function ShortlistTab({ id }: { id: string }) {
     { key: "missing_required", header: "Missing required", sortable: false, render: (r) => <span className="flex flex-wrap gap-1">{r.missing_required.slice(0, 3).map((s) => <Chip key={s} tone="red">{s}</Chip>)}{r.missing_required.length > 3 && <span className="text-xs muted">+{r.missing_required.length - 3}</span>}</span> },
     { key: "placed_status", header: "Placed", render: (r) => (r.placed_status === "unplaced" ? "-" : r.placed_status === "placed" ? "Placed" : "Has offer") },
     { key: "stage", header: "Stage", render: (r) => r.stage ?? (r.applied ? "Applied" : "-") },
-    { key: "why", header: "", sortable: false, render: (r) => <button className="btn-ghost px-2 py-1 text-xs" onClick={(e) => { e.stopPropagation(); setWhy(r.user_id); }} disabled={r.rank === null}><Info className="h-3.5 w-3.5" aria-hidden /> Why</button> },
+    { key: "why", header: "", sortable: false, render: (r) => <button className="btn-ghost h-8 px-2 text-xs" onClick={(e) => { e.stopPropagation(); setWhy(r.user_id); }} disabled={r.rank === null}><Info className="h-3.5 w-3.5" aria-hidden /> Why</button> },
   ], [blind, select]);
 
   return (
@@ -110,11 +109,11 @@ function ShortlistTab({ id }: { id: string }) {
         </label>
         <div className="flex items-end gap-2">
           <div><label className="label" htmlFor="topn">Top N</label><input id="topn" type="number" min={1} className="input w-20 py-1.5" value={n} onChange={(e) => setN(Number(e.target.value))} /></div>
-          <button className="btn-secondary py-1.5" onClick={() => select.mutate({ mode: "top", n, replace })} disabled={select.isPending}>Shortlist top {n}</button>
+          <button className="btn-secondary h-8" onClick={() => select.mutate({ mode: "top", n, replace })} disabled={select.isPending}>Shortlist top {n}</button>
         </div>
         <div className="flex items-end gap-2">
           <div><label className="label" htmlFor="thr">Match at least</label><input id="thr" type="number" min={0} max={100} className="input w-20 py-1.5" value={threshold} onChange={(e) => setThreshold(Number(e.target.value))} /></div>
-          <button className="btn-secondary py-1.5" onClick={() => select.mutate({ mode: "threshold", min_score: threshold, replace })} disabled={select.isPending}>Shortlist {threshold}%+</button>
+          <button className="btn-secondary h-8" onClick={() => select.mutate({ mode: "threshold", min_score: threshold, replace })} disabled={select.isPending}>Shortlist {threshold}%+</button>
         </div>
         <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={replace} onChange={(e) => setReplace(e.target.checked)} /> Replace current shortlist</label>
         <span className="ml-auto text-sm"><b>{sl.data?.shortlisted ?? 0}</b> shortlisted</span>
@@ -150,7 +149,7 @@ function WhyDrawer({ driveId, uid, blind, onClose }: { driveId: string; uid: str
             <h2 className="text-lg font-semibold">Why ranked here</h2>
             {ex.data && <p className="text-sm muted">{ex.data.roll_no}{ex.data.name ? ` · ${ex.data.name}` : ""} · rank {ex.data.rank ?? "-"}</p>}
           </div>
-          <button className="btn-ghost p-1.5" onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button>
+          <button className="btn-ghost h-8 w-8 p-0" onClick={onClose} aria-label="Close"><X className="h-5 w-5" /></button>
         </div>
         {ex.isLoading && <Spinner />}
         {ex.error && <ErrorNote error={ex.error} />}

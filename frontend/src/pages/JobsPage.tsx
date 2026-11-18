@@ -93,7 +93,7 @@ export function JobsPage() {
   }, [desktop, rows.length > 0]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-5">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
       <FilterBar value={filters} onChange={setFilters} />
 
       <div className="mt-4 flex flex-wrap items-baseline justify-between gap-2">
@@ -111,7 +111,7 @@ export function JobsPage() {
               </select>
             </label>
           )}
-          <Link to="/elsewhere" className="text-brand-600 hover:underline">
+          <Link to="/elsewhere" className="link">
             Search LinkedIn, Naukri, Indeed
           </Link>
         </div>
@@ -135,7 +135,7 @@ export function JobsPage() {
       )}
       {candidate && candidate.skills.length === 0 && (
         <p className="mt-3 text-sm muted">
-          We found no skills in your resume, so scores rely on text similarity. <Link to="/" className="text-brand-600 hover:underline">Add skills</Link>.
+          We found no skills in your resume, so scores rely on text similarity. <Link to="/" className="link">Add skills</Link>.
         </p>
       )}
 

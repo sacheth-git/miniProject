@@ -7,7 +7,7 @@ export function SaveButton({ job, size = "md" }: { job: JobSummary; size?: "sm" 
   const { candidateId } = useCandidate();
   const { statusOf, track } = useTracking();
   const status = statusOf(job.id);
-  const cls = size === "sm" ? "btn-secondary px-2.5 py-1.5 text-xs" : "btn-secondary";
+  const cls = size === "sm" ? "btn-secondary h-8 px-2.5 text-xs" : "btn-secondary";
   if (!candidateId) return null;
   if (status) {
     return (

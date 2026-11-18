@@ -28,7 +28,7 @@ export function NotificationBell() {
   const unread = q.data?.unread ?? 0;
   return (
     <div className="relative" ref={ref}>
-      <button className="btn-ghost relative p-2" aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+      <button className="btn-ghost relative w-9 p-0" aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         <Bell className="h-4 w-4" />
         {unread > 0 && <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold text-white">{unread > 9 ? "9+" : unread}</span>}
       </button>
@@ -36,7 +36,7 @@ export function NotificationBell() {
         <div className="card absolute right-0 z-40 mt-1 w-80 shadow-lg" role="dialog" aria-label="Notifications">
           <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2 dark:border-slate-800">
             <span className="text-sm font-semibold">Notifications</span>
-            {unread > 0 && <button className="text-xs text-brand-600 hover:underline" onClick={() => read.mutate(undefined)}>Mark all read</button>}
+            {unread > 0 && <button className="text-xs link" onClick={() => read.mutate(undefined)}>Mark all read</button>}
           </div>
           <ul className="max-h-96 divide-y divide-slate-100 overflow-y-auto dark:divide-slate-800">
             {(q.data?.items ?? []).map((n) => (

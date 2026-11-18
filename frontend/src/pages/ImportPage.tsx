@@ -4,19 +4,18 @@ import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { useCandidate } from "../lib/candidate";
 import type { ImportResult } from "../lib/types";
-import { ErrorNote } from "../components/ui";
+import { ErrorNote, PageHeader } from "../components/ui";
 
 export function ImportPage() {
   const [tab, setTab] = useState<"text" | "email">("text");
   const [result, setResult] = useState<ImportResult | null>(null);
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Import a job</h1>
-      <p className="mt-1 muted">
-        Found a role somewhere else? Paste its description, or upload job-alert emails you received. Imported jobs are
-        private to you and get scored like any other.
-      </p>
-      <div role="tablist" className="mt-6 flex gap-1 border-b border-slate-200 dark:border-slate-800">
+    <div className="page-narrow">
+      <PageHeader
+        title="Import a job"
+        description="Found a role somewhere else? Paste its description, or upload job-alert emails you received. Imported jobs are private to you and get scored like any other."
+      />
+      <div role="tablist" className="flex gap-1 border-b border-slate-200 dark:border-slate-800">
         {(["text", "email"] as const).map((t) => (
           <button
             key={t}
@@ -46,7 +45,7 @@ export function ImportPage() {
                 <span>
                   <span className="font-medium">{j.title}</span> <span className="muted">· {j.company}</span>
                 </span>
-                <Link to={`/jobs?job=${j.id}&source=import`} className="text-brand-600 hover:underline">
+                <Link to={`/jobs?job=${j.id}&source=import`} className="link">
                   View match
                 </Link>
               </li>

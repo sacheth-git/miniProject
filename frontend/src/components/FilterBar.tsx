@@ -120,7 +120,7 @@ export function FilterBar({ value, onChange }: Props) {
           <option value="30">Past month</option>
         </select>
         {active && (
-          <button className="btn-ghost px-2 py-1.5 text-xs" onClick={() => onChange({})}>
+          <button className="btn-ghost h-8 px-2 text-xs" onClick={() => onChange({})}>
             <X className="h-3.5 w-3.5" aria-hidden />
             Clear filters
           </button>
