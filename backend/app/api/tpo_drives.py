@@ -31,7 +31,7 @@ from app.services.audit import audit
 router = APIRouter(prefix="/tpo/drives", tags=["tpo-drives"])
 
 ETHICS_NOTE = (
-    "SkillMatch recommends; the placement officer makes every shortlist decision. Scores never use name, "
+    "HireX recommends; the placement officer makes every shortlist decision. Scores never use name, "
     "gender, photo or college, and every manual change is recorded in the audit log."
 )
 

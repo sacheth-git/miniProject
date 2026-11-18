@@ -35,7 +35,7 @@ export function SharePage() {
         </table>
         {s.rows.length === 0 && <p className="p-5 text-center text-sm muted">No students are shortlisted yet.</p>}
       </section>
-      <p className="text-xs muted">Shortlist prepared by the placement office with SkillMatch. Rankings are recommendations; the placement office made the final selection.</p>
+      <p className="text-xs muted">Shortlist prepared by the placement office with HireX. Rankings are recommendations; the placement office made the final selection.</p>
     </div>
   );
 }

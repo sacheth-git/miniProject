@@ -70,6 +70,15 @@ export function qs(params: Record<string, string | number | boolean | undefined 
 
 export const apiGet = <T>(path: string) => request<T>(path);
 
+export interface JobStats {
+  total: number;
+  india: number;
+  remote: number;
+  internships: number;
+  companies: number;
+  by_source: { source: string; count: number }[];
+}
+
 export const api = {
   health: () => request<Health>("/health"),
 
@@ -104,8 +113,9 @@ export const api = {
     request<Candidate>(`/resume/${id}/settings`, json("PUT", { bias_aware })),
   deleteResume: (id: string) => request<void>(`/resume/${id}`, { method: "DELETE" }),
 
-  jobs: (f: JobFilters, limit: number, offset: number, candidateId?: string | null) =>
-    request<JobPage>(`/jobs${qs({ ...f, limit, offset, candidate_id: candidateId })}`),
+  jobs: (f: JobFilters, limit: number, offset: number, candidateId?: string | null, sort: "mixed" | "recent" = "mixed") =>
+    request<JobPage>(`/jobs${qs({ ...f, limit, offset, candidate_id: candidateId, sort })}`),
+  jobStats: () => request<JobStats>("/jobs/stats"),
   job: (id: string) => request<JobDetail>(`/jobs/${id}`),
 
   match: (candidateId: string, f: JobFilters, limit: number, method = "ours") =>

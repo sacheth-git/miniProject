@@ -88,7 +88,7 @@ const TONES: Record<Tone, string> = {
   green: "bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-950 dark:text-emerald-200 dark:ring-emerald-900",
   red: "bg-rose-50 text-rose-800 ring-rose-200 dark:bg-rose-950 dark:text-rose-200 dark:ring-rose-900",
   slate: "bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700",
-  blue: "bg-brand-50 text-brand-700 ring-brand-200 dark:bg-slate-800 dark:text-brand-200 dark:ring-slate-700",
+  blue: "bg-sky-50 text-sky-800 ring-sky-200 dark:bg-sky-950 dark:text-sky-200 dark:ring-sky-900",
   amber: "bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-950 dark:text-amber-200 dark:ring-amber-900",
 };
 
@@ -100,10 +100,32 @@ export function Chip({ tone = "slate", children, title }: { tone?: Tone; childre
   );
 }
 
-export function SourceBadge({ source }: { source: string }) {
+/** Where a listing came from. Google-Jobs listings show their real publisher (LinkedIn, Naukri, Indeed...). */
+const ORIGIN_DOT: Record<string, string> = {
+  career: "bg-emerald-500",
+  board: "bg-sky-500",
+  aggregator: "bg-amber-500",
+  remote: "bg-violet-500",
+  import: "bg-slate-400",
+};
+const ORIGIN: Record<string, string> = {
+  greenhouse: "career", lever: "career", ashby: "career",
+  jsearch: "board", serpapi: "board",
+  adzuna: "aggregator", jooble: "aggregator",
+  remotive: "remote", import: "import",
+};
+
+export function sourceLabel(source: string, publisher?: string | null): string {
+  if (ORIGIN[source] === "career") return "Company site";
+  if (ORIGIN[source] === "board" && publisher) return publisher;
+  return SOURCE_LABELS[source] ?? source;
+}
+
+export function SourceBadge({ source, publisher }: { source: string; publisher?: string | null }) {
   return (
-    <span className="inline-flex items-center rounded border border-slate-200 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">
-      via {SOURCE_LABELS[source] ?? source}
+    <span className="inline-flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300" title={`Source: ${SOURCE_LABELS[source] ?? source}`}>
+      <span className={`h-2 w-2 rounded-full ${ORIGIN_DOT[ORIGIN[source] ?? "import"]}`} aria-hidden />
+      via {sourceLabel(source, publisher)}
     </span>
   );
 }

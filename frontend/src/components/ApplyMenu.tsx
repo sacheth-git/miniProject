@@ -6,7 +6,7 @@ import type { ApplyOption, JobSummary } from "../lib/types";
 export function applyLabel(o: ApplyOption): string {
   const p = o.publisher;
   if (/careers \((Greenhouse|Lever|Ashby)\)$/.test(p) || (o.is_direct && !/linkedin|naukri|indeed/i.test(p))) {
-    return "Company site";
+    return "company site";
   }
   return p;
 }

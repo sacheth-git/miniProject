@@ -53,7 +53,7 @@ def test_new_drive_notifies_eligible_students(world) -> None:  # type: ignore[no
     n = asha.get("/student/notifications").json()
     assert n["unread"] >= 1 and n["items"][0]["title"] == "New drive: Nimbus" and n["items"][0]["link"] == f"/campus/{drive['id']}"
     assert ben.get("/student/notifications").json()["unread"] == 0  # not eligible (CGPA 6.0)
-    assert any(m["subject"] == "SkillMatch: New drive: Nimbus" for m in outbox())
+    assert any(m["subject"] == "HireX: New drive: Nimbus" for m in outbox())
     assert asha.post("/student/notifications/read").json()["marked"] >= 1
     assert asha.get("/student/notifications").json()["unread"] == 0
 

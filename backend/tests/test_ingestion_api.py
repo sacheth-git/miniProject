@@ -70,6 +70,20 @@ def test_jobs_listing_filters(ingested) -> None:  # type: ignore[no-untyped-def]
     assert client.get("/jobs/nope").status_code == 404
 
 
+def test_jobs_mixed_feed_and_stats(ingested) -> None:  # type: ignore[no-untyped-def]
+    mixed = client.get("/jobs", params={"limit": 50}).json()["items"]
+    sources = {j["source"] for j in mixed}
+    # Mixed (default): the first len(sources) jobs come from distinct sources.
+    assert len({j["source"] for j in mixed[: len(sources)]}) == len(sources)
+    recent = client.get("/jobs", params={"limit": 50, "sort": "recent"}).json()["items"]
+    assert sorted(j["id"] for j in recent) == sorted(j["id"] for j in mixed)
+    assert client.get("/jobs", params={"sort": "random"}).status_code == 422
+    st = client.get("/jobs/stats").json()
+    assert st["total"] == len(mixed)
+    assert sum(s["count"] for s in st["by_source"]) == st["total"]
+    assert st["internships"] == 1 and st["companies"] >= 1
+
+
 def test_reingest_deactivates_closed_jobs(ingested, monkeypatch: pytest.MonkeyPatch, phrase_extractor) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setattr(greenhouse, "boards_for", lambda ats: [Board("acme", "greenhouse", "Acme")])
     http = HttpClient(cache_dir=None, min_interval=0, retries=0,

@@ -49,7 +49,7 @@ def _stage_notify(db: Session, student: User, drive: Drive, stage: str, note: st
     text = {
         "Shortlisted": "You've been shortlisted.",
         "Rejected": "The company has closed your application.",
-        "Offer": "You have an offer! Review and accept it in SkillMatch.",
+        "Offer": "You have an offer. Review and accept it in HireX.",
         "Accepted": "Offer accepted. Congratulations!",
         "Withdrawn": "Your application was withdrawn.",
     }.get(stage, f"You've moved to the '{stage}' round.")
@@ -172,7 +172,7 @@ def record_offer(db: Session, actor: User, drive: Drive, student_id: str, ctc: f
     student = db.get(User, student_id)
     if student is not None:
         notify(db, student, "offer", f"Offer from {drive.company}",
-               f"{drive.company} has offered you the {drive.role} role at {ctc_val:g} LPA. Accept or decline it in SkillMatch.",
+               f"{drive.company} has offered you the {drive.role} role at {ctc_val:g} LPA. Accept or decline it in HireX.",
                link=f"/campus/{drive.id}", dedupe_key=f"offer:{offer.id}")
     return offer
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_, select
@@ -75,6 +76,7 @@ def list_jobs(
     max_exp: float | None = Query(None, ge=0),
     posted_within: int | None = Query(None, ge=1, le=365, description="Days"),
     candidate_id: str | None = Query(None, description="Include this candidate's imported jobs"),
+    sort: Literal["mixed", "recent"] = Query("mixed", description="mixed: newest from each source in turn; recent: newest first"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     user: User | None = Depends(optional_user),
@@ -90,8 +92,34 @@ def list_jobs(
         min_exp=min_exp, max_exp=max_exp, posted_within=posted_within, owner_id=candidate_id,
     )
     total = db.scalar(select(func.count()).select_from(stmt.subquery())) or 0
-    rows = db.scalars(stmt.order_by(Job.posted_at.desc().nulls_last(), Job.id).limit(limit).offset(offset)).all()
+    newest = (Job.posted_at.desc().nulls_last(), Job.id)
+    if sort == "mixed":
+        # Round-robin across sources: the newest job of each source, then the second newest, and so on,
+        # so one large feed does not bury the others.
+        rn = func.row_number().over(partition_by=Job.source, order_by=newest).label("rn")
+        ranked = stmt.with_only_columns(Job.id, rn).subquery()
+        page = select(Job).join(ranked, Job.id == ranked.c.id).order_by(ranked.c.rn, *newest)
+    else:
+        page = stmt.order_by(*newest)
+    rows = db.scalars(page.limit(limit).offset(offset)).all()
     return JobPage(total=total, limit=limit, offset=offset, items=rows)  # type: ignore[arg-type]
+
+
+@router.get("/stats")
+def job_stats(db: Session = Depends(get_db)) -> dict[str, object]:
+    """Live counts for the landing page and source filter: totals by source, India, remote, internships."""
+    base = apply_job_filters(select(Job))
+    sub = base.subquery()
+    count = lambda *conds: db.scalar(select(func.count()).select_from(sub).where(*conds)) or 0  # noqa: E731
+    by_source = db.execute(select(sub.c.source, func.count()).group_by(sub.c.source).order_by(func.count().desc())).all()
+    return {
+        "total": count(),
+        "india": count(sub.c.country.ilike("%india%")),
+        "remote": count(sub.c.remote.is_(True)),
+        "internships": count(sub.c.job_type == "internship"),
+        "companies": db.scalar(select(func.count(func.distinct(sub.c.company)))) or 0,
+        "by_source": [{"source": s, "count": n} for s, n in by_source],
+    }
 
 
 @router.get("/{job_id}", response_model=JobDetail)

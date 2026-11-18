@@ -61,5 +61,5 @@ def notify(
     n = Notification(user_id=user.id, kind=kind, title=title[:200], body=body, link=link, dedupe_key=dedupe_key)
     db.add(n)
     if email:
-        n.emailed = send_email(user.email, f"SkillMatch: {title}", f"{body}\n\nOpen SkillMatch to see details.")
+        n.emailed = send_email(user.email, f"HireX: {title}", f"{body}\n\nOpen HireX to see details.")
     return n

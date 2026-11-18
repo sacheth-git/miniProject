@@ -1,8 +1,8 @@
-# SkillMatch
+# HireX
 
 Semantic resume–job matching with skill-weighted sentence embeddings, plus a campus placement (TPO) mode.
 
-Upload a resume once. SkillMatch extracts your skills, ranks jobs and internships from legal sources with a
+Upload a resume once. HireX extracts your skills, ranks jobs and internships from legal sources with a
 skill-weighted semantic score, explains each score, shows your skill gap, and sends you to the exact original
 application page. Jobs from LinkedIn, Indeed and Naukri arrive only through official aggregator APIs
 (JSearch / SerpApi Google Jobs), user import, or deep-link search buttons. Nothing is scraped.
@@ -125,14 +125,14 @@ Accepting an offer marks the student placed, declines their other pending offers
 campus applications (when "block after accepting" is on). Students can't delete their data while a campus
 application is still active; the app tells them why.
 
-SkillMatch recommends; the placement officer makes every decision. Gender, name, photo and college are never used in
+HireX recommends; the placement officer makes every decision. Gender, name, photo and college are never used in
 scoring, and gender is never available as an eligibility filter.
 
 ## Using the app
 
 1. **Home**: drag in a PDF resume. Watch the processing steps, then fix the skill chips and set your target role, locations and job types.
 2. **Jobs**: ranked matches with a match ring, matched skills (green) and missing required skills (red). Filter by role, location, remote, job type, experience, source and date. The right panel explains each score.
-3. **Apply** opens the job's own application page in a new tab (LinkedIn, Naukri, company site...). When you come back, SkillMatch asks whether you applied and updates your tracker.
+3. **Apply** opens the job's own application page in a new tab (LinkedIn, Naukri, company site...). When you come back, HireX asks whether you applied and updates your tracker.
 4. **Applications**: Kanban tracker (Saved, Ready, Applied, Interview, Offer, Rejected) with drag and drop and notes.
 5. **Skill gap**, **Import** (paste a JD or upload alert emails), **Search elsewhere** (LinkedIn / Naukri / Indeed searches), **Settings** (bias-aware toggle, delete my data).
 

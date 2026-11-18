@@ -40,4 +40,4 @@ Blind mode hides names and email in the TPO's view. The score itself never sees 
 
 ## Time-saved study
 
-Pending. Protocol: 2-3 TPO or faculty volunteers each shortlist 10 from 50 resumes twice (different drives, order counterbalanced): once by hand from the PDFs, once with SkillMatch's ranked, explained list. Record minutes and the chosen roll numbers in `eval/data/time_study.csv`; agreement between the two shortlists and with the system's top 10 is reported alongside the time saved.
+Pending. Protocol: 2-3 TPO or faculty volunteers each shortlist 10 from 50 resumes twice (different drives, order counterbalanced): once by hand from the PDFs, once with HireX's ranked, explained list. Record minutes and the chosen roll numbers in `eval/data/time_study.csv`; agreement between the two shortlists and with the system's top 10 is reported alongside the time saved.

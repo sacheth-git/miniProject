@@ -19,7 +19,7 @@ log = get_logger(__name__)
 
 CACHE_DIR = BACKEND_DIR / "data" / "cache" / "http"
 DEFAULT_TTL = 6 * 3600
-USER_AGENT = "SkillMatch/0.1 (academic job-matching project; official public APIs only)"
+USER_AGENT = "HireX/0.1 (academic job-matching project; official public APIs only)"
 RETRY_STATUS = {429, 500, 502, 503, 504}
 
 

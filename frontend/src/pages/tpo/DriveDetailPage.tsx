@@ -100,7 +100,7 @@ function ShortlistTab({ id }: { id: string }) {
     <div className="space-y-4">
       <p className="flex gap-2 rounded-md border border-brand-200 bg-brand-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900">
         <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" aria-hidden />
-        {sl.data?.note ?? "SkillMatch recommends; the placement officer makes every shortlist decision."}
+        {sl.data?.note ?? "HireX recommends; the placement officer makes every shortlist decision."}
       </p>
       <div className="card flex flex-wrap items-end gap-4 p-4">
         <label className="flex items-center gap-2 text-sm font-medium">

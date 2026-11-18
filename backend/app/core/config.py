@@ -21,7 +21,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "SkillMatch"
+    app_name: str = "HireX"
     environment: str = "dev"
     log_level: str = "INFO"
     log_json: bool = False

@@ -19,7 +19,7 @@ describe("ApplyMenu", () => {
     renderApp(<ApplyMenu job={job()} />);
     fireEvent.click(screen.getByRole("button", { name: /apply/i }));
     const items = screen.getAllByRole("menuitem").map((m) => m.textContent);
-    expect(items).toEqual(["Apply on LinkedIn", "Apply on Naukri", "Apply on Company site"]);
+    expect(items).toEqual(["Apply on LinkedIn", "Apply on Naukri", "Apply on company site"]);
     fireEvent.click(screen.getByRole("menuitem", { name: /naukri/i }));
     expect(open).toHaveBeenCalledWith("https://www.naukri.com/job-listings-1", "_blank", "noopener,noreferrer");
   });
@@ -33,7 +33,7 @@ describe("ApplyMenu", () => {
   });
 
   test("labels", () => {
-    expect(applyLabel({ publisher: "Stripe careers (Greenhouse)", url: "", is_direct: true })).toBe("Company site");
+    expect(applyLabel({ publisher: "Stripe careers (Greenhouse)", url: "", is_direct: true })).toBe("company site");
     expect(applyLabel({ publisher: "LinkedIn", url: "", is_direct: false })).toBe("LinkedIn");
   });
 });
@@ -44,7 +44,7 @@ test("JobCard shows match ring, matched skills in green and missing required in 
   expect(screen.getByRole("img", { name: "82% match" })).toBeInTheDocument();
   expect(screen.getByText("PyTorch").className).toMatch(/emerald/);
   expect(screen.getByText("Kubernetes").className).toMatch(/rose/);
-  expect(screen.getByText("via Google Jobs")).toBeInTheDocument();
+  expect(screen.getByText("via LinkedIn")).toBeInTheDocument();
   expect(screen.getByText("3 days ago")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Machine Learning Engineer" }));
   expect(onSelect).toHaveBeenCalled();

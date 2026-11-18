@@ -5,6 +5,15 @@ import { isSeeker, useAuth } from "../lib/auth";
 import { useTracking } from "../lib/tracking";
 import { NotificationBell } from "./NotificationBell";
 
+/** The HireX wordmark: the X is the one place the accent always appears. */
+export function Wordmark() {
+  return (
+    <span>
+      Hire<span className="text-brand-500">X</span>
+    </span>
+  );
+}
+
 const SEEKER_LINKS = [
   { to: "/jobs", label: "Jobs" },
   { to: "/skills", label: "Skill gap" },
@@ -62,8 +71,8 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
   const navCls = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-1.5 border-b-2 px-3 text-sm ${
       isActive
-        ? "border-brand-600 font-medium text-slate-900 dark:text-white"
-        : "border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+        ? "border-brand-500 font-medium text-white"
+        : "border-transparent text-slate-400 hover:text-white"
     }`;
 
   const signOut = async () => {
@@ -72,44 +81,41 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-ink-950 text-white">
       <div className="mx-auto flex h-14 max-w-7xl items-stretch gap-6 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-brand-600 text-sm font-semibold text-white" aria-hidden>
-            S
-          </span>
-          SkillMatch
+        <Link to="/" className="flex items-center text-lg font-semibold text-white" aria-label="HireX home">
+          <Wordmark />
         </Link>
         <nav aria-label="Primary" className="hidden items-stretch md:flex">
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.to === "/tpo"} className={navCls}>
               {l.label}
               {l.to === "/tracker" && active > 0 && (
-                <span className="text-xs tabular-nums muted">{active}</span>
+                <span className="text-xs tabular-nums text-slate-400">{active}</span>
               )}
             </NavLink>
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
           {isSeeker(user) && <NotificationBell />}
-          <button className="btn-ghost w-9 p-0" onClick={onToggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+          <button className="btn-onink w-9 p-0" onClick={onToggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           {!user ? (
             <>
-              <Link to="/login" className="btn-ghost">Sign in</Link>
+              <Link to="/login" className="btn-onink">Sign in</Link>
               <Link to="/register" className="btn-primary hidden sm:inline-flex">Join now</Link>
             </>
           ) : (
             <div className="relative" ref={ref}>
-              <button className="btn-ghost gap-2 px-2" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-200 dark:bg-slate-700">
+              <button className="btn-onink gap-2 px-2" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10">
                   <UserRound className="h-4 w-4" aria-hidden />
                 </span>
                 <span className="hidden max-w-40 truncate text-sm sm:inline">{user.full_name || user.email}</span>
               </button>
               {menu && (
-                <div role="menu" className="card absolute right-0 mt-1 w-64 py-1 shadow-lg">
+                <div role="menu" className="card absolute right-0 mt-1 w-64 py-1 text-slate-900 shadow-lg dark:text-slate-100">
                   <div className="border-b border-slate-100 px-3 py-2 dark:border-slate-800">
                     <p className="truncate text-sm font-medium">{user.full_name || user.email}</p>
                     <p className="truncate text-xs muted">
@@ -132,15 +138,15 @@ export function AppHeader({ dark, onToggleTheme }: { dark: boolean; onToggleThem
               )}
             </div>
           )}
-          <button className="btn-ghost w-9 p-0 md:hidden" onClick={() => setMobile((m) => !m)} aria-label="Menu" aria-expanded={mobile}>
+          <button className="btn-onink w-9 p-0 md:hidden" onClick={() => setMobile((m) => !m)} aria-label="Menu" aria-expanded={mobile}>
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
       {mobile && (
-        <nav aria-label="Primary" className="border-t border-slate-200 px-2 py-2 md:hidden dark:border-slate-800">
+        <nav aria-label="Primary" className="border-t border-white/10 px-2 py-2 md:hidden">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} className={({ isActive }) => `block rounded-md px-3 py-2 text-sm ${isActive ? "bg-slate-100 font-medium dark:bg-slate-800" : ""}`}>
+            <NavLink key={l.to} to={l.to} className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm ${isActive ? "bg-white/10 font-medium text-white" : "text-slate-300"}`}>
               {l.label}
             </NavLink>
           ))}

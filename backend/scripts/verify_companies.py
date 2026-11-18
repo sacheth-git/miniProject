@@ -20,7 +20,7 @@ import httpx
 import yaml
 
 OUT = Path(__file__).resolve().parents[1] / "data" / "seeds" / "companies.yaml"
-UA = {"User-Agent": "SkillMatch/0.1 (academic project; board verification)"}
+UA = {"User-Agent": "HireX/0.1 (academic project; board verification)"}
 
 # Candidate tokens (guesses from public careers pages). Verification decides.
 CANDIDATES = """

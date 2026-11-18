@@ -79,7 +79,7 @@ export function JobCard({ job, match, selected, onSelect }: Props) {
       )}
 
       <div className="mt-3 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-        <SourceBadge source={job.source} />
+        <SourceBadge source={job.source} publisher={job.apply_options[0]?.publisher} />
         <div className="ml-auto flex gap-2">
           <SaveButton job={job} size="sm" />
           <ApplyMenu job={job} size="sm" />

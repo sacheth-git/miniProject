@@ -107,11 +107,11 @@ def main() -> None:
         by = {c: [float(r["minutes"]) for r in sheet if r["condition"] == c] for c in ("manual", "skillmatch")}
         if by["manual"] and by["skillmatch"]:
             man, sm = np.mean(by["manual"]), np.mean(by["skillmatch"])
-            md.append(f"Manual: {man:.1f} min, with SkillMatch: {sm:.1f} min for 50 resumes "
+            md.append(f"Manual: {man:.1f} min, with HireX: {sm:.1f} min for 50 resumes "
                       f"({100 * (man - sm) / man:.0f}% less time, {len(sheet)} sessions).")
     else:
         md += ["Pending. Protocol: 2-3 TPO or faculty volunteers each shortlist 10 from 50 resumes twice (different drives, "
-               "order counterbalanced): once by hand from the PDFs, once with SkillMatch's ranked, explained list. Record "
+               "order counterbalanced): once by hand from the PDFs, once with HireX's ranked, explained list. Record "
                "minutes and the chosen roll numbers in `eval/data/time_study.csv`; agreement between the two shortlists "
                "and with the system's top 10 is reported alongside the time saved."]
     RESULTS.mkdir(parents=True, exist_ok=True)

@@ -41,7 +41,7 @@ export function LoginPage() {
   };
 
   return (
-    <Shell title="Sign in" subtitle={<>New to SkillMatch? <Link to="/register" className="link">Create an account</Link></>}>
+    <Shell title="Sign in" subtitle={<>New to HireX? <Link to="/register" className="link">Create an account</Link></>}>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="label" htmlFor="email">Email</label>

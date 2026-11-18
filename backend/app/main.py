@@ -41,7 +41,7 @@ def create_app() -> FastAPI:
     log = get_logger("app")
 
     app = FastAPI(
-        title="SkillMatch API",
+        title="HireX API",
         version=__version__,
         description="Semantic resume-job matching with skill-weighted embeddings.",
     )

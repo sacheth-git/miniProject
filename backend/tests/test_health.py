@@ -17,4 +17,4 @@ def test_openapi_available() -> None:
     client = TestClient(app)
     resp = client.get("/openapi.json")
     assert resp.status_code == 200
-    assert resp.json()["info"]["title"] == "SkillMatch API"
+    assert resp.json()["info"]["title"] == "HireX API"

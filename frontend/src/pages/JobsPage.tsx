@@ -12,6 +12,13 @@ import { EmptyState, ErrorNote, Spinner } from "../components/ui";
 
 const FILTER_KEYS: (keyof JobFilters)[] = ["role", "location", "remote", "type", "source", "min_exp", "max_exp", "posted_within"];
 const PAGE = 20;
+const QUICK: [string, Partial<JobFilters>][] = [
+  ["Remote", { remote: "true" }],
+  ["Internships", { type: "internship" }],
+  ["Freshers", { min_exp: "0", max_exp: "1" }],
+  ["India", { location: "india" }],
+  ["Past 24 hours", { posted_within: "1" }],
+];
 
 function useIsDesktop(): boolean {
   const q = "(min-width: 1024px)";
@@ -31,6 +38,7 @@ export function JobsPage() {
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
   const [sort, setSort] = useState<"match" | "recent">("match");
+  const [browseSort, setBrowseSort] = useState<"mixed" | "recent">("mixed");
   const [shown, setShown] = useState(PAGE);
   const desktop = useIsDesktop();
 
@@ -64,8 +72,8 @@ export function JobsPage() {
     placeholderData: keepPreviousData,
   });
   const browseQ = useQuery({
-    queryKey: ["jobs", filters, shown],
-    queryFn: () => api.jobs(filters, shown, 0, candidateId),
+    queryKey: ["jobs", filters, shown, browseSort],
+    queryFn: () => api.jobs(filters, shown, 0, candidateId, browseSort),
     enabled: !candidateId,
     placeholderData: keepPreviousData,
   });
@@ -93,24 +101,55 @@ export function JobsPage() {
   }, [desktop, rows.length > 0]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
-      <FilterBar value={filters} onChange={setFilters} />
+    <div>
+      <div className="bg-ink-950 pb-6 pt-8 text-white">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+          <h1 className="text-2xl font-semibold">{candidateId ? "Jobs matched to your profile" : "Find your next job"}</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            {candidateId ? "Ranked by how well your skills fit each job" : "One feed from company career sites and job boards, mixed across sources"}
+          </p>
+          <div className="mt-5">
+            <FilterBar value={filters} onChange={setFilters} />
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2" aria-label="Quick filters">
+            {QUICK.map(([label, patch]) => {
+              const on = Object.entries(patch).every(([k, v]) => filters[k as keyof JobFilters] === v);
+              const toggle = () => {
+                const next = { ...filters };
+                for (const [k, v] of Object.entries(patch)) (next as Record<string, string | undefined>)[k] = on ? undefined : v;
+                setFilters(next);
+              };
+              return (
+                <button key={label} onClick={toggle} aria-pressed={on}
+                  className={`h-8 rounded-full border px-3 text-sm transition-colors ${on ? "border-brand-500 bg-brand-500/15 text-white" : "border-white/15 text-slate-300 hover:border-white/40 hover:text-white"}`}>
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
-      <div className="mt-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-lg font-semibold">
-          {candidateId ? "Jobs matched to your profile" : "Latest jobs"}
-          {q.data && <span className="ml-2 text-sm font-normal muted">{candidateId ? `top ${total}` : `${total.toLocaleString()} results`}</span>}
-        </h1>
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm muted" aria-live="polite">
+          {q.data && (candidateId ? `Top ${total} matches` : `${total.toLocaleString()} jobs`)}
+        </p>
         <div className="flex items-center gap-3 text-sm">
-          {candidateId && (
-            <label className="flex items-center gap-2">
-              <span className="muted">Sort by</span>
-              <select className="input w-auto py-1" value={sort} onChange={(e) => setSort(e.target.value as "match" | "recent")}>
+          <label className="flex items-center gap-2">
+            <span className="muted">Sort by</span>
+            {candidateId ? (
+              <select className="input h-8 w-auto py-0" value={sort} onChange={(e) => setSort(e.target.value as "match" | "recent")}>
                 <option value="match">Best match</option>
                 <option value="recent">Most recent</option>
               </select>
-            </label>
-          )}
+            ) : (
+              <select className="input h-8 w-auto py-0" value={browseSort} onChange={(e) => setBrowseSort(e.target.value as "mixed" | "recent")}>
+                <option value="mixed">Mixed sources</option>
+                <option value="recent">Most recent</option>
+              </select>
+            )}
+          </label>
           <Link to="/elsewhere" className="link">
             Search LinkedIn, Naukri, Indeed
           </Link>
@@ -170,6 +209,7 @@ export function JobsPage() {
           <JobDetailPanel key={selectedId} jobId={selectedId} onClose={() => select(null)} />
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -61,7 +61,7 @@ export function JobDetailPanel({ jobId, onClose }: { jobId: string; onClose?: ()
           <ApplyMenu job={j} />
           <SaveButton job={j} />
           <span className="ml-auto flex items-center gap-2 text-xs muted">
-            <SourceBadge source={j.source} />
+            <SourceBadge source={j.source} publisher={j.apply_options[0]?.publisher} />
             {hostOf(j.apply_url)}
           </span>
         </div>

@@ -82,7 +82,7 @@ def download_esco(existing: list[dict[str, Any]] | None = None) -> list[dict[str
     """Fetch skills for ISCED fields not already in `existing` (incremental)."""
     out: dict[str, dict[str, Any]] = {e["uri"]: e for e in (existing or [])}
     have_codes = {e["isced"] for e in out.values()}
-    with httpx.Client(headers={"User-Agent": "SkillMatch-academic-project"}) as client:
+    with httpx.Client(headers={"User-Agent": "HireX-academic-project"}) as client:
         for code, title in ISCED_FIELDS.items():
             if code in have_codes:
                 continue
