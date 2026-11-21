@@ -17,7 +17,8 @@ from app.ingestion.sources.keyed import DEFAULT_LOCATION, DEFAULT_QUERIES
 
 log = get_logger(__name__)
 HOST = "jsearch.p.rapidapi.com"
-URL = f"https://{HOST}/search"
+# v1 "/search" was retired (404 "Endpoint '/search' does not exist"); v2 returns {"data": {"jobs": [...], "cursor": ...}}.
+URL = f"https://{HOST}/search-v2"
 
 
 def _highlights(h: dict) -> str:  # type: ignore[type-arg]
@@ -30,7 +31,9 @@ def _highlights(h: dict) -> str:  # type: ignore[type-arg]
 
 def parse(data: dict) -> list[RawJob]:  # type: ignore[type-arg]
     out: list[RawJob] = []
-    for j in data.get("data", []) or []:
+    payload = data.get("data") or []
+    rows = payload.get("jobs") or [] if isinstance(payload, dict) else payload  # v2 dict, v1 list
+    for j in rows:
         options = [
             ApplyOption(o.get("publisher") or "Apply", o["apply_link"], bool(o.get("is_direct")))
             for o in j.get("apply_options") or []

@@ -99,6 +99,10 @@ def test_parsers_produce_raw_jobs() -> None:
     assert adzuna.parse(ADZUNA, "in")[0].job_type == "full-time"
     assert jooble.parse(JOOBLE)[0].apply_options[0].publisher == "naukri.com"
 
+    # v2 wraps the list as {"data": {"jobs": [...], "cursor": ...}}; both shapes parse the same.
+    assert [x.source_job_id for x in jsearch.parse({"data": {"jobs": JSEARCH["data"], "cursor": "c"}})] == [
+        x.source_job_id for x in jsearch.parse(JSEARCH)
+    ]
     js = jsearch.parse(JSEARCH)[0]
     # Employer's own page first (is_direct), so Apply skips the job-board hop.
     assert [o.publisher for o in js.apply_options] == ["Flipkart Careers", "LinkedIn", "Naukri"]
