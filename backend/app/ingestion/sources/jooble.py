@@ -12,6 +12,7 @@ from app.ingestion.sources.keyed import DEFAULT_LOCATION, DEFAULT_QUERIES
 
 log = get_logger(__name__)
 URL = "https://jooble.org/api/{key}"
+PAGES = 5  # pages per query; Jooble returns about 20 jobs a page
 
 
 def parse(data: dict) -> list[RawJob]:  # type: ignore[type-arg]
@@ -54,14 +55,18 @@ class JoobleSource(JobSource):
         key = get_settings().jooble_key
         jobs: list[RawJob] = []
         for q in DEFAULT_QUERIES:
-            body = {"keywords": q, "location": DEFAULT_LOCATION, "page": "1"}
-            try:
-                # The key is in the URL path; cache under a key-free URL.
-                data = self.http.request_json(
-                    "POST", URL.format(key=key), json_body=body, cache_key_params={"_jooble": q}
-                )
-            except SourceHTTPError as exc:
-                log.warning("jooble %r failed: %s", q, exc.status)
-                continue
-            jobs.extend(parse(data))
+            for page in range(1, PAGES + 1):
+                body = {"keywords": q, "location": DEFAULT_LOCATION, "page": str(page)}
+                try:
+                    # The key is in the URL path; cache under a key-free URL.
+                    data = self.http.request_json(
+                        "POST", URL.format(key=key), json_body=body, cache_key_params={"_jooble": q, "page": page}
+                    )
+                except SourceHTTPError as exc:
+                    log.warning("jooble %r page %d failed: %s", q, page, exc.status)
+                    break
+                found = parse(data)
+                jobs.extend(found)
+                if not found:
+                    break
         return jobs

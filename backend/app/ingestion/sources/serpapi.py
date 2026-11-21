@@ -42,6 +42,9 @@ def parse(data: dict) -> list[RawJob]:  # type: ignore[type-arg]
     return out
 
 
+# Each page is one search from the monthly quota (free plan is small): 10 queries x 2 pages = 20 per run.
+PAGES = 2
+
 class SerpApiSource(JobSource):
     name = "serpapi"
     requires_keys = ("SERPAPI_KEY",)
@@ -54,13 +57,18 @@ class SerpApiSource(JobSource):
         key = get_settings().serpapi_key
         jobs: list[RawJob] = []
         for q in DEFAULT_QUERIES:
-            params = {"engine": "google_jobs", "q": q, "location": DEFAULT_LOCATION, "hl": "en"}
-            try:
-                data = self.http.get_json(URL, params={**params, "api_key": key}, cache_key_params=params)
-            except SourceHTTPError as exc:
-                log.warning("serpapi %r failed: %s", q, exc.status)
-                if exc.status in (401, 403, 429):
+            params: dict[str, str] = {"engine": "google_jobs", "q": q, "location": DEFAULT_LOCATION, "hl": "en"}
+            for _ in range(PAGES):
+                try:
+                    data = self.http.get_json(URL, params={**params, "api_key": key}, cache_key_params=params)
+                except SourceHTTPError as exc:
+                    log.warning("serpapi %r failed: %s", q, exc.status)
+                    if exc.status in (401, 403, 429):
+                        return jobs  # bad key or quota used up: stop spending searches
                     break
-                continue
-            jobs.extend(parse(data))
+                jobs.extend(parse(data))
+                token = (data.get("serpapi_pagination") or {}).get("next_page_token")
+                if not token:
+                    break
+                params = {**params, "next_page_token": token}
         return jobs
