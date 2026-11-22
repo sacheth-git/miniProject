@@ -5,7 +5,7 @@ import { ArrowRight, Building2, Clock, GraduationCap, MapPin, Search } from "luc
 import { api } from "../lib/api";
 import { SOURCE_LABELS } from "../lib/format";
 import { Chip, MatchRing, ScoreBar } from "../components/ui";
-import { AuthBackdrop } from "../components/AuthBackdrop";
+import { HeroRadar } from "../components/HeroRadar";
 
 const POPULAR: [string, Record<string, string>][] = [
   ["Software engineer", { role: "software engineer" }],
@@ -168,8 +168,8 @@ export function LandingPage() {
     <div>
       {/* Hero: continues the ink header */}
       <section className="relative overflow-hidden bg-ink-950 text-white">
-        <AuthBackdrop className="opacity-60" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/50 to-transparent" />
+        <HeroRadar />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/30 to-transparent" />
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1fr_minmax(0,26rem)] lg:pb-24 lg:pt-20">
           <div className="animate-enter">
             {s && (
