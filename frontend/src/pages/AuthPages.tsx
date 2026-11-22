@@ -1,16 +1,77 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type InputHTMLAttributes, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { GraduationCap, Briefcase, Building2 } from "lucide-react";
+import { ArrowRight, Briefcase, Building2, Eye, EyeOff, GraduationCap, Lock, Mail, UserRound } from "lucide-react";
 import { api } from "../lib/api";
 import { homeFor, useAuth } from "../lib/auth";
 import { ErrorNote } from "../components/ui";
+import { AuthBackdrop } from "../components/AuthBackdrop";
+
+const fmt = (n: number) => n.toLocaleString("en-IN");
+
+/** Split screen: live matching backdrop with real job counts on the left, the form on the right.
+ *  On phones the backdrop runs behind the form card. */
+function AuthLayout({ children }: { children: ReactNode }) {
+  const stats = useQuery({ queryKey: ["jobs", "stats"], queryFn: api.jobStats, staleTime: 300_000 });
+  const s = stats.data;
+  return (
+    <div className="relative grid min-h-[calc(100vh-3.5rem)] overflow-hidden bg-ink-950 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <AuthBackdrop />
+      <div className="relative hidden flex-col justify-center p-12 text-white lg:flex">
+        <div className="max-w-md rounded-2xl bg-ink-950/70 p-6 backdrop-blur-sm">
+          <h2 className="text-3xl font-semibold leading-tight">Your skills, matched to real jobs</h2>
+          <p className="mt-3 text-slate-300">
+            Every opening from company career sites and job boards, ranked by how well you fit and explained skill by skill.
+          </p>
+          {s && (
+            <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-white/10 pt-5">
+              {[["Open jobs", s.total], ["Companies", s.companies], ["In India", s.india]].map(([l, v]) => (
+                <div key={l as string}>
+                  <dt className="text-xs text-slate-400">{l}</dt>
+                  <dd className="mt-1 text-xl font-semibold tabular-nums">{fmt(v as number)}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      </div>
+      <div className="relative flex items-center justify-center px-4 py-10 sm:px-8">
+        <div className="w-full max-w-md animate-enter">{children}</div>
+      </div>
+    </div>
+  );
+}
 
 function Shell({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children: ReactNode }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col px-4 py-10 sm:py-16">
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      {subtitle && <p className="mt-1 text-sm muted">{subtitle}</p>}
-      <div className="card mt-6 p-6">{children}</div>
+    <AuthLayout>
+      <div className="card p-6 shadow-2xl shadow-black/40 sm:p-8">
+        <h1 className="text-2xl font-semibold">{title}</h1>
+        {subtitle && <p className="mt-1 text-sm muted">{subtitle}</p>}
+        <div className="mt-6">{children}</div>
+      </div>
+    </AuthLayout>
+  );
+}
+
+/** Text input with a leading icon; password fields get a show/hide toggle. */
+function Field({ id, label, icon, hint, type = "text", ...rest }: { id: string; label: string; icon: ReactNode; hint?: string } & InputHTMLAttributes<HTMLInputElement>) {
+  const [show, setShow] = useState(false);
+  const isPw = type === "password";
+  return (
+    <div>
+      <label className="label" htmlFor={id}>{label}</label>
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">{icon}</span>
+        <input id={id} type={isPw && show ? "text" : type} className={`input h-11 pl-10 ${isPw ? "pr-11" : ""}`} {...rest} />
+        {isPw && (
+          <button type="button" onClick={() => setShow((v) => !v)} aria-label={show ? "Hide password" : "Show password"}
+            className="absolute right-1.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+            {show ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+          </button>
+        )}
+      </div>
+      {hint && <p className="mt-1 text-xs muted">{hint}</p>}
     </div>
   );
 }
@@ -41,18 +102,14 @@ export function LoginPage() {
   };
 
   return (
-    <Shell title="Sign in" subtitle={<>New to HireX? <Link to="/register" className="link">Create an account</Link></>}>
+    <Shell title="Welcome back" subtitle={<>New to HireX? <Link to="/register" className="link">Create an account</Link></>}>
       <form onSubmit={submit} className="space-y-4">
-        <div>
-          <label className="label" htmlFor="email">Email</label>
-          <input id="email" type="email" autoComplete="email" required className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label className="label" htmlFor="password">Password</label>
-          <input id="password" type="password" autoComplete="current-password" required className="input" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
+        <Field id="email" label="Email" icon={<Mail className="h-4 w-4" />} type="email" autoComplete="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Field id="password" label="Password" icon={<Lock className="h-4 w-4" />} type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         {error !== null && <ErrorNote error={error} />}
-        <button className="btn-primary w-full" disabled={busy}>{busy ? "Signing in" : "Sign in"}</button>
+        <button className="btn-primary h-11 w-full text-base" disabled={busy}>
+          {busy ? "Signing in" : <>Sign in <ArrowRight className="h-4 w-4" aria-hidden /></>}
+        </button>
       </form>
     </Shell>
   );
@@ -95,8 +152,8 @@ export function RegisterPage() {
 
   if (path === null) {
     const Option = ({ p, icon, title, text }: { p: Path; icon: ReactNode; title: string; text: string }) => (
-      <button onClick={() => setPath(p)} className="card flex w-full items-start gap-3 p-4 text-left hover:border-brand-500">
-        <span className="mt-0.5 text-brand-600">{icon}</span>
+      <button onClick={() => setPath(p)} className="group flex w-full items-start gap-3 rounded-xl border border-slate-200 p-4 text-left transition-colors hover:border-brand-500 hover:bg-brand-50/60 dark:border-slate-700 dark:hover:bg-brand-500/10">
+        <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-300">{icon}</span>
         <span>
           <span className="block font-medium">{title}</span>
           <span className="block text-sm muted">{text}</span>
@@ -104,19 +161,15 @@ export function RegisterPage() {
       </button>
     );
     return (
-      <div className="mx-auto max-w-md px-4 py-10 sm:py-16">
-        <h1 className="text-2xl font-semibold">Are you a campus student?</h1>
-        <p className="mt-1 text-sm muted">
-          Already have an account? <Link to="/login" className="link">Sign in</Link>
-        </p>
-        <div className="mt-6 space-y-3">
+      <Shell title="Are you a campus student?" subtitle={<>Already have an account? <Link to="/login" className="link">Sign in</Link></>}>
+        <div className="space-y-3">
           <Option p="student" icon={<GraduationCap className="h-5 w-5" />} title="Yes, I'm a student" text="Join your college with the invite code from your placement office. You also get every open-market job." />
           <Option p="seeker" icon={<Briefcase className="h-5 w-5" />} title="No, I'm looking for jobs on my own" text="Upload your resume and get ranked jobs and internships." />
         </div>
         <button className="mt-6 inline-flex items-center gap-1.5 text-sm link" onClick={() => setPath("tpo")}>
           <Building2 className="h-4 w-4" /> I'm a placement officer (TPO)
         </button>
-      </div>
+      </Shell>
     );
   }
 
@@ -124,19 +177,9 @@ export function RegisterPage() {
   return (
     <Shell title={title} subtitle={<button className="link" onClick={() => setPath(null)}>Back</button>}>
       <form onSubmit={submit} className="space-y-4">
-        <div>
-          <label className="label" htmlFor="name">Full name</label>
-          <input id="name" required autoComplete="name" className="input" value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} />
-        </div>
-        <div>
-          <label className="label" htmlFor="r-email">Email</label>
-          <input id="r-email" type="email" required autoComplete="email" className="input" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
-        </div>
-        <div>
-          <label className="label" htmlFor="r-pw">Password</label>
-          <input id="r-pw" type="password" required minLength={8} autoComplete="new-password" className="input" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} />
-          <p className="mt-1 text-xs muted">At least 8 characters, with a letter and a number.</p>
-        </div>
+        <Field id="name" label="Full name" icon={<UserRound className="h-4 w-4" />} required autoComplete="name" value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} />
+        <Field id="r-email" label="Email" icon={<Mail className="h-4 w-4" />} type="email" required autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
+        <Field id="r-pw" label="Password" icon={<Lock className="h-4 w-4" />} type="password" required minLength={8} autoComplete="new-password" hint="At least 8 characters, with a letter and a number" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} />
         {path === "tpo" && (
           <div>
             <label className="label" htmlFor="inst">Institution name</label>
@@ -159,7 +202,7 @@ export function RegisterPage() {
           </>
         )}
         {error !== null && <ErrorNote error={error} />}
-        <button className="btn-primary w-full" disabled={busy || (path === "student" && !consent)}>
+        <button className="btn-primary h-11 w-full text-base" disabled={busy || (path === "student" && !consent)}>
           {busy ? "Creating account" : "Create account"}
         </button>
       </form>
@@ -187,16 +230,10 @@ export function ChangePasswordPage() {
   return (
     <Shell title="Set a new password" subtitle={user.must_reset_password ? "Your account was created with a temporary password. Choose your own to continue." : undefined}>
       <form onSubmit={submit} className="space-y-4">
-        <div>
-          <label className="label" htmlFor="cur">Current password</label>
-          <input id="cur" type="password" required className="input" value={cur} onChange={(e) => setCur(e.target.value)} autoComplete="current-password" />
-        </div>
-        <div>
-          <label className="label" htmlFor="new">New password</label>
-          <input id="new" type="password" required minLength={8} className="input" value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" />
-        </div>
+        <Field id="cur" label="Current password" icon={<Lock className="h-4 w-4" />} type="password" required value={cur} onChange={(e) => setCur(e.target.value)} autoComplete="current-password" />
+        <Field id="new" label="New password" icon={<Lock className="h-4 w-4" />} type="password" required minLength={8} value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" />
         {error !== null && <ErrorNote error={error} />}
-        <button className="btn-primary w-full">Save password</button>
+        <button className="btn-primary h-11 w-full text-base">Save password</button>
       </form>
     </Shell>
   );
