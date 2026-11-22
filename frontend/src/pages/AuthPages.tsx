@@ -13,7 +13,8 @@ const fmt = (n: number) => n.toLocaleString("en-IN");
  *  On phones the backdrop runs behind the form card. */
 function AuthLayout({ children }: { children: ReactNode }) {
   const stats = useQuery({ queryKey: ["jobs", "stats"], queryFn: api.jobStats, staleTime: 300_000 });
-  const s = stats.data;
+  // Only show counts once a complete answer arrives (a partial or error body must not break the page).
+  const s = typeof stats.data?.total === "number" ? stats.data : undefined;
   return (
     <div className="relative grid min-h-[calc(100vh-3.5rem)] overflow-hidden bg-ink-950 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
       <AuthBackdrop />
@@ -123,6 +124,7 @@ export function RegisterPage() {
   const [path, setPath] = useState<Path | null>(null);
   const [f, setF] = useState({ full_name: "", email: "", password: "", invite_code: "", institution_name: "" });
   const [consent, setConsent] = useState(false);
+  const joining = path === "student" && f.invite_code.trim() !== "";
   const [error, setError] = useState<unknown>(null);
   const [busy, setBusy] = useState(false);
 
@@ -137,10 +139,11 @@ export function RegisterPage() {
         email: f.email,
         password: f.password,
         full_name: f.full_name,
-        role: path === "tpo" ? "tpo" : path === "student" ? "student" : "job_seeker",
+        // A student without a code starts as a regular account and can join their college later in Settings.
+        role: path === "tpo" ? "tpo" : joining ? "student" : "job_seeker",
         institution_name: path === "tpo" ? f.institution_name : undefined,
-        invite_code: path === "student" ? f.invite_code.trim() : undefined,
-        consent: path === "student" ? consent : undefined,
+        invite_code: joining ? f.invite_code.trim() : undefined,
+        consent: joining ? consent : undefined,
       });
       navigate(homeFor(u), { replace: true });
     } catch (err) {
@@ -163,7 +166,7 @@ export function RegisterPage() {
     return (
       <Shell title="Are you a campus student?" subtitle={<>Already have an account? <Link to="/login" className="link">Sign in</Link></>}>
         <div className="space-y-3">
-          <Option p="student" icon={<GraduationCap className="h-5 w-5" />} title="Yes, I'm a student" text="Join your college with the invite code from your placement office. You also get every open-market job." />
+          <Option p="student" icon={<GraduationCap className="h-5 w-5" />} title="Yes, I'm a student" text="Get every open-market job, and campus drives once you add your college's invite code (now or later)." />
           <Option p="seeker" icon={<Briefcase className="h-5 w-5" />} title="No, I'm looking for jobs on my own" text="Upload your resume and get ranked jobs and internships." />
         </div>
         <button className="mt-6 inline-flex items-center gap-1.5 text-sm link" onClick={() => setPath("tpo")}>
@@ -189,20 +192,23 @@ export function RegisterPage() {
         {path === "student" && (
           <>
             <div>
-              <label className="label" htmlFor="invite">Invite code from your placement office</label>
-              <input id="invite" required className="input uppercase" value={f.invite_code} onChange={(e) => setF({ ...f, invite_code: e.target.value })} />
+              <label className="label" htmlFor="invite">Invite code from your placement office (optional)</label>
+              <input id="invite" className="input uppercase" value={f.invite_code} onChange={(e) => setF({ ...f, invite_code: e.target.value })} />
+              <p className="mt-1 text-xs muted">No code yet? Leave it empty. You can join your college later from Settings.</p>
             </div>
-            <label className="flex items-start gap-2 rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-800">
-              <input type="checkbox" className="mt-1" checked={consent} onChange={(e) => setConsent(e.target.checked)} required />
-              <span>
-                I agree to share my profile, resume, academic details and campus applications with my college's placement office.
-                I can withdraw this later in Settings.
-              </span>
-            </label>
+            {joining && (
+              <label className="flex items-start gap-2 rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-800">
+                <input type="checkbox" className="mt-1" checked={consent} onChange={(e) => setConsent(e.target.checked)} required />
+                <span>
+                  I agree to share my profile, resume, academic details and campus applications with my college's placement office.
+                  I can withdraw this later in Settings.
+                </span>
+              </label>
+            )}
           </>
         )}
         {error !== null && <ErrorNote error={error} />}
-        <button className="btn-primary h-11 w-full text-base" disabled={busy || (path === "student" && !consent)}>
+        <button className="btn-primary h-11 w-full text-base" disabled={busy || (joining && !consent)}>
           {busy ? "Creating account" : "Create account"}
         </button>
       </form>

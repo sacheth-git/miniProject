@@ -116,7 +116,8 @@ function ShortlistPreview() {
 
 export function LandingPage() {
   const stats = useQuery({ queryKey: ["jobs", "stats"], queryFn: api.jobStats, staleTime: 300_000 });
-  const s = stats.data;
+  // Only show counts once a complete answer arrives (a partial or error body must not break the page).
+  const s = typeof stats.data?.total === "number" ? stats.data : undefined;
   const { hash } = useLocation();
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
