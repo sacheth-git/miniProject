@@ -5,6 +5,7 @@ import { ArrowRight, Building2, Clock, GraduationCap, MapPin, Search } from "luc
 import { api } from "../lib/api";
 import { SOURCE_LABELS } from "../lib/format";
 import { Chip, MatchRing, ScoreBar } from "../components/ui";
+import { AuthBackdrop } from "../components/AuthBackdrop";
 
 const POPULAR: [string, Record<string, string>][] = [
   ["Software engineer", { role: "software engineer" }],
@@ -166,8 +167,10 @@ export function LandingPage() {
   return (
     <div>
       {/* Hero: continues the ink header */}
-      <section className="bg-ink-950 text-white">
-        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1fr_minmax(0,26rem)] lg:pb-24 lg:pt-20">
+      <section className="relative overflow-hidden bg-ink-950 text-white">
+        <AuthBackdrop className="opacity-60" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/50 to-transparent" />
+        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1fr_minmax(0,26rem)] lg:pb-24 lg:pt-20">
           <div className="animate-enter">
             {s && (
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm text-slate-300">
