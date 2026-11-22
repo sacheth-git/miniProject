@@ -1,10 +1,10 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowRight, Building2, Clock, GraduationCap, MapPin, Search } from "lucide-react";
+import { ArrowRight, GraduationCap, MapPin, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { SOURCE_LABELS } from "../lib/format";
-import { Chip, MatchRing, ScoreBar } from "../components/ui";
+import { Chip } from "../components/ui";
 import { HeroWave } from "../components/HeroWave";
 
 const POPULAR: [string, Record<string, string>][] = [
@@ -54,49 +54,6 @@ function HeroSearch() {
       </label>
       <button type="submit" className="btn-primary h-11 px-6">Search jobs</button>
     </form>
-  );
-}
-
-/** A worked example of the match view, built from the components the app uses. */
-function MatchPreview() {
-  return (
-    <div className="card relative p-5 text-slate-900 shadow-2xl shadow-black/40 sm:p-6 dark:text-slate-100" aria-label="Example of a job match">
-      <div className="flex items-start gap-4">
-        <div className="min-w-0 flex-1">
-          <p className="text-xs muted">Example match</p>
-          <h2 className="mt-1 text-lg font-semibold leading-snug">Machine Learning Engineer</h2>
-          <p className="mt-1 flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300">
-            <Building2 className="h-4 w-4 muted" aria-hidden />
-            Kaveri Systems
-          </p>
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs muted">
-            <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" aria-hidden />Bengaluru</span>
-            <span>Full-time</span>
-            <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" aria-hidden />2 days ago</span>
-          </p>
-        </div>
-        <MatchRing percent={82} size={80} />
-      </div>
-      <div className="mt-6 space-y-3">
-        <ScoreBar label="Experience and projects" value={0.78} />
-        <ScoreBar label="Skills the job asks for" value={0.86} />
-        <ScoreBar label="Location, level and job type" value={0.75} />
-      </div>
-      <div className="mt-6 border-t border-slate-100 pt-4 dark:border-slate-800">
-        <p className="text-xs muted">Matched from your resume</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          <Chip tone="green">Python</Chip>
-          <Chip tone="green">PyTorch</Chip>
-          <Chip tone="green" title="You have: scikit-learn">Machine learning</Chip>
-          <Chip tone="green">SQL</Chip>
-        </div>
-        <p className="mt-4 text-xs muted">Required, not on your resume</p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          <Chip tone="red">Docker</Chip>
-          <Chip tone="red">Kubernetes</Chip>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -170,7 +127,7 @@ export function LandingPage() {
       <section className="relative overflow-hidden bg-ink-950 text-white">
         <HeroWave />
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink-950/80 via-ink-950/20 to-transparent" />
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[1fr_minmax(0,26rem)] lg:pb-24 lg:pt-20">
+        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:pb-28 lg:pt-24">
           <div className="animate-enter">
             {s && (
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm text-slate-300">
@@ -201,9 +158,6 @@ export function LandingPage() {
               Placement officer? Run your campus drives on HireX
               <ArrowRight className="h-4 w-4" aria-hidden />
             </a>
-          </div>
-          <div className="lg:translate-y-6">
-            <MatchPreview />
           </div>
         </div>
       </section>
